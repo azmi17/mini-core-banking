@@ -1,0 +1,36 @@
+2022-08-31 17:42:38	[LOG]:	Connecting to db1...
+2022-08-31 17:42:38	[LOG]:	Connecting to db2...
+2022-08-31 17:42:38	[LOG]:	Database Connected
+2022-08-31 17:42:38	[LOG]:	[HTTP] Listening at : 3000
+2022-08-31 17:42:51	[LOG]:	RECV, [::1]:58098, POST /api/v1/newlkm, 
+HEADER :
+[Content-Type]=multipart/form-data; boundary=--------------------------849547998768293687742349
+[User-Agent]=PostmanRuntime/7.29.2
+[Content-Length]=686
+
+FORM :
+[kode_lkm]=0944
+[nama_lembaga]=BPR Azmira Maju Terus
+[alamat]=Jl. Soekarno-Hatta Puteraco Gading Regency Blok A-2/07
+[telepon]=082115331773
+[user_id]=1723
+
+2022-08-31 17:42:51	[LOG]:	SEND, [::1]:58098, /api/v1/newlkm, 
+RESPONSE : 
+{
+    "meta": {
+        "message": "New lkm has been created",
+        "status": "success"
+    },
+    "data": {
+        "kode_lkm": "0944",
+        "nama_lembaga": "BPR Azmira Maju Terus",
+        "alamat": "Jl. Soekarno-Hatta Puteraco Gading Regency Blok A-2/07",
+        "telpon": "082115331773",
+        "no_rekening": "0944",
+        "saldo_akhir": 0,
+        "user_name_smec": "0944",
+        "password_smec": "XPUFPHXB",
+        "user_id": 1723
+    }
+}

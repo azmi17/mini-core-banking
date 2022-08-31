@@ -1,0 +1,23 @@
+2022-08-31 14:03:55	[ERR]:	(appio.go:12):	error while add nasabah : Error 1292: Incorrect date value: '0000-00-00' for column 'TGLLAHIR' at row 1
+2022-08-31 14:15:24	[ERR]:	(appio.go:12):	error while add nasabah : Error 1292: Incorrect date value: '0000-00-00' for column 'TGLLAHIR' at row 1
+2022-08-31 14:16:44	[ERR]:	(appio.go:12):	error while add nasabah : Error 1292: Incorrect date value: '0000-00-00' for column 'TGLLAHIR' at row 1
+2022-08-31 14:17:40	[ERR]:	(appio.go:12):	error while prepare add nasabah : Error 1136: Column count doesn't match value count at row 1
+2022-08-31 14:18:04	[ERR]:	(appio.go:12):	error while add nasabah : Error 1292: Incorrect date value: '0000-00-00' for column 'TGL_REGISTER' at row 1
+2022-08-31 14:19:19	[ERR]:	(appio.go:12):	error while add nasabah : Error 1292: Incorrect date value: '0000-00-00' for column 'TGLLAHIR' at row 1
+2022-08-31 14:20:26	[ERR]:	(appio.go:12):	error while add nasabah : Error 1292: Incorrect date value: '0000-00-00' for column 'TGLLAHIR' at row 1
+2022-08-31 14:26:23	[ERR]:	(appio.go:12):	error while add nasabah : Error 1292: Incorrect date value: '0000-00-00' for column 'TGLLAHIR' at row 1
+2022-08-31 14:34:48	[ERR]:	(appio.go:12):	error while add nasabah : Error 1292: Incorrect date value: '0000-00-00' for column 'TGLLAHIR' at row 1
+2022-08-31 14:36:53	[ERR]:	(appio.go:12):	error while add nasabah : Error 1292: Incorrect date value: '0000-00-00' for column 'TGLLAHIR' at row 1
+2022-08-31 14:42:36	[ERR]:	(appio.go:12):	error while add nasabah : Error 1292: Incorrect date value: '0000-00-00' for column 'TGLLAHIR' at row 1
+2022-08-31 14:49:30	[ERR]:	(appio.go:12):	error while add nasabah : Error 1062: Duplicate entry '' for key 'PRIMARY'
+2022-08-31 14:49:45	[ERR]:	(appio.go:12):	error while add nasabah : Error 1062: Duplicate entry '' for key 'PRIMARY'
+2022-08-31 15:11:42	[ERR]:	(appio.go:12):	error while add nasabah : Error 1292: Incorrect date value: '0000-00-00' for column 'TGLLAHIR' at row 1
+2022-08-31 15:13:01	[ERR]:	(appio.go:12):	error while prepare add nasabah : Error 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ') VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?' at line 39
+2022-08-31 15:13:43	[ERR]:	(appio.go:12):	error while add nasabah : sql: expected 37 arguments, got 40
+2022-08-31 15:14:18	[ERR]:	(appio.go:12):	error while add nasabah : Error 1062: Duplicate entry '' for key 'PRIMARY'
+2022-08-31 15:15:44	[ERR]:	(appio.go:12):	error while add nasabah : Error 1062: Duplicate entry '' for key 'PRIMARY'
+2022-08-31 15:55:47	[ERR]:	(appio.go:12):	error while add nasabah : Error 1062: Duplicate entry '' for key 'PRIMARY'
+2022-08-31 15:56:57	[ERR]:	(appio.go:12):	error while add nasabah : Error 1062: Duplicate entry '' for key 'PRIMARY'
+2022-08-31 15:57:12	[ERR]:	(appio.go:12):	error while add nasabah : Error 1062: Duplicate entry '' for key 'PRIMARY'
+2022-08-31 16:20:27	[ERR]:	(appio.go:12):	error while prepare add nasabah : Error 1136: Column count doesn't match value count at row 1
+2022-08-31 16:24:37	[ERR]:	(appio.go:12):	error while add nasabah : Error 1292: Incorrect date value: '0000-00-00' for column 'MASA_BERLAKU_KTP' at row 1
