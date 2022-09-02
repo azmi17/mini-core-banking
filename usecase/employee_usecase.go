@@ -10,7 +10,7 @@ import (
 )
 
 type ApexUsecase interface {
-	CreateLkm(payload web.PayloadApex) (web.ApexResponse, error)
+	SaveLkm(payload web.SaveApex) (web.ApexResponse, error)
 }
 
 type apexUsecase struct{} // (e *employeeUsecase) => untuk menentukan hak kepemilikan
@@ -19,8 +19,10 @@ func NewApexUsecase() ApexUsecase {
 	return &apexUsecase{}
 }
 
-func (e *apexUsecase) CreateLkm(payload web.PayloadApex) (apex web.ApexResponse, er error) {
+func (e *apexUsecase) SaveLkm(payload web.SaveApex) (apex web.ApexResponse, er error) {
 	repo, _ := apexrepo.NewApexRepo()
+
+	// validasi ..
 
 	nasabah := entities.Nasabah{}
 	// From payload:
@@ -66,12 +68,11 @@ func (e *apexUsecase) CreateLkm(payload web.PayloadApex) (apex web.ApexResponse,
 	nasabah.Status_Marital = constants.StatusMarital
 	nasabah.Status_Tempat_Tinggal = constants.StatusTempatTinggal
 	nasabah.Masa_Berlaku_Ktp = time.Now().AddDate(7, 0, 0)
-	if nasabah, er = repo.CreateNasabah(nasabah); er != nil {
+	if nasabah, er = repo.SaveNasabah(nasabah); er != nil {
 		return apex, er
 	}
 
 	tabung := entities.Tabung{}
-
 	// From payload:
 	tabung.No_Rekening = payload.KodeLkm
 	tabung.Nasabah_Id = payload.KodeLkm
@@ -107,12 +108,11 @@ func (e *apexUsecase) CreateLkm(payload web.PayloadApex) (apex web.ApexResponse,
 	tabung.Premi = constants.ZeroValInt
 	tabung.Kode_Keterkaitan = constants.KdKeterkaitan
 	tabung.Kode_Kantor_Kas = constants.KdKantorKas
-	if tabung, er = repo.CreateTabung(tabung); er != nil {
+	if tabung, er = repo.SaveTabung(tabung); er != nil {
 		return apex, er
 	}
 
 	sysDaftarUser := entities.SysDaftarUser{}
-
 	// From payload:
 	sysDaftarUser.User_Name = payload.KodeLkm
 	sysDaftarUser.Nama_Lengkap = payload.Nama_Lembaga
@@ -128,7 +128,7 @@ func (e *apexUsecase) CreateLkm(payload web.PayloadApex) (apex web.ApexResponse,
 	sysDaftarUser.Status_Aktif = constants.StatusAktif
 	sysDaftarUser.Penerimaan = constants.ZeroValInt
 	sysDaftarUser.Pengeluaran = constants.ZeroValInt
-	if sysDaftarUser, er = repo.CreteSysDaftarUser(sysDaftarUser); er != nil {
+	if sysDaftarUser, er = repo.SaveSysDaftarUser(sysDaftarUser); er != nil {
 		return apex, er
 	}
 

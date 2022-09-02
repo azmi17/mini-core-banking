@@ -5,7 +5,7 @@ import (
 )
 
 type ApexRepo interface {
-	CreateNasabah(newNasabah entities.Nasabah) (entities.Nasabah, error)
-	CreateTabung(newTabung entities.Tabung) (entities.Tabung, error)
-	CreteSysDaftarUser(newSysUser entities.SysDaftarUser) (entities.SysDaftarUser, error)
+	SaveNasabah(newNasabah entities.Nasabah) (entities.Nasabah, error)
+	SaveTabung(newTabung entities.Tabung) (entities.Tabung, error)
+	SaveSysDaftarUser(newSysUser entities.SysDaftarUser) (entities.SysDaftarUser, error)
 }

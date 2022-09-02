@@ -18,7 +18,7 @@ type ApexMysqlImpl struct {
 	db1, db2 *sql.DB
 }
 
-func (e *ApexMysqlImpl) CreateNasabah(newNasabah entities.Nasabah) (nasabah entities.Nasabah, er error) {
+func (e *ApexMysqlImpl) SaveNasabah(newNasabah entities.Nasabah) (nasabah entities.Nasabah, er error) {
 
 	stmt, er := e.db1.Prepare(`INSERT INTO nasabah(
 		nasabah_id, 
@@ -119,7 +119,7 @@ func (e *ApexMysqlImpl) CreateNasabah(newNasabah entities.Nasabah) (nasabah enti
 
 }
 
-func (e *ApexMysqlImpl) CreateTabung(newTabung entities.Tabung) (tabung entities.Tabung, er error) {
+func (e *ApexMysqlImpl) SaveTabung(newTabung entities.Tabung) (tabung entities.Tabung, er error) {
 
 	stmt, er := e.db1.Prepare(`INSERT INTO tabung(
 		no_rekening,
@@ -203,7 +203,7 @@ func (e *ApexMysqlImpl) CreateTabung(newTabung entities.Tabung) (tabung entities
 
 }
 
-func (e *ApexMysqlImpl) CreteSysDaftarUser(newSysUser entities.SysDaftarUser) (sysUser entities.SysDaftarUser, er error) {
+func (e *ApexMysqlImpl) SaveSysDaftarUser(newSysUser entities.SysDaftarUser) (sysUser entities.SysDaftarUser, er error) {
 
 	stmt, er := e.db2.Prepare(`INSERT INTO sys_daftar_user(
 		user_name,
