@@ -7,3 +7,7 @@ type SaveApex struct {
 	Telepon      string `form:"telepon" binding:"required"`
 	User_Id      int    `form:"user_id" binding:"required"`
 }
+
+type KodeLKMFilter struct {
+	KodeLkm string `form:"kode_lkm"`
+}

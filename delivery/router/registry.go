@@ -21,12 +21,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterHandler(router *gin.Engine, api *gin.RouterGroup) {
+func RegisterHandler(router *gin.Engine) {
 
-	api.GET("/version", func(c *gin.Context) {
+	// API Versioning:
+	apiv1 := router.Group("api/v1")
+
+	// API Endpoint:
+	apiv1.GET("/version", func(c *gin.Context) {
 		c.String(http.StatusOK, "Router Template V1.0.0\n")
 		c.String(http.StatusOK, "Apex API Endpoint")
 	})
-	api.POST("/newlkm", handler.CreateLKM)
+	apiv1.POST("/institutions", handler.CreateLKM)
+	apiv1.PUT("/institutions", handler.UpdateLKM)
+	apiv1.DELETE("/institutions", handler.DeleteLKM)
 
 }

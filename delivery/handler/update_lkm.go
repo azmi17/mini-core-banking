@@ -13,7 +13,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func CreateLKM(ctx *gin.Context) {
+func UpdateLKM(ctx *gin.Context) {
 
 	// Init HTTP Request..
 	httpio := httpio.NewRequestIO(ctx)
@@ -22,8 +22,8 @@ func CreateLKM(ctx *gin.Context) {
 	payload := web.SaveApex{}
 	httpio.Bind(&payload)
 
-	usecae := usecase.NewApexUsecase()
-	lkm, er := usecae.CreateLkm(payload)
+	usecase := usecase.NewApexUsecase()
+	updLkm, er := usecase.UpdateLkm(payload)
 	if er != nil {
 		if er == err.DuplicateEntry {
 			httpio.ResponseString(statuscode.StatusDuplicate, "LKM data is available!", nil)
@@ -33,7 +33,7 @@ func CreateLKM(ctx *gin.Context) {
 			httpio.ResponseString(http.StatusInternalServerError, "internal service error", nil)
 		}
 	} else {
-		response := helper.ApiResponse("New lkm has been created", "success", lkm)
+		response := helper.ApiResponse("Update lkm has succeeded", "success", updLkm)
 		httpio.Response(http.StatusOK, response)
 	}
 

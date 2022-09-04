@@ -18,7 +18,7 @@ type ApexMysqlImpl struct {
 	db1, db2 *sql.DB
 }
 
-func (e *ApexMysqlImpl) SaveNasabah(newNasabah entities.Nasabah) (nasabah entities.Nasabah, er error) {
+func (e *ApexMysqlImpl) CreateNasabah(newNasabah entities.Nasabah) (nasabah entities.Nasabah, er error) {
 
 	stmt, er := e.db1.Prepare(`INSERT INTO nasabah(
 		nasabah_id, 
@@ -119,7 +119,7 @@ func (e *ApexMysqlImpl) SaveNasabah(newNasabah entities.Nasabah) (nasabah entiti
 
 }
 
-func (e *ApexMysqlImpl) SaveTabung(newTabung entities.Tabung) (tabung entities.Tabung, er error) {
+func (e *ApexMysqlImpl) CreateTabung(newTabung entities.Tabung) (tabung entities.Tabung, er error) {
 
 	stmt, er := e.db1.Prepare(`INSERT INTO tabung(
 		no_rekening,
@@ -203,7 +203,7 @@ func (e *ApexMysqlImpl) SaveTabung(newTabung entities.Tabung) (tabung entities.T
 
 }
 
-func (e *ApexMysqlImpl) SaveSysDaftarUser(newSysUser entities.SysDaftarUser) (sysUser entities.SysDaftarUser, er error) {
+func (e *ApexMysqlImpl) CreateSysDaftarUser(newSysUser entities.SysDaftarUser) (sysUser entities.SysDaftarUser, er error) {
 
 	stmt, er := e.db2.Prepare(`INSERT INTO sys_daftar_user(
 		user_name,
@@ -245,4 +245,109 @@ func (e *ApexMysqlImpl) SaveSysDaftarUser(newSysUser entities.SysDaftarUser) (sy
 		return newSysUser, nil
 	}
 
+}
+
+func (e *ApexMysqlImpl) UpdateNasabah(updNasabah entities.Nasabah) (nasabah entities.Nasabah, er error) {
+
+	stmt, er := e.db1.Prepare("UPDATE nasabah SET nama_nasabah = ?, nama_nasabah_sid = ?, nama_alias = ?, alamat = ?, alamat2 = ?, telpon = ?, hp = ?, hp1 = ?,  hp2 = ?, userid = ?  WHERE nasabah_id = ?")
+	if er != nil {
+		return nasabah, errors.New(fmt.Sprint("error while prepare update nasabah : ", er.Error()))
+	}
+
+	defer func() {
+		_ = stmt.Close()
+	}()
+
+	if _, er := stmt.Exec(
+		updNasabah.Nama_Nasabah,
+		updNasabah.Nama_Nasabah_Sid,
+		updNasabah.Nama_Alias,
+		updNasabah.Alamat,
+		updNasabah.Alamat2,
+		updNasabah.Telepon,
+		updNasabah.Hp,
+		updNasabah.Hp1,
+		updNasabah.Hp2,
+		updNasabah.UserId,
+		updNasabah.Nasabah_Id); er != nil {
+		return nasabah, errors.New(fmt.Sprint("error while update nasabah : ", er.Error()))
+	}
+
+	return updNasabah, nil
+
+}
+
+func (e *ApexMysqlImpl) UpdateSysDaftarUser(updSysuser entities.SysDaftarUser) (sysUser entities.SysDaftarUser, er error) {
+
+	stmt, er := e.db2.Prepare("UPDATE sys_daftar_user SET nama_lengkap = ? WHERE user_name = ?")
+	if er != nil {
+		return sysUser, errors.New(fmt.Sprint("error while prepare update user : ", er.Error()))
+	}
+
+	defer func() {
+		_ = stmt.Close()
+	}()
+
+	if _, er := stmt.Exec(
+		updSysuser.Nama_Lengkap,
+		updSysuser.User_Name); er != nil {
+		return sysUser, errors.New(fmt.Sprint("error while update user : ", er.Error()))
+	}
+
+	return updSysuser, nil
+
+}
+
+func (e *ApexMysqlImpl) DeleteNasabah(id string) (er error) {
+
+	stmt, er := e.db1.Prepare("delete FROM nasabah WHERE nasabah_id = ?")
+	if er != nil {
+		return errors.New(fmt.Sprint("error while prepare delete nasabah : ", er.Error()))
+	}
+
+	defer func() {
+		_ = stmt.Close()
+	}()
+
+	if _, er := stmt.Exec(id); er != nil {
+		return errors.New(fmt.Sprint("error while delete nasabah : ", er.Error()))
+	}
+
+	return nil
+}
+
+func (e *ApexMysqlImpl) DeleteTabung(id string) (er error) {
+
+	stmt, er := e.db1.Prepare("delete FROM tabung WHERE no_rekening = ?")
+	if er != nil {
+		return errors.New(fmt.Sprint("error while prepare delete tabung : ", er.Error()))
+	}
+
+	defer func() {
+		_ = stmt.Close()
+	}()
+
+	if _, er := stmt.Exec(id); er != nil {
+		return errors.New(fmt.Sprint("error while delete tabung : ", er.Error()))
+	}
+
+	return nil
+}
+
+func (e *ApexMysqlImpl) DeleteSysDaftarUser(id string) (er error) {
+
+	stmt, er := e.db2.Prepare("delete FROM sys_daftar_user WHERE user_name = ?")
+	if er != nil {
+		return errors.New(fmt.Sprint("error while prepare delete user : ", er.Error()))
+	}
+
+	defer func() {
+		_ = stmt.Close()
+	}()
+
+	if _, er := stmt.Exec(id); er != nil {
+		return errors.New(fmt.Sprint("error while delete user : ", er.Error()))
+	}
+
+	return nil
 }

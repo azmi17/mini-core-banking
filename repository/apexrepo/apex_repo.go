@@ -5,7 +5,14 @@ import (
 )
 
 type ApexRepo interface {
-	SaveNasabah(newNasabah entities.Nasabah) (entities.Nasabah, error)
-	SaveTabung(newTabung entities.Tabung) (entities.Tabung, error)
-	SaveSysDaftarUser(newSysUser entities.SysDaftarUser) (entities.SysDaftarUser, error)
+	CreateNasabah(newNasabah entities.Nasabah) (entities.Nasabah, error)
+	CreateTabung(newTabung entities.Tabung) (entities.Tabung, error)
+	CreateSysDaftarUser(newSysUser entities.SysDaftarUser) (entities.SysDaftarUser, error)
+
+	UpdateNasabah(updNasabah entities.Nasabah) (entities.Nasabah, error)
+	UpdateSysDaftarUser(updNasabah entities.SysDaftarUser) (entities.SysDaftarUser, error)
+
+	DeleteNasabah(id string) error
+	DeleteTabung(id string) error
+	DeleteSysDaftarUser(id string) error
 }

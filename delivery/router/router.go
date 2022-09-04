@@ -15,12 +15,11 @@ func Start() error {
 	gin.DefaultWriter = ioutil.Discard
 
 	router := gin.Default() //create router engine by default
-	api := router.Group("api/v1")
 
 	router.Use(gin.Recovery())
 
 	// ! ADD ANOTHER HANDLER BELOW..
-	RegisterHandler(router, api)
+	RegisterHandler(router)
 
 	listenerPort := os.Getenv("app.listener_port") // get port from .env
 

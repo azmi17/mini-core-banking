@@ -1,23 +1,11 @@
-2022-09-02 13:08:25	[LOG]:	Connecting to db1...
-2022-09-02 13:08:25	[LOG]:	Connecting to db2...
-2022-09-02 13:08:25	[LOG]:	Database Connected
-2022-09-02 13:08:25	[LOG]:	[HTTP] Listening at : 3000
-2022-09-02 13:08:53	[LOG]:	SEND, [::1]:61891, /api/v1/newlkm, 
-RESPONSE : 
-{
-    "meta": {
-        "message": "Create institution failed",
-        "status": "failed"
-    },
-    "data": {
-        "errors": [
-            "Key: 'PayloadApex.Nama_Lembaga' Error:Field validation for 'Nama_Lembaga' failed on the 'required' tag"
-        ]
-    }
-}
-2022-09-02 13:08:58	[LOG]:	RECV, [::1]:61891, POST /api/v1/newlkm, 
+2022-09-04 10:43:54	[LOG]:	Connecting to apex...
+2022-09-04 10:43:54	[LOG]:	Connecting to apex_sys...
+2022-09-04 10:43:54	[LOG]:	Database Connected
+2022-09-04 10:43:54	[LOG]:	Service started
+2022-09-04 10:43:54	[LOG]:	[HTTP] Listening at : 3000
+2022-09-04 10:44:19	[LOG]:	RECV, [::1]:51765, POST /api/v1/institutions, 
 HEADER :
-[Content-Type]=multipart/form-data; boundary=--------------------------355644492015274893492592
+[Content-Type]=multipart/form-data; boundary=--------------------------639677086203246216970274
 [User-Agent]=PostmanRuntime/7.29.2
 [Content-Length]=684
 
@@ -28,7 +16,7 @@ FORM :
 [telepon]=082173274127
 [user_id]=1023
 
-2022-09-02 13:08:58	[LOG]:	SEND, [::1]:61891, /api/v1/newlkm, 
+2022-09-04 10:44:19	[LOG]:	SEND, [::1]:51765, /api/v1/institutions, 
 RESPONSE : 
 {
     "meta": {
@@ -43,261 +31,301 @@ RESPONSE :
         "no_rekening": "1031",
         "saldo_akhir": 0,
         "user_name_smec": "1031",
-        "password_smec": "9M8AJUQU",
+        "password_smec": "FIXAIHR4",
         "user_id": 1023
     }
 }
-
-2022-09-02 13:32:47	[LOG]:	Connecting to db1...
-2022-09-02 13:32:47	[LOG]:	Connecting to db2...
-2022-09-02 13:32:47	[LOG]:	Database Connected
-2022-09-02 13:32:47	[LOG]:	[HTTP] Listening at : 3000
-2022-09-02 13:32:57	[LOG]:	SEND, [::1]:62112, /api/v1/newlkm, 
-RESPONSE : 
-{
-    "meta": {
-        "message": "Create institution failed",
-        "status": "failed"
-    },
-    "data": {
-        "errors": "Error on field KodeLkm, condition required"
-    }
-}
-2022-09-02 13:33:07	[LOG]:	SEND, [::1]:62112, /api/v1/newlkm, 
-RESPONSE : 
-{
-    "meta": {
-        "message": "Create institution failed",
-        "status": "failed"
-    },
-    "data": {
-        "errors": "Error on field Nama_Lembaga, condition required"
-    }
-}
-2022-09-02 13:33:12	[LOG]:	SEND, [::1]:62112, /api/v1/newlkm, 
-RESPONSE : 
-{
-    "meta": {
-        "message": "Create institution failed",
-        "status": "failed"
-    },
-    "data": {
-        "errors": "Error on field Nama_Lembaga, condition required"
-    }
-}
-2022-09-02 13:41:26	[LOG]:	Connecting to db1...
-2022-09-02 13:41:26	[LOG]:	Connecting to db2...
-2022-09-02 13:41:26	[LOG]:	Database Connected
-2022-09-02 13:41:26	[LOG]:	[HTTP] Listening at : 3000
-2022-09-02 13:41:30	[LOG]:	SEND, [::1]:54870, /api/v1/newlkm, 
-RESPONSE : 
-{
-    "meta": {
-        "message": "Create institution failed",
-        "status": "failed"
-    },
-    "data": {
-        "errors": "Field is required Key: 'CreateApex.Nama_Lembaga' Error:Field validation for 'Nama_Lembaga' failed on the 'required' tag"
-    }
-}
-2022-09-02 13:43:02	[LOG]:	Connecting to db1...
-2022-09-02 13:43:02	[LOG]:	Connecting to db2...
-2022-09-02 13:43:02	[LOG]:	Database Connected
-2022-09-02 13:43:02	[LOG]:	[HTTP] Listening at : 3000
-2022-09-02 13:43:04	[LOG]:	SEND, [::1]:54882, /api/v1/newlkm, 
-RESPONSE : 
-{
-    "meta": {
-        "message": "Create institution failed",
-        "status": "failed"
-    },
-    "data": {
-        "errors": "Field is required "
-    }
-}
-2022-09-02 13:43:09	[LOG]:	SEND, [::1]:54882, /api/v1/newlkm, 
-RESPONSE : 
-{
-    "meta": {
-        "message": "Create institution failed",
-        "status": "failed"
-    },
-    "data": {
-        "errors": "Field is required "
-    }
-}
-2022-09-02 13:43:21	[LOG]:	Connecting to db1...
-2022-09-02 13:43:21	[LOG]:	Connecting to db2...
-2022-09-02 13:43:21	[LOG]:	Database Connected
-2022-09-02 13:43:21	[LOG]:	[HTTP] Listening at : 3000
-2022-09-02 13:43:29	[LOG]:	SEND, [::1]:61646, /api/v1/newlkm, 
-RESPONSE : 
-{
-    "meta": {
-        "message": "Create institution failed",
-        "status": "failed"
-    },
-    "data": {
-        "errors": "Field is required"
-    }
-}
-2022-09-02 13:48:09	[LOG]:	Connecting to db1...
-2022-09-02 13:48:09	[LOG]:	Connecting to db2...
-2022-09-02 13:48:09	[LOG]:	Database Connected
-2022-09-02 13:48:09	[LOG]:	[HTTP] Listening at : 3000
-2022-09-02 13:48:15	[LOG]:	SEND, [::1]:59851, /api/v1/newlkm, 
-RESPONSE : 
-{
-    "meta": {
-        "message": "Create institution failed",
-        "status": "failed"
-    },
-    "data": {
-        "errors": "Field is required103"
-    }
-}
-2022-09-02 13:49:16	[LOG]:	Connecting to db1...
-2022-09-02 13:49:16	[LOG]:	Connecting to db2...
-2022-09-02 13:49:16	[LOG]:	Database Connected
-2022-09-02 13:49:16	[LOG]:	[HTTP] Listening at : 3000
-2022-09-02 13:49:21	[LOG]:	SEND, [::1]:62226, /api/v1/newlkm, 
-RESPONSE : 
-{
-    "meta": {
-        "message": "Create institution failed",
-        "status": "failed"
-    },
-    "data": {
-        "errors": "Field is required "
-    }
-}
-2022-09-02 13:49:33	[LOG]:	SEND, [::1]:62226, /api/v1/newlkm, 
-RESPONSE : 
-{
-    "meta": {
-        "message": "Create institution failed",
-        "status": "failed"
-    },
-    "data": {
-        "errors": "Field is required "
-    }
-}
-2022-09-02 13:53:44	[LOG]:	Connecting to db1...
-2022-09-02 13:53:44	[LOG]:	Connecting to db2...
-2022-09-02 13:53:44	[LOG]:	Database Connected
-2022-09-02 13:53:44	[LOG]:	[HTTP] Listening at : 3000
-2022-09-02 13:53:47	[LOG]:	SEND, [::1]:56586, /api/v1/newlkm, 
-RESPONSE : 
-{
-    "meta": {
-        "message": "Create institution failed",
-        "status": "failed"
-    },
-    "data": {
-        "errors": "Field is required: KodeLkm Condition: min"
-    }
-}
-2022-09-02 13:53:58	[LOG]:	SEND, [::1]:56586, /api/v1/newlkm, 
-RESPONSE : 
-{
-    "meta": {
-        "message": "Create institution failed",
-        "status": "failed"
-    },
-    "data": {
-        "errors": "Field is required: KodeLkm Condition: required"
-    }
-}
-2022-09-02 13:56:03	[LOG]:	SEND, [::1]:56586, /api/v1/newlkm, 
-RESPONSE : 
-{
-    "meta": {
-        "message": "Create institution failed",
-        "status": "failed"
-    },
-    "data": {
-        "errors": "Field is required: KodeLkm Condition: min"
-    }
-}
-2022-09-02 13:57:49	[LOG]:	Connecting to db1...
-2022-09-02 13:57:49	[LOG]:	Connecting to db2...
-2022-09-02 13:57:49	[LOG]:	Database Connected
-2022-09-02 13:57:49	[LOG]:	[HTTP] Listening at : 3000
-2022-09-02 13:58:00	[LOG]:	SEND, [::1]:56106, /api/v1/newlkm, 
-RESPONSE : 
-{
-    "meta": {
-        "message": "Create institution failed",
-        "status": "failed"
-    },
-    "data": {
-        "errors": "Field is  "
-    }
-}
-2022-09-02 13:58:23	[LOG]:	Connecting to db1...
-2022-09-02 13:58:23	[LOG]:	Connecting to db2...
-2022-09-02 13:58:23	[LOG]:	Database Connected
-2022-09-02 13:58:23	[LOG]:	[HTTP] Listening at : 3000
-2022-09-02 13:58:30	[LOG]:	SEND, [::1]:55264, /api/v1/newlkm, 
-RESPONSE : 
-{
-    "meta": {
-        "message": "Create institution failed",
-        "status": "failed"
-    },
-    "data": {
-        "errors": "Field is required "
-    }
-}
-2022-09-02 13:58:50	[LOG]:	Connecting to db1...
-2022-09-02 13:58:50	[LOG]:	Connecting to db2...
-2022-09-02 13:58:50	[LOG]:	Database Connected
-2022-09-02 13:58:50	[LOG]:	[HTTP] Listening at : 3000
-2022-09-02 13:58:53	[LOG]:	SEND, [::1]:62553, /api/v1/newlkm, 
-RESPONSE : 
-{
-    "meta": {
-        "message": "Create institution failed",
-        "status": "failed"
-    },
-    "data": {
-        "errors": "Field is min"
-    }
-}
-2022-09-02 13:59:03	[LOG]:	SEND, [::1]:62553, /api/v1/newlkm, 
-RESPONSE : 
-{
-    "meta": {
-        "message": "Create institution failed",
-        "status": "failed"
-    },
-    "data": {
-        "errors": "Field is required"
-    }
-}
-2022-09-02 13:59:09	[LOG]:	SEND, [::1]:62553, /api/v1/newlkm, 
-RESPONSE : 
-{
-    "meta": {
-        "message": "Create institution failed",
-        "status": "failed"
-    },
-    "data": {
-        "errors": "Field is min"
-    }
-}
-2022-09-02 13:59:16	[LOG]:	RECV, [::1]:62553, POST /api/v1/newlkm, 
+2022-09-04 10:46:14	[LOG]:	RECV, [::1]:51765, PUT /api/v1/institutions, 
 HEADER :
-[Content-Type]=multipart/form-data; boundary=--------------------------499360743409213602494444
+[Content-Type]=multipart/form-data; boundary=--------------------------371306136905445419429051
+[User-Agent]=PostmanRuntime/7.29.2
+[Content-Length]=651
+
+FORM :
+[kode_lkm]=1031
+[nama_lembaga]=BPRKS Azmira Maju
+[alamat]=Jl Jakarta Selatan No.128
+[telepon]=09274636623
+[user_id]=117
+
+2022-09-04 10:46:14	[LOG]:	SEND, [::1]:51765, /api/v1/institutions, 
+RESPONSE : 
+{
+    "meta": {
+        "message": "Update lkm has succeeded",
+        "status": "success"
+    },
+    "data": {
+        "kode_lkm": "1031",
+        "nama_lembaga": "BPRKS Azmira Maju",
+        "alamat": "Jl Jakarta Selatan No.128",
+        "telpon": "09274636623",
+        "user_id": 117
+    }
+}
+2022-09-04 10:49:04	[LOG]:	RECV, [::1]:51765, PUT /api/v1/institutions, 
+HEADER :
+[Content-Type]=multipart/form-data; boundary=--------------------------023584449066070402686572
+[User-Agent]=PostmanRuntime/7.29.2
+[Content-Length]=672
+
+FORM :
+[kode_lkm]=1031
+[nama_lembaga]=BPRKS Azmira Sejahtera
+[alamat]=Jl. Paseh Kaler no.17, Kabupaten Sumedang
+[telepon]=09274636623
+[user_id]=117
+
+2022-09-04 10:49:04	[LOG]:	SEND, [::1]:51765, /api/v1/institutions, 
+RESPONSE : 
+{
+    "meta": {
+        "message": "Update lkm has succeeded",
+        "status": "success"
+    },
+    "data": {
+        "kode_lkm": "1031",
+        "nama_lembaga": "BPRKS Azmira Sejahtera",
+        "alamat": "Jl. Paseh Kaler no.17, Kabupaten Sumedang",
+        "telpon": "09274636623",
+        "user_id": 117
+    }
+}
+2022-09-04 10:58:05	[LOG]:	Connecting to apex...
+2022-09-04 10:58:05	[LOG]:	Connecting to apex_sys...
+2022-09-04 10:58:05	[LOG]:	Database Connected
+2022-09-04 10:58:05	[LOG]:	Service started
+2022-09-04 10:58:05	[LOG]:	[HTTP] Listening at : 3000
+2022-09-04 14:02:21	[LOG]:	Connecting to apex...
+2022-09-04 14:02:21	[LOG]:	Connecting to apex_sys...
+2022-09-04 14:02:21	[LOG]:	Database Connected
+2022-09-04 14:02:21	[LOG]:	Service started
+2022-09-04 14:02:21	[LOG]:	[HTTP] Listening at : 3000
+2022-09-04 14:02:50	[LOG]:	Connecting to apex...
+2022-09-04 14:02:50	[LOG]:	Connecting to apex_sys...
+2022-09-04 14:02:50	[LOG]:	Database Connected
+2022-09-04 14:02:50	[LOG]:	Service started
+2022-09-04 14:02:50	[LOG]:	[HTTP] Listening at : 3000
+2022-09-04 14:03:33	[LOG]:	RECV, [::1]:52462, DELETE /api/v1/institutions, 
+HEADER :
+[Content-Type]=multipart/form-data; boundary=--------------------------351405356426241195675976
+[User-Agent]=PostmanRuntime/7.29.2
+[Content-Length]=167
+empty body
+2022-09-04 14:03:34	[LOG]:	SEND, [::1]:52462, /api/v1/institutions, internal service error
+2022-09-04 14:07:13	[LOG]:	Connecting to apex...
+2022-09-04 14:07:13	[LOG]:	Connecting to apex_sys...
+2022-09-04 14:07:13	[LOG]:	Database Connected
+2022-09-04 14:07:13	[LOG]:	Service started
+2022-09-04 14:07:13	[LOG]:	[HTTP] Listening at : 3000
+2022-09-04 14:07:25	[LOG]:	RECV, [::1]:49853, DELETE /api/v1/institutions, 
+HEADER :
+[Content-Type]=multipart/form-data; boundary=--------------------------125675938015378770263872
+[User-Agent]=PostmanRuntime/7.29.2
+[Content-Length]=167
+empty body
+2022-09-04 14:07:25	[LOG]:	SEND, [::1]:49853, /api/v1/institutions, 
+RESPONSE : 
+{
+    "meta": {
+        "message": "Lkm has been deleted",
+        "status": "success"
+    },
+    "data": null
+}
+2022-09-04 14:17:44	[LOG]:	Connecting to apex...
+2022-09-04 14:17:44	[LOG]:	Connecting to apex_sys...
+2022-09-04 14:17:44	[LOG]:	Database Connected
+2022-09-04 14:17:44	[LOG]:	Service started
+2022-09-04 14:17:44	[LOG]:	[HTTP] Listening at : 3000
+2022-09-04 14:17:48	[LOG]:	RECV, [::1]:57552, DELETE /api/v1/institutions, 
+HEADER :
+[Content-Type]=multipart/form-data; boundary=--------------------------931244010663721966105803
+[User-Agent]=PostmanRuntime/7.29.2
+[Content-Length]=167
+empty body
+2022-09-04 14:17:48	[LOG]:	SEND, [::1]:57552, /api/v1/institutions, 
+RESPONSE : 
+{
+    "meta": {
+        "message": "Lkm has been deleted",
+        "status": "success"
+    },
+    "data": null
+}
+2022-09-04 14:19:07	[LOG]:	Connecting to apex...
+2022-09-04 14:19:07	[LOG]:	Connecting to apex_sys...
+2022-09-04 14:19:07	[LOG]:	Database Connected
+2022-09-04 14:19:07	[LOG]:	Service started
+2022-09-04 14:19:07	[LOG]:	[HTTP] Listening at : 3000
+2022-09-04 14:19:13	[LOG]:	RECV, [::1]:60461, DELETE /api/v1/institutions, 
+HEADER :
+[Content-Type]=multipart/form-data; boundary=--------------------------029432034005002593152159
+[User-Agent]=PostmanRuntime/7.29.2
+[Content-Length]=167
+
+FORM :
+[kode_lkm]=1030
+[user_id]=0
+
+2022-09-04 14:19:13	[LOG]:	SEND, [::1]:60461, /api/v1/institutions, 
+RESPONSE : 
+{
+    "meta": {
+        "message": "Lkm has been deleted",
+        "status": "success"
+    },
+    "data": null
+}
+2022-09-04 14:23:00	[LOG]:	Connecting to apex...
+2022-09-04 14:23:00	[LOG]:	Connecting to apex_sys...
+2022-09-04 14:23:00	[LOG]:	Database Connected
+2022-09-04 14:23:00	[LOG]:	Service started
+2022-09-04 14:23:00	[LOG]:	[HTTP] Listening at : 3000
+2022-09-04 14:23:17	[LOG]:	RECV, [::1]:58863, DELETE /api/v1/institutions, 
+HEADER :
+[Content-Type]=multipart/form-data; boundary=--------------------------593368445162194593108322
+[User-Agent]=PostmanRuntime/7.29.2
+[Content-Length]=167
+
+FORM :
+[kode_lkm]=1032
+
+2022-09-04 14:23:17	[LOG]:	SEND, [::1]:58863, /api/v1/institutions, 
+RESPONSE : 
+{
+    "meta": {
+        "message": "Lkm has been deleted",
+        "status": "success"
+    },
+    "data": null
+}
+2022-09-04 14:23:41	[LOG]:	RECV, [::1]:58863, DELETE /api/v1/institutions, 
+HEADER :
+[Content-Type]=multipart/form-data; boundary=--------------------------609580368551006917010470
+[User-Agent]=PostmanRuntime/7.29.2
+[Content-Length]=167
+
+FORM :
+[kode_lkm]=1031
+
+2022-09-04 14:23:41	[LOG]:	SEND, [::1]:58863, /api/v1/institutions, 
+RESPONSE : 
+{
+    "meta": {
+        "message": "Lkm has been deleted",
+        "status": "success"
+    },
+    "data": null
+}
+2022-09-04 14:28:34	[LOG]:	Connecting to apex...
+2022-09-04 14:28:34	[LOG]:	Connecting to apex_sys...
+2022-09-04 14:28:34	[LOG]:	Database Connected
+2022-09-04 14:28:34	[LOG]:	Service started
+2022-09-04 14:28:34	[LOG]:	[HTTP] Listening at : 3000
+2022-09-04 14:29:20	[LOG]:	RECV, [::1]:54101, POST /api/v1/institutions, 
+HEADER :
+[Content-Type]=multipart/form-data; boundary=--------------------------466314608931126470729780
 [User-Agent]=PostmanRuntime/7.29.2
 [Content-Length]=684
 
 FORM :
-[kode_lkm]=1031
+[kode_lkm]=1030
 [nama_lembaga]=BPR ITSO Sejahtera 
 [alamat]=Jl. Soekarno-Hatta Puteraco Gading Regency Blok A-2/07
-[telepon]=082173274127
+[telepon]=082115331773
 [user_id]=1023
 
-2022-09-02 13:59:16	[LOG]:	error while add nasabah : Error 1062: Duplicate entry '1031' for key 'PRIMARY'
-2022-09-02 13:59:16	[LOG]:	SEND, [::1]:62553, /api/v1/newlkm, internal service error
+2022-09-04 14:29:20	[LOG]:	SEND, [::1]:54101, /api/v1/institutions, 
+RESPONSE : 
+{
+    "meta": {
+        "message": "New lkm has been created",
+        "status": "success"
+    },
+    "data": {
+        "kode_lkm": "1030",
+        "nama_lembaga": "BPR ITSO Sejahtera ",
+        "alamat": "Jl. Soekarno-Hatta Puteraco Gading Regency Blok A-2/07",
+        "telpon": "082115331773",
+        "no_rekening": "1030",
+        "saldo_akhir": 0,
+        "user_name_smec": "1030",
+        "password_smec": "3GS6S7S1",
+        "user_id": 1023
+    }
+}
+2022-09-04 14:30:38	[LOG]:	RECV, [::1]:54101, PUT /api/v1/institutions, 
+HEADER :
+[Content-Type]=multipart/form-data; boundary=--------------------------225212777871848489043814
+[User-Agent]=PostmanRuntime/7.29.2
+[Content-Length]=672
+
+FORM :
+[kode_lkm]=1031
+[nama_lembaga]=BPRKS Azmira Sejahtera
+[alamat]=Jl. Paseh Kaler no.17, Kabupaten Sumedang
+[telepon]=09274636623
+[user_id]=117
+
+2022-09-04 14:30:38	[LOG]:	SEND, [::1]:54101, /api/v1/institutions, 
+RESPONSE : 
+{
+    "meta": {
+        "message": "Update lkm has succeeded",
+        "status": "success"
+    },
+    "data": {
+        "kode_lkm": "1031",
+        "nama_lembaga": "BPRKS Azmira Sejahtera",
+        "alamat": "Jl. Paseh Kaler no.17, Kabupaten Sumedang",
+        "telpon": "09274636623",
+        "user_id": 117
+    }
+}
+2022-09-04 14:31:22	[LOG]:	RECV, [::1]:54101, PUT /api/v1/institutions, 
+HEADER :
+[Content-Type]=multipart/form-data; boundary=--------------------------148880988831352888493680
+[User-Agent]=PostmanRuntime/7.29.2
+[Content-Length]=672
+
+FORM :
+[kode_lkm]=1030
+[nama_lembaga]=BPRKS Azmira Sejahtera
+[alamat]=Jl. Paseh Kaler no.17, Kabupaten Sumedang
+[telepon]=09274636623
+[user_id]=117
+
+2022-09-04 14:31:22	[LOG]:	SEND, [::1]:54101, /api/v1/institutions, 
+RESPONSE : 
+{
+    "meta": {
+        "message": "Update lkm has succeeded",
+        "status": "success"
+    },
+    "data": {
+        "kode_lkm": "1030",
+        "nama_lembaga": "BPRKS Azmira Sejahtera",
+        "alamat": "Jl. Paseh Kaler no.17, Kabupaten Sumedang",
+        "telpon": "09274636623",
+        "user_id": 117
+    }
+}
+2022-09-04 14:31:50	[LOG]:	RECV, [::1]:54101, DELETE /api/v1/institutions, 
+HEADER :
+[Content-Type]=multipart/form-data; boundary=--------------------------165930561845400330267465
+[User-Agent]=PostmanRuntime/7.29.2
+[Content-Length]=167
+
+FORM :
+[kode_lkm]=1030
+
+2022-09-04 14:31:50	[LOG]:	SEND, [::1]:54101, /api/v1/institutions, 
+RESPONSE : 
+{
+    "meta": {
+        "message": "Lkm has been deleted",
+        "status": "success"
+    },
+    "data": null
+}

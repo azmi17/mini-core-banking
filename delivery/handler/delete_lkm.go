@@ -13,27 +13,24 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func CreateLKM(ctx *gin.Context) {
+func DeleteLKM(ctx *gin.Context) {
 
-	// Init HTTP Request..
 	httpio := httpio.NewRequestIO(ctx)
 
-	// Call Payload and binding form
-	payload := web.SaveApex{}
+	payload := web.KodeLKMFilter{}
 	httpio.Bind(&payload)
 
-	usecae := usecase.NewApexUsecase()
-	lkm, er := usecae.CreateLkm(payload)
+	usecase := usecase.NewApexUsecase()
+	er := usecase.DeleteLkm(payload.KodeLkm)
 	if er != nil {
-		if er == err.DuplicateEntry {
-			httpio.ResponseString(statuscode.StatusDuplicate, "LKM data is available!", nil)
+		if er == err.NoRecord {
+			httpio.ResponseString(statuscode.StatusNoRecord, "Record not found!", nil)
 		} else {
 			entities.PrintError(er.Error())
-			entities.PrintLog(er.Error())
 			httpio.ResponseString(http.StatusInternalServerError, "internal service error", nil)
 		}
 	} else {
-		response := helper.ApiResponse("New lkm has been created", "success", lkm)
+		response := helper.ApiResponse("Lkm has been deleted", "success", nil)
 		httpio.Response(http.StatusOK, response)
 	}
 

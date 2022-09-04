@@ -10,7 +10,9 @@ import (
 )
 
 type ApexUsecase interface {
-	SaveLkm(payload web.SaveApex) (web.ApexResponse, error)
+	CreateLkm(payload web.SaveApex) (web.LKMCreateResponse, error)
+	UpdateLkm(payload web.SaveApex) (web.LKMUpdateResponse, error)
+	DeleteLkm(id string) error
 }
 
 type apexUsecase struct{} // (e *employeeUsecase) => untuk menentukan hak kepemilikan
@@ -19,10 +21,8 @@ func NewApexUsecase() ApexUsecase {
 	return &apexUsecase{}
 }
 
-func (e *apexUsecase) SaveLkm(payload web.SaveApex) (apex web.ApexResponse, er error) {
+func (e *apexUsecase) CreateLkm(payload web.SaveApex) (createLkm web.LKMCreateResponse, er error) {
 	repo, _ := apexrepo.NewApexRepo()
-
-	// validasi ..
 
 	nasabah := entities.Nasabah{}
 	// From payload:
@@ -68,8 +68,8 @@ func (e *apexUsecase) SaveLkm(payload web.SaveApex) (apex web.ApexResponse, er e
 	nasabah.Status_Marital = constants.StatusMarital
 	nasabah.Status_Tempat_Tinggal = constants.StatusTempatTinggal
 	nasabah.Masa_Berlaku_Ktp = time.Now().AddDate(7, 0, 0)
-	if nasabah, er = repo.SaveNasabah(nasabah); er != nil {
-		return apex, er
+	if nasabah, er = repo.CreateNasabah(nasabah); er != nil {
+		return createLkm, er
 	}
 
 	tabung := entities.Tabung{}
@@ -108,8 +108,8 @@ func (e *apexUsecase) SaveLkm(payload web.SaveApex) (apex web.ApexResponse, er e
 	tabung.Premi = constants.ZeroValInt
 	tabung.Kode_Keterkaitan = constants.KdKeterkaitan
 	tabung.Kode_Kantor_Kas = constants.KdKantorKas
-	if tabung, er = repo.SaveTabung(tabung); er != nil {
-		return apex, er
+	if tabung, er = repo.CreateTabung(tabung); er != nil {
+		return createLkm, er
 	}
 
 	sysDaftarUser := entities.SysDaftarUser{}
@@ -128,10 +128,61 @@ func (e *apexUsecase) SaveLkm(payload web.SaveApex) (apex web.ApexResponse, er e
 	sysDaftarUser.Status_Aktif = constants.StatusAktif
 	sysDaftarUser.Penerimaan = constants.ZeroValInt
 	sysDaftarUser.Pengeluaran = constants.ZeroValInt
-	if sysDaftarUser, er = repo.SaveSysDaftarUser(sysDaftarUser); er != nil {
-		return apex, er
+	if sysDaftarUser, er = repo.CreateSysDaftarUser(sysDaftarUser); er != nil {
+		return createLkm, er
 	}
 
 	//Converting data => 3 repo to ApexResponse
-	return helper.ToApexResponse(nasabah, tabung, sysDaftarUser), nil
+	return helper.ApexFilterLKMResponse(nasabah, tabung, sysDaftarUser), nil
+}
+
+func (e *apexUsecase) UpdateLkm(payload web.SaveApex) (updateLkm web.LKMUpdateResponse, er error) {
+	repo, _ := apexrepo.NewApexRepo()
+
+	nasabah := entities.Nasabah{}
+	nasabah.Nama_Nasabah = payload.Nama_Lembaga
+	nasabah.Nama_Alias = payload.Nama_Lembaga
+	nasabah.Nama_Nasabah_Sid = payload.Nama_Lembaga
+	nasabah.Alamat = payload.Alamat
+	nasabah.Alamat2 = payload.Alamat
+	nasabah.Telepon = payload.Telepon
+	nasabah.Hp = payload.Telepon
+	nasabah.Hp1 = payload.Telepon
+	nasabah.Hp2 = payload.Telepon
+	nasabah.UserId = payload.User_Id
+	nasabah.Nasabah_Id = payload.KodeLkm
+	if nasabah, er = repo.UpdateNasabah(nasabah); er != nil {
+		return updateLkm, er
+	}
+
+	sysDaftarUser := entities.SysDaftarUser{
+		Nama_Lengkap: payload.Nama_Lembaga,
+		User_Name:    payload.KodeLkm,
+	}
+	if sysDaftarUser, er = repo.UpdateSysDaftarUser(sysDaftarUser); er != nil {
+		return updateLkm, er
+	}
+
+	//Converting data => 2 repo to update response
+	return helper.ApexUpdateLKMResponse(nasabah, sysDaftarUser), nil
+
+}
+
+func (e *apexUsecase) DeleteLkm(id string) (er error) {
+	repo, _ := apexrepo.NewApexRepo()
+
+	if er = repo.DeleteNasabah(id); er != nil {
+		return er
+	}
+
+	if er = repo.DeleteTabung(id); er != nil {
+		return er
+	}
+
+	if er = repo.DeleteSysDaftarUser(id); er != nil {
+		return er
+	}
+
+	return nil
+
 }

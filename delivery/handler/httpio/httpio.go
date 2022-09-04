@@ -14,7 +14,7 @@ import (
 
 type RequestIO interface {
 	Recv()
-	Bind(obj interface{}) error
+	Bind(obj interface{})
 	BindJSON(obj interface{})
 	Response(statusCode int, responseBody interface{})
 	ResponseWithAbort(statuscode int, responseBody interface{})
@@ -45,24 +45,12 @@ func (f *formio) Recv() {
 
 //These methods use MustBindWith under the hood. If there is a binding error, the request is aborted with c.AbortWithError(400, err).SetType(ErrorTypeBind).
 //This sets the response status code to 400 and the Content-Type header is set to text/plain; charset=utf-8
-func (f *formio) Bind(body interface{}) (er error) {
+func (f *formio) Bind(body interface{}) {
 	header := params.Header{}
-
 	path := fmt.Sprintf("%s %s", f.request.Method, f.request.URL.Path)
-
-	er = f.context.ShouldBindHeader(&header)
-	if er != nil {
-		return er
-	}
-	er = f.context.ShouldBind(body)
-
-	if er != nil {
-		return er
-	}
-
+	_ = f.context.ShouldBindHeader(&header)
+	_ = f.context.Bind(body)
 	go receiveForm("RECV", header, body, f.request.RemoteAddr, path)
-
-	return nil
 }
 
 //These methods use MustBindWith under the hood. If there is a binding error, the request is aborted with c.AbortWithError(400, err).SetType(ErrorTypeBind).

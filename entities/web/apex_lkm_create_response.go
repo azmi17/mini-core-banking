@@ -1,6 +1,6 @@
 package web
 
-type ApexResponse struct {
+type LKMCreateResponse struct {
 	KodeLkm        string `json:"kode_lkm"`
 	Nama_Lembaga   string `json:"nama_lembaga"`
 	Alamat         string `json:"alamat"`
