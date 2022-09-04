@@ -15,4 +15,6 @@ type ApexRepo interface {
 	DeleteNasabah(id string) error
 	DeleteTabung(id string) error
 	DeleteSysDaftarUser(id string) error
+
+	GetScGroup() ([]entities.SCGroup, error)
 }

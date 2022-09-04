@@ -2,6 +2,7 @@ package apexrepo
 
 import (
 	"apex-ems-integration-clean-arch/entities"
+	"apex-ems-integration-clean-arch/entities/err"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -350,4 +351,30 @@ func (e *ApexMysqlImpl) DeleteSysDaftarUser(id string) (er error) {
 	}
 
 	return nil
+}
+
+func (e *ApexMysqlImpl) GetScGroup() (list []entities.SCGroup, er error) {
+	rows, er := e.db1.Query("Select kode_group2, deskripsi_group2 FROM tab_kode_group2")
+	if er != nil {
+		return list, er
+	}
+
+	defer func() {
+		_ = rows.Close()
+	}()
+
+	for rows.Next() {
+		var scGroup entities.SCGroup
+		if er = rows.Scan(&scGroup.KodeGroup, &scGroup.DeskripsiGroup); er != nil {
+			return list, er
+		}
+
+		list = append(list, scGroup)
+	}
+
+	if len(list) == 0 {
+		return list, err.NoRecord
+	} else {
+		return
+	}
 }

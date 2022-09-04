@@ -30,7 +30,7 @@ func DeleteLKM(ctx *gin.Context) {
 			httpio.ResponseString(http.StatusInternalServerError, "internal service error", nil)
 		}
 	} else {
-		response := helper.ApiResponse("Lkm has been deleted", "success", nil)
+		response := helper.ApiResponse("Institution has been deleted", "success", nil)
 		httpio.Response(http.StatusOK, response)
 	}
 

@@ -35,4 +35,6 @@ func RegisterHandler(router *gin.Engine) {
 	apiv1.PUT("/institutions", handler.UpdateLKM)
 	apiv1.DELETE("/institutions", handler.DeleteLKM)
 
+	apiv1.GET("/vendors", handler.GetScGroup)
+
 }

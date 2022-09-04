@@ -81,14 +81,14 @@ func PrepareDatabase() {
 		glg.Fatal(er.Error())
 	}
 
-	_ = glg.Log("Connecting to apex...")
+	_ = glg.Log("Connecting to apex..")
 	if er = databasefactory.AppDb1.Connect(); er != nil {
-		_ = glg.Error("Connection to apex failed : ", er.Error())
+		_ = glg.Error("Connection to apex failed: ", er.Error())
 		os.Exit(1)
 	}
 
 	if er = databasefactory.AppDb1.Ping(); er != nil {
-		_ = glg.Error("Cannot ping apex : ", er.Error())
+		_ = glg.Error("Cannot ping apex: ", er.Error())
 		os.Exit(1)
 	}
 
@@ -99,14 +99,14 @@ func PrepareDatabase() {
 		glg.Fatal(er.Error())
 	}
 
-	_ = glg.Log("Connecting to apex_sys...")
+	_ = glg.Log("Connecting to apex_sys..")
 	if er = databasefactory.AppDb2.Connect(); er != nil {
-		_ = glg.Error("Connection to apex_sys failed : ", er.Error())
+		_ = glg.Error("Connection to apex_sys failed: ", er.Error())
 		os.Exit(1)
 	}
 
 	if er = databasefactory.AppDb2.Ping(); er != nil {
-		_ = glg.Error("Cannot ping apex_sys : ", er.Error())
+		_ = glg.Error("Cannot ping apex_sys: ", er.Error())
 		os.Exit(1)
 	}
 	_ = glg.Log("Database Connected")

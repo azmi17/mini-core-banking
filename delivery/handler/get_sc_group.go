@@ -5,7 +5,6 @@ import (
 	"apex-ems-integration-clean-arch/entities"
 	"apex-ems-integration-clean-arch/entities/err"
 	"apex-ems-integration-clean-arch/entities/statuscode"
-	"apex-ems-integration-clean-arch/entities/web"
 	"apex-ems-integration-clean-arch/helper"
 	"apex-ems-integration-clean-arch/usecase"
 	"net/http"
@@ -13,27 +12,22 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UpdateLKM(ctx *gin.Context) {
+func GetScGroup(ctx *gin.Context) {
 
-	// Init HTTP Request..
 	httpio := httpio.NewRequestIO(ctx)
-
-	// Call Payload and binding form
-	payload := web.SaveApex{}
-	httpio.Bind(&payload)
+	httpio.Recv()
 
 	usecase := usecase.NewApexUsecase()
-	updLkm, er := usecase.UpdateLkm(payload)
+	scGroup, er := usecase.GetScGroup()
 	if er != nil {
-		if er == err.DuplicateEntry {
-			httpio.ResponseString(statuscode.StatusDuplicate, "Institution data is available!", nil)
+		if er == err.NoRecord {
+			httpio.ResponseString(statuscode.StatusNoRecord, "record not found.", nil)
 		} else {
 			entities.PrintError(er.Error())
-			entities.PrintLog(er.Error())
 			httpio.ResponseString(http.StatusInternalServerError, "internal service error", nil)
 		}
 	} else {
-		response := helper.ApiResponse("Update institution succeeded", "success", updLkm)
+		response := helper.ApiResponse("List of sc group", "success", scGroup)
 		httpio.Response(http.StatusOK, response)
 	}
 

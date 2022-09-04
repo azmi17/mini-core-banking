@@ -3,6 +3,7 @@ package usecase
 import (
 	"apex-ems-integration-clean-arch/entities"
 	"apex-ems-integration-clean-arch/entities/constants"
+	"apex-ems-integration-clean-arch/entities/err"
 	"apex-ems-integration-clean-arch/entities/web"
 	"apex-ems-integration-clean-arch/helper"
 	"apex-ems-integration-clean-arch/repository/apexrepo"
@@ -13,6 +14,7 @@ type ApexUsecase interface {
 	CreateLkm(payload web.SaveApex) (web.LKMCreateResponse, error)
 	UpdateLkm(payload web.SaveApex) (web.LKMUpdateResponse, error)
 	DeleteLkm(id string) error
+	GetScGroup() ([]entities.SCGroup, error)
 }
 
 type apexUsecase struct{} // (e *employeeUsecase) => untuk menentukan hak kepemilikan
@@ -185,4 +187,19 @@ func (e *apexUsecase) DeleteLkm(id string) (er error) {
 
 	return nil
 
+}
+
+func (e *apexUsecase) GetScGroup() (detailSc []entities.SCGroup, er error) {
+	repo, _ := apexrepo.NewApexRepo()
+
+	detailSc, er = repo.GetScGroup()
+	if er != nil {
+		return detailSc, er
+	}
+
+	if len(detailSc) == 0 {
+		return detailSc, err.NoRecord
+	}
+
+	return detailSc, nil
 }

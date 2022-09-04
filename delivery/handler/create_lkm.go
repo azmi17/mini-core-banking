@@ -26,14 +26,14 @@ func CreateLKM(ctx *gin.Context) {
 	lkm, er := usecae.CreateLkm(payload)
 	if er != nil {
 		if er == err.DuplicateEntry {
-			httpio.ResponseString(statuscode.StatusDuplicate, "LKM data is available!", nil)
+			httpio.ResponseString(statuscode.StatusDuplicate, "Institution data is available!", nil)
 		} else {
 			entities.PrintError(er.Error())
 			entities.PrintLog(er.Error())
 			httpio.ResponseString(http.StatusInternalServerError, "internal service error", nil)
 		}
 	} else {
-		response := helper.ApiResponse("New lkm has been created", "success", lkm)
+		response := helper.ApiResponse("New Institution has been created", "success", lkm)
 		httpio.Response(http.StatusOK, response)
 	}
 
