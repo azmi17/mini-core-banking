@@ -2,6 +2,7 @@ package apexrepo
 
 import (
 	"apex-ems-integration-clean-arch/entities"
+	"apex-ems-integration-clean-arch/entities/web"
 )
 
 type ApexRepo interface {
@@ -12,9 +13,12 @@ type ApexRepo interface {
 	UpdateNasabah(updNasabah entities.Nasabah) (entities.Nasabah, error)
 	UpdateSysDaftarUser(updNasabah entities.SysDaftarUser) (entities.SysDaftarUser, error)
 
-	DeleteNasabah(id string) error
-	DeleteTabung(id string) error
-	DeleteSysDaftarUser(id string) error
+	DeleteNasabah(kodeLkm string) error
+	DeleteTabung(kodeLkm string) error
+	DeleteSysDaftarUser(kodeLkm string) error
 
-	GetScGroup() ([]entities.SCGroup, error)
+	GetScGroup() ([]web.SCGroup, error)
+	GetLkmDetailInfo(KodeLkm string) (web.GetDetailLKMInfo, error)
+
+	ResetApexPassword(user entities.SysDaftarUser) (entities.SysDaftarUser, error)
 }

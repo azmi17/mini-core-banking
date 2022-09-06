@@ -11,10 +11,13 @@ import (
 )
 
 type ApexUsecase interface {
-	CreateLkm(payload web.SaveApex) (web.LKMCreateResponse, error)
-	UpdateLkm(payload web.SaveApex) (web.LKMUpdateResponse, error)
-	DeleteLkm(id string) error
-	GetScGroup() ([]entities.SCGroup, error)
+	CreateLkm(payload web.SaveLKMApex) (web.LKMCreateResponse, error)
+	UpdateLkm(payload web.SaveLKMApex) (web.LKMUpdateResponse, error)
+	DeleteLkm(kodeLkm string) error
+	GetScGroup() ([]web.SCGroup, error)
+
+	GetLkmDetailInfo(Id string) (web.GetDetailLKMInfo, error)
+	ResetApexPassword(KodeLkm web.KodeLKMFilter) (web.ResetApexPwdResponse, error)
 }
 
 type apexUsecase struct{} // (e *employeeUsecase) => untuk menentukan hak kepemilikan
@@ -23,7 +26,7 @@ func NewApexUsecase() ApexUsecase {
 	return &apexUsecase{}
 }
 
-func (e *apexUsecase) CreateLkm(payload web.SaveApex) (createLkm web.LKMCreateResponse, er error) {
+func (e *apexUsecase) CreateLkm(payload web.SaveLKMApex) (createLkm web.LKMCreateResponse, er error) {
 	repo, _ := apexrepo.NewApexRepo()
 
 	nasabah := entities.Nasabah{}
@@ -138,7 +141,7 @@ func (e *apexUsecase) CreateLkm(payload web.SaveApex) (createLkm web.LKMCreateRe
 	return helper.ApexFilterLKMResponse(nasabah, tabung, sysDaftarUser), nil
 }
 
-func (e *apexUsecase) UpdateLkm(payload web.SaveApex) (updateLkm web.LKMUpdateResponse, er error) {
+func (e *apexUsecase) UpdateLkm(payload web.SaveLKMApex) (updateLkm web.LKMUpdateResponse, er error) {
 	repo, _ := apexrepo.NewApexRepo()
 
 	nasabah := entities.Nasabah{}
@@ -170,18 +173,18 @@ func (e *apexUsecase) UpdateLkm(payload web.SaveApex) (updateLkm web.LKMUpdateRe
 
 }
 
-func (e *apexUsecase) DeleteLkm(id string) (er error) {
+func (e *apexUsecase) DeleteLkm(kodeLkm string) (er error) {
 	repo, _ := apexrepo.NewApexRepo()
 
-	if er = repo.DeleteNasabah(id); er != nil {
+	if er = repo.DeleteNasabah(kodeLkm); er != nil {
 		return er
 	}
 
-	if er = repo.DeleteTabung(id); er != nil {
+	if er = repo.DeleteTabung(kodeLkm); er != nil {
 		return er
 	}
 
-	if er = repo.DeleteSysDaftarUser(id); er != nil {
+	if er = repo.DeleteSysDaftarUser(kodeLkm); er != nil {
 		return er
 	}
 
@@ -189,7 +192,7 @@ func (e *apexUsecase) DeleteLkm(id string) (er error) {
 
 }
 
-func (e *apexUsecase) GetScGroup() (detailSc []entities.SCGroup, er error) {
+func (e *apexUsecase) GetScGroup() (detailSc []web.SCGroup, er error) {
 	repo, _ := apexrepo.NewApexRepo()
 
 	detailSc, er = repo.GetScGroup()
@@ -202,4 +205,32 @@ func (e *apexUsecase) GetScGroup() (detailSc []entities.SCGroup, er error) {
 	}
 
 	return detailSc, nil
+}
+
+func (e *apexUsecase) GetLkmDetailInfo(Id string) (detailLkm web.GetDetailLKMInfo, er error) {
+	repo, _ := apexrepo.NewApexRepo()
+
+	if detailLkm, er = repo.GetLkmDetailInfo(Id); er != nil {
+		return detailLkm, er
+	}
+
+	return detailLkm, nil
+}
+
+func (e *apexUsecase) ResetApexPassword(KodeLkm web.KodeLKMFilter) (resp web.ResetApexPwdResponse, er error) {
+	repo, _ := apexrepo.NewApexRepo()
+
+	sysDaftarUser := entities.SysDaftarUser{}
+	sysDaftarUser.User_Name = KodeLkm.KodeLkm
+	sysDaftarUser.User_Web_Password_Hash, sysDaftarUser.User_Web_Password = helper.HashSha1Pass()
+
+	if sysDaftarUser, er = repo.ResetApexPassword(sysDaftarUser); er != nil {
+		return resp, er
+	}
+
+	updResp := web.ResetApexPwdResponse{}
+	updResp.KodeLkm = sysDaftarUser.User_Name
+	updResp.Password_Smec = sysDaftarUser.User_Web_Password_Hash
+
+	return updResp, nil
 }

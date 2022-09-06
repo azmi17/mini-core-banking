@@ -19,7 +19,7 @@ func CreateLKM(ctx *gin.Context) {
 	httpio := httpio.NewRequestIO(ctx)
 
 	// Call Payload and binding form
-	payload := web.SaveApex{}
+	payload := web.SaveLKMApex{}
 	httpio.Bind(&payload)
 
 	usecae := usecase.NewApexUsecase()

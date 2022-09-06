@@ -3,6 +3,7 @@ package apexrepo
 import (
 	"apex-ems-integration-clean-arch/entities"
 	"apex-ems-integration-clean-arch/entities/err"
+	"apex-ems-integration-clean-arch/entities/web"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -299,7 +300,7 @@ func (e *ApexMysqlImpl) UpdateSysDaftarUser(updSysuser entities.SysDaftarUser) (
 
 }
 
-func (e *ApexMysqlImpl) DeleteNasabah(id string) (er error) {
+func (e *ApexMysqlImpl) DeleteNasabah(kodeLkm string) (er error) {
 
 	stmt, er := e.db1.Prepare("delete FROM nasabah WHERE nasabah_id = ?")
 	if er != nil {
@@ -310,14 +311,14 @@ func (e *ApexMysqlImpl) DeleteNasabah(id string) (er error) {
 		_ = stmt.Close()
 	}()
 
-	if _, er := stmt.Exec(id); er != nil {
+	if _, er := stmt.Exec(kodeLkm); er != nil {
 		return errors.New(fmt.Sprint("error while delete nasabah : ", er.Error()))
 	}
 
 	return nil
 }
 
-func (e *ApexMysqlImpl) DeleteTabung(id string) (er error) {
+func (e *ApexMysqlImpl) DeleteTabung(kodeLkm string) (er error) {
 
 	stmt, er := e.db1.Prepare("delete FROM tabung WHERE no_rekening = ?")
 	if er != nil {
@@ -328,14 +329,14 @@ func (e *ApexMysqlImpl) DeleteTabung(id string) (er error) {
 		_ = stmt.Close()
 	}()
 
-	if _, er := stmt.Exec(id); er != nil {
+	if _, er := stmt.Exec(kodeLkm); er != nil {
 		return errors.New(fmt.Sprint("error while delete tabung : ", er.Error()))
 	}
 
 	return nil
 }
 
-func (e *ApexMysqlImpl) DeleteSysDaftarUser(id string) (er error) {
+func (e *ApexMysqlImpl) DeleteSysDaftarUser(kodeLkm string) (er error) {
 
 	stmt, er := e.db2.Prepare("delete FROM sys_daftar_user WHERE user_name = ?")
 	if er != nil {
@@ -346,15 +347,15 @@ func (e *ApexMysqlImpl) DeleteSysDaftarUser(id string) (er error) {
 		_ = stmt.Close()
 	}()
 
-	if _, er := stmt.Exec(id); er != nil {
+	if _, er := stmt.Exec(kodeLkm); er != nil {
 		return errors.New(fmt.Sprint("error while delete user : ", er.Error()))
 	}
 
 	return nil
 }
 
-func (e *ApexMysqlImpl) GetScGroup() (list []entities.SCGroup, er error) {
-	rows, er := e.db1.Query("Select kode_group2, deskripsi_group2 FROM tab_kode_group2")
+func (e *ApexMysqlImpl) GetScGroup() (list []web.SCGroup, er error) {
+	rows, er := e.db1.Query("SELECT kode_group2, deskripsi_group2 FROM tab_kode_group2")
 	if er != nil {
 		return list, er
 	}
@@ -364,7 +365,7 @@ func (e *ApexMysqlImpl) GetScGroup() (list []entities.SCGroup, er error) {
 	}()
 
 	for rows.Next() {
-		var scGroup entities.SCGroup
+		var scGroup web.SCGroup
 		if er = rows.Scan(&scGroup.KodeGroup, &scGroup.DeskripsiGroup); er != nil {
 			return list, er
 		}
@@ -377,4 +378,50 @@ func (e *ApexMysqlImpl) GetScGroup() (list []entities.SCGroup, er error) {
 	} else {
 		return
 	}
+}
+
+func (e *ApexMysqlImpl) GetLkmDetailInfo(KodeLkm string) (detail web.GetDetailLKMInfo, er error) {
+
+	row := e.db1.QueryRow(`SELECT
+		n.nasabah_id, 
+		g.deskripsi_group2,
+		n.nama_nasabah,
+		n.alamat,
+		n.telpon,
+		t.no_rekening,
+		t.saldo_akhir,
+		t.minimum,
+		t.status
+	FROM nasabah AS n 
+	INNER JOIN tabung AS t ON(n.nasabah_id=t.no_rekening) 
+	INNER JOIN tab_kode_group2 AS g ON(t.kode_group2 = g.kode_group2) 
+	WHERE t.status=1 AND n.nasabah_id = ?`, KodeLkm)
+
+	er = row.Scan(&detail.KodeLembaga, &detail.Vendor, &detail.NamaLembaga, &detail.Alamat, &detail.Kontak, &detail.NoRekening, &detail.Saldo, &detail.Plafond, &detail.StatusTab)
+	if er != nil {
+		if er == sql.ErrNoRows {
+			return detail, nil
+		} else {
+			return detail, errors.New(fmt.Sprint("error while get instution detail: ", er.Error()))
+		}
+	}
+
+	return
+}
+
+func (e *ApexMysqlImpl) ResetApexPassword(user entities.SysDaftarUser) (sysUser entities.SysDaftarUser, er error) {
+	stmt, er := e.db2.Prepare("UPDATE sys_daftar_user SET user_web_password = ? WHERE user_name = ?")
+	if er != nil {
+		return sysUser, errors.New(fmt.Sprint("error while prepare apex password: ", er.Error()))
+	}
+
+	defer func() {
+		_ = stmt.Close()
+	}()
+
+	if _, er := stmt.Exec(user.User_Web_Password, user.User_Name); er != nil {
+		return sysUser, errors.New(fmt.Sprint("error while update apex password: ", er.Error()))
+	}
+
+	return user, nil
 }

@@ -16,7 +16,6 @@ package router
 
 import (
 	"apex-ems-integration-clean-arch/delivery/handler"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -27,14 +26,12 @@ func RegisterHandler(router *gin.Engine) {
 	apiv1 := router.Group("api/v1")
 
 	// API Endpoint:
-	apiv1.GET("/version", func(c *gin.Context) {
-		c.String(http.StatusOK, "Router Template V1.0.0\n")
-		c.String(http.StatusOK, "Apex API Endpoint")
-	})
+	apiv1.GET("/version", handler.AppInfo)
+	apiv1.GET("/vendors", handler.GetScGroup)
+	apiv1.GET("/institutions/:user_name", handler.GetLkmInfo)
 	apiv1.POST("/institutions", handler.CreateLKM)
 	apiv1.PUT("/institutions", handler.UpdateLKM)
 	apiv1.DELETE("/institutions", handler.DeleteLKM)
-
-	apiv1.GET("/vendors", handler.GetScGroup)
+	apiv1.PUT("/reset", handler.ResetApexPassword)
 
 }

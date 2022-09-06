@@ -1,134 +1,132 @@
-2022-09-04 15:23:56	[LOG]:	Connecting to apex..
-2022-09-04 15:23:56	[LOG]:	Connecting to apex_sys..
-2022-09-04 15:23:56	[LOG]:	Database Connected
-2022-09-04 15:23:56	[LOG]:	Service started
-2022-09-04 15:23:56	[LOG]:	[HTTP] Listening at : 3000
-2022-09-04 15:24:06	[LOG]:	RECV, [::1]:65247, POST /api/v1/institutions, 
+2022-09-05 22:25:37	[LOG]:	Connecting to apex..
+2022-09-05 22:25:37	[LOG]:	Connecting to apex_sys..
+2022-09-05 22:25:37	[LOG]:	Database Connected
+2022-09-05 22:25:37	[LOG]:	Service started
+2022-09-05 22:25:37	[LOG]:	[HTTP] Listening at : 3000
+2022-09-05 22:25:43	[LOG]:	RECV, /api/v1/institutions/1030, GET /api/v1/institutions/1030, 
 HEADER :
-[Content-Type]=multipart/form-data; boundary=--------------------------245893615330764556753499
 [User-Agent]=PostmanRuntime/7.29.2
-[Content-Length]=684
-
-FORM :
-[kode_lkm]=1030
-[nama_lembaga]=BPR ITSO Sejahtera 
-[alamat]=Jl. Soekarno-Hatta Puteraco Gading Regency Blok A-2/07
-[telepon]=082115331773
-[user_id]=1023
-
-2022-09-04 15:24:06	[LOG]:	SEND, [::1]:65247, /api/v1/institutions, 
+[Content-Length]=0
+empty body
+2022-09-05 22:25:43	[LOG]:	SEND, [::1]:53072, /api/v1/institutions/1030, 
 RESPONSE : 
 {
     "meta": {
-        "message": "New Institution has been created",
+        "message": "Get institution detail succeeded",
+        "status": "success"
+    },
+    "data": {
+        "vendor": "USSI Holding",
+        "nama_lembaga": "BPRKS Azmira Sejahtera",
+        "alamat": "Jl. Paseh Kaler no.17, Kabupaten Sumedang",
+        "kontak": "09274636623",
+        "apex_norek": "1030",
+        "saldo_akhir": 0,
+        "plafond": 0,
+        "status_tab": "1"
+    }
+}
+2022-09-05 22:25:57	[LOG]:	SEND, [::1]:53072, /api/v1/version, 
+RESPONSE : 
+{
+    "meta": {
+        "message": "Application Description",
+        "status": "success"
+    },
+    "data": {
+        "App Author": "Azmi Farhan (Randy's Framework)",
+        "App Description": "New Apex Gateway RESTful API",
+        "App Name": "Apex Tools",
+        "App Version": "1.0.0",
+        "Port Listener": "3000"
+    }
+}
+2022-09-05 22:25:57	[LOG]:	RECV, [::1]:53072, GET /api/v1/version, 
+HEADER :
+[User-Agent]=PostmanRuntime/7.29.2
+[Content-Length]=0
+empty body
+2022-09-05 22:27:55	[LOG]:	Connecting to apex..
+2022-09-05 22:27:55	[LOG]:	Connecting to apex_sys..
+2022-09-05 22:27:55	[LOG]:	Database Connected
+2022-09-05 22:27:55	[LOG]:	Service started
+2022-09-05 22:27:55	[LOG]:	[HTTP] Listening at : 3000
+2022-09-05 22:27:58	[LOG]:	RECV, /api/v1/institutions/1030, GET /api/v1/institutions/1030, 
+HEADER :
+[User-Agent]=PostmanRuntime/7.29.2
+[Content-Length]=0
+empty body
+2022-09-05 22:27:58	[LOG]:	SEND, [::1]:51838, /api/v1/institutions/1030, 
+RESPONSE : 
+{
+    "meta": {
+        "message": "Get institution detail succeeded",
         "status": "success"
     },
     "data": {
         "kode_lkm": "1030",
-        "nama_lembaga": "BPR ITSO Sejahtera ",
-        "alamat": "Jl. Soekarno-Hatta Puteraco Gading Regency Blok A-2/07",
-        "telpon": "082115331773",
-        "no_rekening": "1030",
+        "vendor": "USSI Holding",
+        "nama_lembaga": "BPRKS Azmira Sejahtera",
+        "alamat": "Jl. Paseh Kaler no.17, Kabupaten Sumedang",
+        "kontak": "09274636623",
+        "apex_norek": "1030",
         "saldo_akhir": 0,
-        "user_name_smec": "1030",
-        "password_smec": "FS4YUHJJ",
-        "user_id": 1023
+        "plafond": 0,
+        "status_tab": "1"
     }
 }
-2022-09-04 15:24:21	[LOG]:	RECV, [::1]:65247, PUT /api/v1/institutions, 
+2022-09-05 22:28:43	[LOG]:	Connecting to apex..
+2022-09-05 22:28:43	[LOG]:	Connecting to apex_sys..
+2022-09-05 22:28:43	[LOG]:	Database Connected
+2022-09-05 22:28:43	[LOG]:	Service started
+2022-09-05 22:28:43	[LOG]:	[HTTP] Listening at : 3000
+2022-09-05 22:28:46	[LOG]:	RECV, /api/v1/institutions/1030, GET /api/v1/institutions/1030, 
 HEADER :
-[Content-Type]=multipart/form-data; boundary=--------------------------245294104389186980744408
 [User-Agent]=PostmanRuntime/7.29.2
-[Content-Length]=672
-
-FORM :
-[kode_lkm]=1030
-[nama_lembaga]=BPRKS Azmira Sejahtera
-[alamat]=Jl. Paseh Kaler no.17, Kabupaten Sumedang
-[telepon]=09274636623
-[user_id]=117
-
-2022-09-04 15:24:21	[LOG]:	SEND, [::1]:65247, /api/v1/institutions, 
+[Content-Length]=0
+empty body
+2022-09-05 22:28:46	[LOG]:	SEND, [::1]:49314, /api/v1/institutions/1030, 
 RESPONSE : 
 {
     "meta": {
-        "message": "Update institution succeeded",
+        "message": "Get institution detail succeeded",
         "status": "success"
     },
     "data": {
         "kode_lkm": "1030",
         "nama_lembaga": "BPRKS Azmira Sejahtera",
+        "vendor": "USSI Holding",
         "alamat": "Jl. Paseh Kaler no.17, Kabupaten Sumedang",
-        "telpon": "09274636623",
-        "user_id": 117
+        "kontak": "09274636623",
+        "apex_norek": "1030",
+        "saldo_akhir": 0,
+        "plafond": 0,
+        "status_tab": "1"
     }
 }
-2022-09-04 15:24:35	[LOG]:	RECV, [::1]:65247, DELETE /api/v1/institutions, 
+2022-09-06 22:30:16	[LOG]:	Connecting to apex..
+2022-09-06 22:30:16	[LOG]:	Connecting to apex_sys..
+2022-09-06 22:30:16	[LOG]:	Database Connected
+2022-09-06 22:30:16	[LOG]:	Service started
+2022-09-06 22:30:16	[LOG]:	[HTTP] Listening at : 3000
+2022-09-06 22:32:19	[LOG]:	RECV, [::1]:65001, PUT /api/v1/reset, 
 HEADER :
-[Content-Type]=multipart/form-data; boundary=--------------------------991360678643298946048899
+[Content-Type]=multipart/form-data; boundary=--------------------------575705554888236618143078
 [User-Agent]=PostmanRuntime/7.29.2
 [Content-Length]=167
 
 FORM :
 [kode_lkm]=1030
 
-2022-09-04 15:24:35	[LOG]:	SEND, [::1]:65247, /api/v1/institutions, 
+2022-09-06 22:32:19	[LOG]:	SEND, [::1]:65001, /api/v1/reset, 
 RESPONSE : 
 {
     "meta": {
-        "message": "Institution has been deleted",
+        "message": "Reset apex password succeeded",
         "status": "success"
     },
-    "data": null
-}
-2022-09-04 15:24:51	[LOG]:	RECV, [::1]:65247, GET /api/v1/vendors, 
-HEADER :
-[User-Agent]=PostmanRuntime/7.29.2
-[Content-Length]=0
-empty body
-2022-09-04 15:24:51	[LOG]:	SEND, [::1]:65247, /api/v1/vendors, 
-RESPONSE : 
-{
-    "meta": {
-        "message": "List of sc group",
-        "status": "success"
-    },
-    "data": [
-        {
-            "kode_group": "01",
-            "deskripsi_group": "USSI Holding"
-        },
-        {
-            "kode_group": "02",
-            "deskripsi_group": "USSI ITS"
-        },
-        {
-            "kode_group": "03",
-            "deskripsi_group": "USSI PGS"
-        },
-        {
-            "kode_group": "04",
-            "deskripsi_group": "USSI CUM"
-        },
-        {
-            "kode_group": "05",
-            "deskripsi_group": "USSI BATIK"
-        },
-        {
-            "kode_group": "06",
-            "deskripsi_group": "USSI BALI"
-        },
-        {
-            "kode_group": "07",
-            "deskripsi_group": "USSI MANDALIKA"
-        },
-        {
-            "kode_group": "08",
-            "deskripsi_group": "USSI SBK"
-        },
-        {
-            "kode_group": "09",
-            "deskripsi_group": "USSI PPS"
-        }
-    ]
+    "data": {
+        "kode_lkm": "1030",
+        "password_smec": "W97VJQE0"
+    }
 }

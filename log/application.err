@@ -1,1 +1,12 @@
 2022-09-04 14:03:34	[ERR]:	(appio.go:12):	error while delete user : Error 1292: Truncated incorrect DOUBLE value: 'USSI    '
+2022-09-04 21:25:46	[ERR]:	(appio.go:12):	error while get nasabah : sql: Scan error on column index 3, name "telpon": converting NULL to string is unsupported
+2022-09-04 23:05:54	[ERR]:	(appio.go:12):	error while get lkm detail: sql: Scan called without calling Next
+2022-09-05 00:11:29	[ERR]:	(appio.go:12):	Error 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '?' at line 14
+2022-09-05 10:11:31	[ERR]:	(appio.go:12):	Error 1052: Column 'nasabah_id' in field list is ambiguous
+2022-09-05 10:12:17	[ERR]:	(appio.go:12):	Error 1052: Column 'nasabah_id' in field list is ambiguous
+2022-09-05 18:53:16	[ERR]:	(appio.go:12):	sql: expected 0 arguments, got 1
+2022-09-05 19:00:40	[ERR]:	(appio.go:12):	error while get user : Error 1054: Unknown column 'id' in 'where clause'
+2022-09-05 19:03:53	[ERR]:	(appio.go:12):	error while get user : sql: expected 0 arguments, got 1
+2022-09-05 19:04:33	[ERR]:	(appio.go:12):	error while get user : sql: expected 0 arguments, got 1
+2022-09-05 21:42:34	[ERR]:	(appio.go:12):	error while get user : sql: Scan error on column index 1, name "jabatan": converting NULL to string is unsupported
+2022-09-05 22:00:09	[ERR]:	(appio.go:12):	error while get user : sql: expected 5 destination arguments in Scan, not 4

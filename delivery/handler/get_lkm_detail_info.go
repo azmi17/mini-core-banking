@@ -13,27 +13,35 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UpdateLKM(ctx *gin.Context) {
+func GetLkmInfo(ctx *gin.Context) {
 
 	// Init HTTP Request..
 	httpio := httpio.NewRequestIO(ctx)
 
-	// Call Payload and binding form
-	payload := web.SaveLKMApex{}
-	httpio.Bind(&payload)
+	// Call Payload and binding form (Randy's Framework implementations)
+	payload := web.KodeLKMUri{}
+	httpio.BindUri(&payload)
+
+	// GIN Implementations..
+	// er := ctx.ShouldBindUri(&payload)
+	// if er != nil {
+	// 	response := helper.ApiResponse("Failed to get detail of campaign", "error", nil)
+	// 	ctx.JSON(http.StatusBadRequest, response)
+	// 	return
+	// }
 
 	usecase := usecase.NewApexUsecase()
-	updLkm, er := usecase.UpdateLkm(payload)
+	getUser, er := usecase.GetLkmDetailInfo(payload.UserName)
 	if er != nil {
 		if er == err.DuplicateEntry {
-			httpio.ResponseString(statuscode.StatusDuplicate, "Institution data is available!", nil)
+			httpio.ResponseString(statuscode.StatusDuplicate, "institution data is available!", nil)
 		} else {
 			entities.PrintError(er.Error())
 			entities.PrintLog(er.Error())
 			httpio.ResponseString(http.StatusInternalServerError, "internal service error", nil)
 		}
 	} else {
-		response := helper.ApiResponse("Update institution succeeded", "success", updLkm)
+		response := helper.ApiResponse("Get institution detail succeeded", "success", getUser)
 		httpio.Response(http.StatusOK, response)
 	}
 
