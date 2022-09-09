@@ -17,6 +17,7 @@ type ApexUsecase interface {
 	GetScGroup() ([]web.SCGroup, error)
 
 	GetLkmDetailInfo(Id string) (web.GetDetailLKMInfo, error)
+	GetLkmInfoList(limitOffset web.LimitOffsetLkmUri) ([]web.GetDetailLKMInfo, error)
 	ResetApexPassword(KodeLkm web.KodeLKMFilter) (web.ResetApexPwdResponse, error)
 }
 
@@ -215,6 +216,24 @@ func (e *apexUsecase) GetLkmDetailInfo(Id string) (detailLkm web.GetDetailLKMInf
 	}
 
 	return detailLkm, nil
+}
+
+func (e *apexUsecase) GetLkmInfoList(limitOffset web.LimitOffsetLkmUri) (lkmList []web.GetDetailLKMInfo, er error) {
+
+	if limitOffset.Limit <= 0 || limitOffset.Offset < 0 {
+		return lkmList, err.BadRequest
+	}
+	repo, _ := apexrepo.NewApexRepo()
+	lkmList, er = repo.GetLkmInfoList(limitOffset)
+	if er != nil {
+		return lkmList, er
+	}
+
+	if len(lkmList) == 0 {
+		return make([]web.GetDetailLKMInfo, 0), nil //[]web.GetDetailLKMInfo (untuk membuat sebuah slice kosong agar tidak return null di JSON) |err.NoRecord
+	}
+
+	return lkmList, nil
 }
 
 func (e *apexUsecase) ResetApexPassword(KodeLkm web.KodeLKMFilter) (resp web.ResetApexPwdResponse, er error) {

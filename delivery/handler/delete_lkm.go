@@ -6,7 +6,6 @@ import (
 	"apex-ems-integration-clean-arch/entities/err"
 	"apex-ems-integration-clean-arch/entities/statuscode"
 	"apex-ems-integration-clean-arch/entities/web"
-	"apex-ems-integration-clean-arch/helper"
 	"apex-ems-integration-clean-arch/usecase"
 	"net/http"
 
@@ -30,8 +29,7 @@ func DeleteLKM(ctx *gin.Context) {
 			httpio.ResponseString(http.StatusInternalServerError, "internal service error", nil)
 		}
 	} else {
-		response := helper.ApiResponse("Institution has been deleted", "success", nil)
-		httpio.Response(http.StatusOK, response)
+		httpio.Response(http.StatusOK, nil)
 	}
 
 }

@@ -5,7 +5,6 @@ import (
 	"apex-ems-integration-clean-arch/entities"
 	"apex-ems-integration-clean-arch/entities/err"
 	"apex-ems-integration-clean-arch/entities/statuscode"
-	"apex-ems-integration-clean-arch/helper"
 	"apex-ems-integration-clean-arch/usecase"
 	"net/http"
 
@@ -27,8 +26,8 @@ func GetScGroup(ctx *gin.Context) {
 			httpio.ResponseString(http.StatusInternalServerError, "internal service error", nil)
 		}
 	} else {
-		response := helper.ApiResponse("List of sc group", "success", scGroup)
-		httpio.Response(http.StatusOK, response)
+		// response := helper.ApiResponse("List of sc group", "success", scGroup)
+		httpio.Response(http.StatusOK, scGroup)
 	}
 
 }

@@ -19,6 +19,7 @@ type ApexRepo interface {
 
 	GetScGroup() ([]web.SCGroup, error)
 	GetLkmDetailInfo(KodeLkm string) (web.GetDetailLKMInfo, error)
+	GetLkmInfoList(limitOffset web.LimitOffsetLkmUri) ([]web.GetDetailLKMInfo, error)
 
 	ResetApexPassword(user entities.SysDaftarUser) (entities.SysDaftarUser, error)
 }

@@ -2,7 +2,6 @@ package handler
 
 import (
 	"apex-ems-integration-clean-arch/delivery/handler/httpio"
-	"apex-ems-integration-clean-arch/helper"
 	"net/http"
 	"os"
 
@@ -21,6 +20,6 @@ func AppInfo(ctx *gin.Context) {
 		"App Author":      os.Getenv("application.author"),
 		"Port Listener":   os.Getenv("app.listener_port"),
 	}
-	response := helper.ApiResponse("Application Description", "success", appInfo)
-	httpio.Response(http.StatusOK, response)
+
+	httpio.Response(http.StatusOK, appInfo)
 }

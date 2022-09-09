@@ -60,7 +60,7 @@ func (f *formio) BindUri(body interface{}) {
 	header := params.Header{}
 	path := fmt.Sprintf("%s %s", f.request.Method, f.request.URL.Path)
 	_ = f.context.ShouldBindHeader(&header)
-	_ = f.context.ShouldBindUri(body)
+	_ = f.context.ShouldBindUri(body) // why you ignore err?
 	go receiveForm("RECV", header, nil, f.request.RequestURI, path)
 }
 

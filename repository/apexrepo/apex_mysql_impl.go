@@ -4,6 +4,7 @@ import (
 	"apex-ems-integration-clean-arch/entities"
 	"apex-ems-integration-clean-arch/entities/err"
 	"apex-ems-integration-clean-arch/entities/web"
+	"apex-ems-integration-clean-arch/repository/constant"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -383,7 +384,7 @@ func (e *ApexMysqlImpl) GetScGroup() (list []web.SCGroup, er error) {
 func (e *ApexMysqlImpl) GetLkmDetailInfo(KodeLkm string) (detail web.GetDetailLKMInfo, er error) {
 
 	row := e.db1.QueryRow(`SELECT
-		n.nasabah_id, 
+		t.no_rekening, 
 		g.deskripsi_group2,
 		n.nama_nasabah,
 		n.alamat,
@@ -392,21 +393,98 @@ func (e *ApexMysqlImpl) GetLkmDetailInfo(KodeLkm string) (detail web.GetDetailLK
 		t.saldo_akhir,
 		t.minimum,
 		t.status
-	FROM nasabah AS n 
-	INNER JOIN tabung AS t ON(n.nasabah_id=t.no_rekening) 
+	FROM tabung AS t 
+	INNER JOIN nasabah AS n ON(t.nasabah_id=n.nasabah_id) 
 	INNER JOIN tab_kode_group2 AS g ON(t.kode_group2 = g.kode_group2) 
-	WHERE t.status=1 AND n.nasabah_id = ?`, KodeLkm)
+	WHERE t.status=1 AND t.no_rekening = ?`, KodeLkm)
 
-	er = row.Scan(&detail.KodeLembaga, &detail.Vendor, &detail.NamaLembaga, &detail.Alamat, &detail.Kontak, &detail.NoRekening, &detail.Saldo, &detail.Plafond, &detail.StatusTab)
+	er = row.Scan(
+		&detail.KodeLembaga,
+		&constant.SQLVendor,
+		&detail.NamaLembaga,
+		&constant.SQLAlamat,
+		&constant.SQLKontak,
+		&detail.NoRekening,
+		&detail.Saldo,
+		&constant.SQLPlafond,
+		&detail.StatusTab,
+	)
 	if er != nil {
 		if er == sql.ErrNoRows {
-			return detail, nil
+			return detail, err.NoRecord // td
 		} else {
 			return detail, errors.New(fmt.Sprint("error while get instution detail: ", er.Error()))
 		}
 	}
+	detail.Vendor = constant.SQLVendor.String
+	detail.Alamat = constant.SQLAlamat.String
+	detail.Kontak = constant.SQLKontak.String
+	detail.Plafond = constant.SQLPlafond.Float64
 
+	// constant.ConvertSQLDataType()
 	return
+}
+
+func (e *ApexMysqlImpl) GetLkmInfoList(limitOffset web.LimitOffsetLkmUri) (list []web.GetDetailLKMInfo, er error) {
+
+	args := []interface{}{}
+	limit := ""
+	if limitOffset.Limit > 0 {
+		limit = "LIMIT ? OFFSET ?"
+		args = append(args, limitOffset.Limit, limitOffset.Offset)
+	} else {
+		limit = "LIMIT ? OFFSET ?"
+		args = append(args, -1, limitOffset.Offset)
+	}
+	rows, er := e.db1.Query(`SELECT 
+		t.no_rekening, 
+		g.deskripsi_group2,
+		n.nama_nasabah,
+		n.alamat,
+		n.telpon,
+		t.no_rekening,
+		t.saldo_akhir,
+		t.minimum,
+		t.status
+		FROM tabung AS t 
+	INNER JOIN nasabah AS n ON(t.nasabah_id=n.nasabah_id) 
+	INNER JOIN tab_kode_group2 AS g ON(t.kode_group2 = g.kode_group2) `+limit+``, args...)
+	if er != nil {
+		return list, er
+	}
+
+	defer func() {
+		_ = rows.Close()
+	}()
+
+	for rows.Next() {
+		var lkmList web.GetDetailLKMInfo
+		if er = rows.Scan(
+			&lkmList.KodeLembaga,
+			&constant.SQLVendor,
+			&lkmList.NamaLembaga,
+			&constant.SQLAlamat,
+			&constant.SQLKontak,
+			&lkmList.NoRekening,
+			&lkmList.Saldo,
+			&constant.SQLPlafond,
+			&lkmList.StatusTab,
+		); er != nil {
+			return list, er
+		}
+
+		lkmList.Vendor = constant.SQLVendor.String
+		lkmList.Alamat = constant.SQLAlamat.String
+		lkmList.Kontak = constant.SQLKontak.String
+		lkmList.Plafond = constant.SQLPlafond.Float64
+		list = append(list, lkmList)
+	}
+
+	if len(list) == 0 {
+		return list, nil // no.record
+	} else {
+		return
+	}
 }
 
 func (e *ApexMysqlImpl) ResetApexPassword(user entities.SysDaftarUser) (sysUser entities.SysDaftarUser, er error) {

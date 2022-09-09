@@ -4,7 +4,6 @@ import (
 	"apex-ems-integration-clean-arch/delivery/handler/httpio"
 	"apex-ems-integration-clean-arch/entities"
 	"apex-ems-integration-clean-arch/entities/web"
-	"apex-ems-integration-clean-arch/helper"
 	"apex-ems-integration-clean-arch/usecase"
 	"net/http"
 
@@ -27,8 +26,8 @@ func ResetApexPassword(ctx *gin.Context) {
 		entities.PrintLog(er.Error())
 		httpio.ResponseString(http.StatusInternalServerError, "internal service error", nil)
 	} else {
-		response := helper.ApiResponse("Reset apex password succeeded", "success", user)
-		httpio.Response(http.StatusOK, response)
+		// response := helper.ApiResponse("Reset lkm password succeeded", "success", user)
+		httpio.Response(http.StatusOK, user)
 	}
 
 }

@@ -6,7 +6,6 @@ import (
 	"apex-ems-integration-clean-arch/entities/err"
 	"apex-ems-integration-clean-arch/entities/statuscode"
 	"apex-ems-integration-clean-arch/entities/web"
-	"apex-ems-integration-clean-arch/helper"
 	"apex-ems-integration-clean-arch/usecase"
 	"net/http"
 
@@ -33,8 +32,8 @@ func CreateLKM(ctx *gin.Context) {
 			httpio.ResponseString(http.StatusInternalServerError, "internal service error", nil)
 		}
 	} else {
-		response := helper.ApiResponse("New Institution has been created", "success", lkm)
-		httpio.Response(http.StatusOK, response)
+
+		httpio.Response(http.StatusOK, lkm)
 	}
 
 }

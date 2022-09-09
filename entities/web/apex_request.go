@@ -8,6 +8,11 @@ type KodeLKMUri struct {
 	UserName string `uri:"user_name"`
 }
 
+type LimitOffsetLkmUri struct {
+	Limit  int `uri:"limit"`
+	Offset int `uri:"offset"`
+}
+
 type SaveLKMApex struct {
 	KodeLkm      string `form:"kode_lkm" binding:"required,min=4"`
 	Nama_Lembaga string `form:"nama_lembaga" binding:"required"`
@@ -48,9 +53,11 @@ type GetDetailLKMInfo struct {
 	Alamat      string  `json:"alamat"`
 	Kontak      string  `json:"kontak"`
 	NoRekening  string  `json:"apex_norek"`
-	Saldo       float32 `json:"saldo_akhir"`
-	Plafond     float32 `json:"plafond"`
+	Saldo       float64 `json:"saldo_akhir"`
+	Plafond     float64 `json:"plafond"`
 	StatusTab   string  `json:"status_tab"`
+	// omitempty
+
 }
 
 type ResetApexPwdResponse struct {
