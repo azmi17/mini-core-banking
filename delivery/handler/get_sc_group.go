@@ -26,7 +26,6 @@ func GetScGroup(ctx *gin.Context) {
 			httpio.ResponseString(http.StatusInternalServerError, "internal service error", nil)
 		}
 	} else {
-		// response := helper.ApiResponse("List of sc group", "success", scGroup)
 		httpio.Response(http.StatusOK, scGroup)
 	}
 

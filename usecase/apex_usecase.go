@@ -13,6 +13,7 @@ import (
 type ApexUsecase interface {
 	CreateLkm(payload web.SaveLKMApex) (web.LKMCreateResponse, error)
 	UpdateLkm(payload web.SaveLKMApex) (web.LKMUpdateResponse, error)
+	HardDeleteLkm(kodeLkm string) error
 	DeleteLkm(kodeLkm string) error
 	GetScGroup() ([]web.SCGroup, error)
 
@@ -171,6 +172,25 @@ func (e *apexUsecase) UpdateLkm(payload web.SaveLKMApex) (updateLkm web.LKMUpdat
 
 	//Converting data => 2 repo to update response
 	return helper.ApexUpdateLKMResponse(nasabah, sysDaftarUser), nil
+
+}
+
+func (e *apexUsecase) HardDeleteLkm(kodeLkm string) (er error) {
+	repo, _ := apexrepo.NewApexRepo()
+
+	if er = repo.HardDeleteNasabah(kodeLkm); er != nil {
+		return er
+	}
+
+	if er = repo.HardDeleteTabung(kodeLkm); er != nil {
+		return er
+	}
+
+	if er = repo.HardDeleteSysDaftarUser(kodeLkm); er != nil {
+		return er
+	}
+
+	return nil
 
 }
 

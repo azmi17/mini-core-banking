@@ -13,6 +13,10 @@ type ApexRepo interface {
 	UpdateNasabah(updNasabah entities.Nasabah) (entities.Nasabah, error)
 	UpdateSysDaftarUser(updNasabah entities.SysDaftarUser) (entities.SysDaftarUser, error)
 
+	HardDeleteNasabah(kodeLkm string) error
+	HardDeleteTabung(kodeLkm string) error
+	HardDeleteSysDaftarUser(kodeLkm string) error
+
 	DeleteNasabah(kodeLkm string) error
 	DeleteTabung(kodeLkm string) error
 	DeleteSysDaftarUser(kodeLkm string) error

@@ -25,3 +25,8 @@
 2022-09-07 22:28:32	[ERR]:	(appio.go:12):	error while get instution detail: sql: Scan error on column index 7, name "minimum": converting NULL to float64 is unsupported
 2022-09-08 20:56:14	[ERR]:	(appio.go:12):	sql: expected 0 arguments, got 2
 2022-09-08 21:01:45	[ERR]:	(appio.go:12):	Error 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '-1 OFFSET ?' at line 13
+2022-09-21 11:02:41	[ERR]:	(appio.go:12):	error while prepare delete nasabah : Error 1054: Unknown column 'xxx' in 'field list'
+2022-09-21 11:04:35	[ERR]:	(appio.go:12):	error while prepare delete nasabah : Error 1054: Unknown column 'abcd' in 'field list'
+2022-09-21 11:13:02	[ERR]:	(appio.go:12):	error while prepare delete nasabah : Error 1054: Unknown column 'xxx' in 'field list'
+2022-09-21 11:14:03	[ERR]:	(appio.go:12):	error while prepare update nasabah : Error 1054: Unknown column 'xxx' in 'field list'
+2022-09-21 11:14:22	[ERR]:	(appio.go:12):	error while update nasabah : sql: expected 10 arguments, got 11

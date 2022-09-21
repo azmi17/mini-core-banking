@@ -301,9 +301,63 @@ func (e *ApexMysqlImpl) UpdateSysDaftarUser(updSysuser entities.SysDaftarUser) (
 
 }
 
+func (e *ApexMysqlImpl) HardDeleteNasabah(kodeLkm string) (er error) {
+
+	stmt, er := e.db1.Prepare("DELETE FROM nasabah WHERE nasabah_id = ?")
+	if er != nil {
+		return errors.New(fmt.Sprint("error while prepare delete nasabah : ", er.Error()))
+	}
+
+	defer func() {
+		_ = stmt.Close()
+	}()
+
+	if _, er := stmt.Exec(kodeLkm); er != nil {
+		return errors.New(fmt.Sprint("error while delete nasabah : ", er.Error()))
+	}
+
+	return nil
+}
+
+func (e *ApexMysqlImpl) HardDeleteTabung(kodeLkm string) (er error) {
+
+	stmt, er := e.db1.Prepare("DELETE FROM tabung WHERE no_rekening = ?")
+	if er != nil {
+		return errors.New(fmt.Sprint("error while prepare delete tabung : ", er.Error()))
+	}
+
+	defer func() {
+		_ = stmt.Close()
+	}()
+
+	if _, er := stmt.Exec(kodeLkm); er != nil {
+		return errors.New(fmt.Sprint("error while delete tabung : ", er.Error()))
+	}
+
+	return nil
+}
+
+func (e *ApexMysqlImpl) HardDeleteSysDaftarUser(kodeLkm string) (er error) {
+
+	stmt, er := e.db2.Prepare("DELETE FROM sys_daftar_user WHERE user_name = ?")
+	if er != nil {
+		return errors.New(fmt.Sprint("error while prepare delete user : ", er.Error()))
+	}
+
+	defer func() {
+		_ = stmt.Close()
+	}()
+
+	if _, er := stmt.Exec(kodeLkm); er != nil {
+		return errors.New(fmt.Sprint("error while delete user : ", er.Error()))
+	}
+
+	return nil
+}
+
 func (e *ApexMysqlImpl) DeleteNasabah(kodeLkm string) (er error) {
 
-	stmt, er := e.db1.Prepare("delete FROM nasabah WHERE nasabah_id = ?")
+	stmt, er := e.db1.Prepare("UPDATE nasabah SET nama_nasabah='XXX' WHERE nasabah_id = ?")
 	if er != nil {
 		return errors.New(fmt.Sprint("error while prepare delete nasabah : ", er.Error()))
 	}
@@ -321,7 +375,7 @@ func (e *ApexMysqlImpl) DeleteNasabah(kodeLkm string) (er error) {
 
 func (e *ApexMysqlImpl) DeleteTabung(kodeLkm string) (er error) {
 
-	stmt, er := e.db1.Prepare("delete FROM tabung WHERE no_rekening = ?")
+	stmt, er := e.db1.Prepare("UPDATE tabung SET status = 0 WHERE no_rekening = ?")
 	if er != nil {
 		return errors.New(fmt.Sprint("error while prepare delete tabung : ", er.Error()))
 	}
@@ -339,7 +393,7 @@ func (e *ApexMysqlImpl) DeleteTabung(kodeLkm string) (er error) {
 
 func (e *ApexMysqlImpl) DeleteSysDaftarUser(kodeLkm string) (er error) {
 
-	stmt, er := e.db2.Prepare("delete FROM sys_daftar_user WHERE user_name = ?")
+	stmt, er := e.db2.Prepare("UPDATE sys_daftar_user SET status_aktif = 0 WHERE user_name = ?")
 	if er != nil {
 		return errors.New(fmt.Sprint("error while prepare delete user : ", er.Error()))
 	}
@@ -411,7 +465,7 @@ func (e *ApexMysqlImpl) GetLkmDetailInfo(KodeLkm string) (detail web.GetDetailLK
 	)
 	if er != nil {
 		if er == sql.ErrNoRows {
-			return detail, err.NoRecord // td
+			return detail, err.NoRecord
 		} else {
 			return detail, errors.New(fmt.Sprint("error while get instution detail: ", er.Error()))
 		}

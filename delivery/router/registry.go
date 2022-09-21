@@ -34,6 +34,7 @@ func RegisterHandler(router *gin.Engine) {
 
 	apiv1.POST("/institutions", handler.CreateLKM)
 	apiv1.PUT("/institutions", handler.UpdateLKM)
+	apiv1.DELETE("/flush", handler.HardDeleteLKM)
 	apiv1.DELETE("/institutions", handler.DeleteLKM)
 	apiv1.PUT("/user/reset-password", handler.ResetApexPassword)
 

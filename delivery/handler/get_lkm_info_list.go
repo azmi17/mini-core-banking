@@ -7,7 +7,6 @@ import (
 	"apex-ems-integration-clean-arch/entities/statuscode"
 	"apex-ems-integration-clean-arch/entities/web"
 	"apex-ems-integration-clean-arch/usecase"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -20,7 +19,6 @@ func GetLkmInfoList(ctx *gin.Context) {
 	// Call Payload and binding form (Randy's Framework implementations)
 	payload := web.LimitOffsetLkmUri{}
 	httpio.BindUri(&payload)
-	fmt.Println(payload.Limit, payload.Offset)
 
 	usecase := usecase.NewApexUsecase()
 	lkmList, er := usecase.GetLkmInfoList(payload)
@@ -28,7 +26,7 @@ func GetLkmInfoList(ctx *gin.Context) {
 		if er == err.NoRecord {
 			httpio.ResponseString(statuscode.StatusNoRecord, "record not found.", nil)
 		} else if er == err.BadRequest {
-			httpio.ResponseString(http.StatusBadRequest, "Parameter tidak valid.", nil)
+			httpio.ResponseString(http.StatusBadRequest, "invalid parameters", nil)
 		} else {
 			entities.PrintError(er.Error())
 			httpio.ResponseString(http.StatusInternalServerError, "internal service error", nil)
