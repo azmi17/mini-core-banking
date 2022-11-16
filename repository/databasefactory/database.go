@@ -1,6 +1,6 @@
 package databasefactory
 
-var AppDb1, AppDb2 Database
+var Apex, SysApex Database
 
 type Database interface {
 	Connect() error

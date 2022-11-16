@@ -3,6 +3,7 @@ package main
 import (
 	"apex-ems-integration-clean-arch/delivery"
 	"apex-ems-integration-clean-arch/delivery/router"
+	"apex-ems-integration-clean-arch/helper"
 	"apex-ems-integration-clean-arch/repository/databasefactory"
 	"math/rand"
 	"os"
@@ -35,9 +36,19 @@ func init() {
 func LoadConfiguration(isReload bool) {
 	var er error
 	if isReload {
+		_ = glg.Log("=================Service Info===================")
+		_ = glg.Log("Application Name:", helper.AppName)
+		_ = glg.Log("Application Version:", helper.AppVersion)
+		_ = glg.Log("Last Build:", helper.LastBuild)
+		_ = glg.Log("================================================")
 		_ = glg.Log("Reloading configuration file...")
 		er = godotenv.Overload(".env")
 	} else {
+		_ = glg.Log("=================Service Info===================")
+		_ = glg.Log("Application Name:", helper.AppName)
+		_ = glg.Log("Application Version:", helper.AppVersion)
+		_ = glg.Log("Last Build:", helper.LastBuild)
+		_ = glg.Log("================================================")
 		_ = glg.Log("Loading configuration file...")
 		er = godotenv.Load(".env")
 	}
@@ -75,37 +86,37 @@ func LoadConfiguration(isReload bool) {
 func PrepareDatabase() {
 	var er error // <= Reusable variable of error
 
-	// # INIT DB 1
-	databasefactory.AppDb1, er = databasefactory.GetDatabase()
+	// # INIT DB Apex
+	databasefactory.Apex, er = databasefactory.GetDatabase()
 	if er != nil {
 		glg.Fatal(er.Error())
 	}
 
 	_ = glg.Log("Connecting to apex..")
-	if er = databasefactory.AppDb1.Connect(); er != nil {
+	if er = databasefactory.Apex.Connect(); er != nil {
 		_ = glg.Error("Connection to apex failed: ", er.Error())
 		os.Exit(1)
 	}
 
-	if er = databasefactory.AppDb1.Ping(); er != nil {
+	if er = databasefactory.Apex.Ping(); er != nil {
 		_ = glg.Error("Cannot ping apex: ", er.Error())
 		os.Exit(1)
 	}
 
-	// # INIT DB 2
-	databasefactory.AppDb2, er = databasefactory.GetDatabase()
-	databasefactory.AppDb2.SetEnvironmentVariablePrefix("sys.")
+	// # INIT DB Sys Apex
+	databasefactory.SysApex, er = databasefactory.GetDatabase()
+	databasefactory.SysApex.SetEnvironmentVariablePrefix("sys.")
 	if er != nil {
 		glg.Fatal(er.Error())
 	}
 
 	_ = glg.Log("Connecting to apex_sys..")
-	if er = databasefactory.AppDb2.Connect(); er != nil {
+	if er = databasefactory.SysApex.Connect(); er != nil {
 		_ = glg.Error("Connection to apex_sys failed: ", er.Error())
 		os.Exit(1)
 	}
 
-	if er = databasefactory.AppDb2.Ping(); er != nil {
+	if er = databasefactory.SysApex.Ping(); er != nil {
 		_ = glg.Error("Cannot ping apex_sys: ", er.Error())
 		os.Exit(1)
 	}

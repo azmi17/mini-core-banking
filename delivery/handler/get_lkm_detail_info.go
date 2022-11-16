@@ -21,8 +21,8 @@ func GetLkmInfo(ctx *gin.Context) {
 	payload := web.KodeLKMUri{}
 	httpio.BindUri(&payload)
 
-	usecase := usecase.NewApexUsecase()
-	getUser, er := usecase.GetLkmDetailInfo(payload.UserName)
+	usecase := usecase.NewTabunganUsecase()
+	getUser, er := usecase.GetTabDetailInfo(payload.UserName)
 	if er != nil {
 		if er == err.NoRecord {
 			httpio.ResponseString(statuscode.StatusNoRecord, "Record not found!", nil)

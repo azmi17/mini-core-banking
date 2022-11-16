@@ -19,7 +19,7 @@ func DeleteLKM(ctx *gin.Context) {
 	payload := web.KodeLKMFilter{}
 	httpio.Bind(&payload)
 
-	usecase := usecase.NewApexUsecase()
+	usecase := usecase.NewLkmUsecase()
 	er := usecase.HardDeleteLkm(payload.KodeLkm)
 	if er != nil {
 		if er == err.NoRecord {
@@ -42,7 +42,7 @@ func HardDeleteLKM(ctx *gin.Context) {
 	payload := web.KodeLKMFilter{}
 	httpio.Bind(&payload)
 
-	usecase := usecase.NewApexUsecase()
+	usecase := usecase.NewLkmUsecase()
 	er := usecase.HardDeleteLkm(payload.KodeLkm)
 	if er != nil {
 		if er == err.NoRecord {

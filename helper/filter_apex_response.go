@@ -28,3 +28,12 @@ func ApexUpdateLKMResponse(nasabah entities.Nasabah, sysDaftarUser entities.SysD
 		User_Id:      nasabah.UserId,
 	}
 }
+
+func SysUserLoginResponseFilter(sysDaftarUser entities.SysDaftarUser) web.LoginData {
+	return web.LoginData{
+		User_Id:         sysDaftarUser.User_Id,
+		User_Name:       sysDaftarUser.User_Name,
+		Nama_lengkap:    sysDaftarUser.Nama_Lengkap,
+		Tanggal_Expried: string(sysDaftarUser.Tgl_Expired.Format("02-01-2006")),
+	}
+}

@@ -16,8 +16,8 @@ func GetScGroup(ctx *gin.Context) {
 	httpio := httpio.NewRequestIO(ctx)
 	httpio.Recv()
 
-	usecase := usecase.NewApexUsecase()
-	scGroup, er := usecase.GetScGroup()
+	usecase := usecase.NewTabunganUsecase()
+	scGroup, er := usecase.GetTabScGroup()
 	if er != nil {
 		if er == err.NoRecord {
 			httpio.ResponseString(statuscode.StatusNoRecord, "record not found.", nil)

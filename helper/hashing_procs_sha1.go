@@ -15,6 +15,17 @@ var (
 	allCharSet   = upperCharSet + numberSet
 )
 
+func HashSha1PassByInput(pwd string) (encrypted string) {
+
+	var sha = sha1.New()
+	sha.Write([]byte(pwd))
+	var hashing = sha.Sum(nil)
+	var hashingPass = fmt.Sprintf("%x", hashing)
+	encrypted = hashingPass
+
+	return encrypted
+}
+
 func HashSha1Pass() (string, string) {
 
 	rand.Seed(time.Now().Unix())

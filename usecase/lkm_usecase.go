@@ -3,35 +3,34 @@ package usecase
 import (
 	"apex-ems-integration-clean-arch/entities"
 	"apex-ems-integration-clean-arch/entities/constants"
-	"apex-ems-integration-clean-arch/entities/err"
 	"apex-ems-integration-clean-arch/entities/web"
 	"apex-ems-integration-clean-arch/helper"
-	"apex-ems-integration-clean-arch/repository/apexrepo"
+	"apex-ems-integration-clean-arch/repository/nasabahrepo"
+	"apex-ems-integration-clean-arch/repository/sysuserrepo"
+	"apex-ems-integration-clean-arch/repository/tabunganrepo"
 	"time"
 )
 
-type ApexUsecase interface {
+type LkmUsecase interface {
 	CreateLkm(payload web.SaveLKMApex) (web.LKMCreateResponse, error)
 	UpdateLkm(payload web.SaveLKMApex) (web.LKMUpdateResponse, error)
 	HardDeleteLkm(kodeLkm string) error
 	DeleteLkm(kodeLkm string) error
-	GetScGroup() ([]web.SCGroup, error)
-
-	GetLkmDetailInfo(Id string) (web.GetDetailLKMInfo, error)
-	GetLkmInfoList(limitOffset web.LimitOffsetLkmUri) ([]web.GetDetailLKMInfo, error)
-	ResetApexPassword(KodeLkm web.KodeLKMFilter) (web.ResetApexPwdResponse, error)
 }
 
-type apexUsecase struct{} // (e *employeeUsecase) => untuk menentukan hak kepemilikan
+type lkmUsecase struct{} // (e *employeeUsecase) => untuk menentukan hak kepemilikan
 
-func NewApexUsecase() ApexUsecase {
-	return &apexUsecase{}
+func NewLkmUsecase() LkmUsecase {
+	return &lkmUsecase{}
 }
 
-func (e *apexUsecase) CreateLkm(payload web.SaveLKMApex) (createLkm web.LKMCreateResponse, er error) {
-	repo, _ := apexrepo.NewApexRepo()
+func (lkm *lkmUsecase) CreateLkm(payload web.SaveLKMApex) (createLkm web.LKMCreateResponse, er error) {
+	nasabahRepo, _ := nasabahrepo.NewNasabahRepo()
+	tabunganRepo, _ := tabunganrepo.NewTabunganRepo()
+	sysUserRepo, _ := sysuserrepo.NewSysUserRepo()
 
 	nasabah := entities.Nasabah{}
+
 	// From payload:
 	nasabah.Nasabah_Id = payload.KodeLkm
 	nasabah.Nama_Nasabah = payload.Nama_Lembaga
@@ -75,11 +74,12 @@ func (e *apexUsecase) CreateLkm(payload web.SaveLKMApex) (createLkm web.LKMCreat
 	nasabah.Status_Marital = constants.StatusMarital
 	nasabah.Status_Tempat_Tinggal = constants.StatusTempatTinggal
 	nasabah.Masa_Berlaku_Ktp = time.Now().AddDate(7, 0, 0)
-	if nasabah, er = repo.CreateNasabah(nasabah); er != nil {
+	if nasabah, er = nasabahRepo.CreateNasabah(nasabah); er != nil {
 		return createLkm, er
 	}
 
 	tabung := entities.Tabung{}
+
 	// From payload:
 	tabung.No_Rekening = payload.KodeLkm
 	tabung.Nasabah_Id = payload.KodeLkm
@@ -115,11 +115,12 @@ func (e *apexUsecase) CreateLkm(payload web.SaveLKMApex) (createLkm web.LKMCreat
 	tabung.Premi = constants.ZeroValInt
 	tabung.Kode_Keterkaitan = constants.KdKeterkaitan
 	tabung.Kode_Kantor_Kas = constants.KdKantorKas
-	if tabung, er = repo.CreateTabung(tabung); er != nil {
+	if tabung, er = tabunganRepo.CreateTabung(tabung); er != nil {
 		return createLkm, er
 	}
 
 	sysDaftarUser := entities.SysDaftarUser{}
+
 	// From payload:
 	sysDaftarUser.User_Name = payload.KodeLkm
 	sysDaftarUser.Nama_Lengkap = payload.Nama_Lembaga
@@ -135,7 +136,7 @@ func (e *apexUsecase) CreateLkm(payload web.SaveLKMApex) (createLkm web.LKMCreat
 	sysDaftarUser.Status_Aktif = constants.StatusAktif
 	sysDaftarUser.Penerimaan = constants.ZeroValInt
 	sysDaftarUser.Pengeluaran = constants.ZeroValInt
-	if sysDaftarUser, er = repo.CreateSysDaftarUser(sysDaftarUser); er != nil {
+	if sysDaftarUser, er = sysUserRepo.CreateSysDaftarUser(sysDaftarUser); er != nil {
 		return createLkm, er
 	}
 
@@ -143,8 +144,9 @@ func (e *apexUsecase) CreateLkm(payload web.SaveLKMApex) (createLkm web.LKMCreat
 	return helper.ApexFilterLKMResponse(nasabah, tabung, sysDaftarUser), nil
 }
 
-func (e *apexUsecase) UpdateLkm(payload web.SaveLKMApex) (updateLkm web.LKMUpdateResponse, er error) {
-	repo, _ := apexrepo.NewApexRepo()
+func (lkm *lkmUsecase) UpdateLkm(payload web.SaveLKMApex) (updateLkm web.LKMUpdateResponse, er error) {
+	nasabahRepo, _ := nasabahrepo.NewNasabahRepo()
+	sysUserRepo, _ := sysuserrepo.NewSysUserRepo()
 
 	nasabah := entities.Nasabah{}
 	nasabah.Nama_Nasabah = payload.Nama_Lembaga
@@ -158,7 +160,7 @@ func (e *apexUsecase) UpdateLkm(payload web.SaveLKMApex) (updateLkm web.LKMUpdat
 	nasabah.Hp2 = payload.Telepon
 	nasabah.UserId = payload.User_Id
 	nasabah.Nasabah_Id = payload.KodeLkm
-	if nasabah, er = repo.UpdateNasabah(nasabah); er != nil {
+	if nasabah, er = nasabahRepo.UpdateNasabah(nasabah); er != nil {
 		return updateLkm, er
 	}
 
@@ -166,7 +168,7 @@ func (e *apexUsecase) UpdateLkm(payload web.SaveLKMApex) (updateLkm web.LKMUpdat
 		Nama_Lengkap: payload.Nama_Lembaga,
 		User_Name:    payload.KodeLkm,
 	}
-	if sysDaftarUser, er = repo.UpdateSysDaftarUser(sysDaftarUser); er != nil {
+	if sysDaftarUser, er = sysUserRepo.UpdateSysDaftarUser(sysDaftarUser); er != nil {
 		return updateLkm, er
 	}
 
@@ -175,37 +177,20 @@ func (e *apexUsecase) UpdateLkm(payload web.SaveLKMApex) (updateLkm web.LKMUpdat
 
 }
 
-func (e *apexUsecase) HardDeleteLkm(kodeLkm string) (er error) {
-	repo, _ := apexrepo.NewApexRepo()
+func (lkm *lkmUsecase) HardDeleteLkm(kodeLkm string) (er error) {
+	nasabahRepo, _ := nasabahrepo.NewNasabahRepo()
+	tabunganRepo, _ := tabunganrepo.NewTabunganRepo()
+	sysUserRepo, _ := sysuserrepo.NewSysUserRepo()
 
-	if er = repo.HardDeleteNasabah(kodeLkm); er != nil {
+	if er = nasabahRepo.HardDeleteNasabah(kodeLkm); er != nil {
 		return er
 	}
 
-	if er = repo.HardDeleteTabung(kodeLkm); er != nil {
+	if er = tabunganRepo.HardDeleteTabung(kodeLkm); er != nil {
 		return er
 	}
 
-	if er = repo.HardDeleteSysDaftarUser(kodeLkm); er != nil {
-		return er
-	}
-
-	return nil
-
-}
-
-func (e *apexUsecase) DeleteLkm(kodeLkm string) (er error) {
-	repo, _ := apexrepo.NewApexRepo()
-
-	if er = repo.DeleteNasabah(kodeLkm); er != nil {
-		return er
-	}
-
-	if er = repo.DeleteTabung(kodeLkm); er != nil {
-		return er
-	}
-
-	if er = repo.DeleteSysDaftarUser(kodeLkm); er != nil {
+	if er = sysUserRepo.HardDeleteSysDaftarUser(kodeLkm); er != nil {
 		return er
 	}
 
@@ -213,63 +198,23 @@ func (e *apexUsecase) DeleteLkm(kodeLkm string) (er error) {
 
 }
 
-func (e *apexUsecase) GetScGroup() (detailSc []web.SCGroup, er error) {
-	repo, _ := apexrepo.NewApexRepo()
+func (lkm *lkmUsecase) DeleteLkm(kodeLkm string) (er error) {
+	nasabahRepo, _ := nasabahrepo.NewNasabahRepo()
+	tabunganRepo, _ := tabunganrepo.NewTabunganRepo()
+	sysUserRepo, _ := sysuserrepo.NewSysUserRepo()
 
-	detailSc, er = repo.GetScGroup()
-	if er != nil {
-		return detailSc, er
+	if er = nasabahRepo.DeleteNasabah(kodeLkm); er != nil {
+		return er
 	}
 
-	if len(detailSc) == 0 {
-		return detailSc, err.NoRecord
+	if er = tabunganRepo.DeleteTabung(kodeLkm); er != nil {
+		return er
 	}
 
-	return detailSc, nil
-}
-
-func (e *apexUsecase) GetLkmDetailInfo(Id string) (detailLkm web.GetDetailLKMInfo, er error) {
-	repo, _ := apexrepo.NewApexRepo()
-
-	if detailLkm, er = repo.GetLkmDetailInfo(Id); er != nil {
-		return detailLkm, er
+	if er = sysUserRepo.DeleteSysDaftarUser(kodeLkm); er != nil {
+		return er
 	}
 
-	return detailLkm, nil
-}
+	return nil
 
-func (e *apexUsecase) GetLkmInfoList(limitOffset web.LimitOffsetLkmUri) (lkmList []web.GetDetailLKMInfo, er error) {
-
-	if limitOffset.Limit <= 0 || limitOffset.Offset < 0 {
-		return lkmList, err.BadRequest
-	}
-	repo, _ := apexrepo.NewApexRepo()
-	lkmList, er = repo.GetLkmInfoList(limitOffset)
-	if er != nil {
-		return lkmList, er
-	}
-
-	if len(lkmList) == 0 {
-		return make([]web.GetDetailLKMInfo, 0), nil //[]web.GetDetailLKMInfo (untuk membuat sebuah slice kosong agar tidak return null di JSON) |err.NoRecord
-	}
-
-	return lkmList, nil
-}
-
-func (e *apexUsecase) ResetApexPassword(KodeLkm web.KodeLKMFilter) (resp web.ResetApexPwdResponse, er error) {
-	repo, _ := apexrepo.NewApexRepo()
-
-	sysDaftarUser := entities.SysDaftarUser{}
-	sysDaftarUser.User_Name = KodeLkm.KodeLkm
-	sysDaftarUser.User_Web_Password_Hash, sysDaftarUser.User_Web_Password = helper.HashSha1Pass()
-
-	if sysDaftarUser, er = repo.ResetApexPassword(sysDaftarUser); er != nil {
-		return resp, er
-	}
-
-	updResp := web.ResetApexPwdResponse{}
-	updResp.KodeLkm = sysDaftarUser.User_Name
-	updResp.Password_Smec = sysDaftarUser.User_Web_Password_Hash
-
-	return updResp, nil
 }

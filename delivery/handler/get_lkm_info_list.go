@@ -20,8 +20,8 @@ func GetLkmInfoList(ctx *gin.Context) {
 	payload := web.LimitOffsetLkmUri{}
 	httpio.BindUri(&payload)
 
-	usecase := usecase.NewApexUsecase()
-	lkmList, er := usecase.GetLkmInfoList(payload)
+	usecase := usecase.NewTabunganUsecase()
+	lkmList, er := usecase.GetTabInfoList(payload)
 	if er != nil {
 		if er == err.NoRecord {
 			httpio.ResponseString(statuscode.StatusNoRecord, "record not found.", nil)

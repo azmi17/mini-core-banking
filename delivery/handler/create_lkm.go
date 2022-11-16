@@ -21,8 +21,8 @@ func CreateLKM(ctx *gin.Context) {
 	payload := web.SaveLKMApex{}
 	httpio.Bind(&payload)
 
-	usecae := usecase.NewApexUsecase()
-	lkm, er := usecae.CreateLkm(payload)
+	usecase := usecase.NewLkmUsecase()
+	lkm, er := usecase.CreateLkm(payload)
 	if er != nil {
 		if er == err.DuplicateEntry {
 			httpio.ResponseString(statuscode.StatusDuplicate, "Institution data is available!", nil)

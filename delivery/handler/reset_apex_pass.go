@@ -19,14 +19,13 @@ func ResetApexPassword(ctx *gin.Context) {
 	payload := web.KodeLKMFilter{}
 	httpio.Bind(&payload)
 
-	usecase := usecase.NewApexUsecase()
-	user, er := usecase.ResetApexPassword(payload)
+	usecase := usecase.NewSysUserUsecase()
+	user, er := usecase.ResetSysUserPassword(payload)
 	if er != nil {
 		entities.PrintError(er.Error())
 		entities.PrintLog(er.Error())
 		httpio.ResponseString(http.StatusInternalServerError, "internal service error", nil)
 	} else {
-		// response := helper.ApiResponse("Reset lkm password succeeded", "success", user)
 		httpio.Response(http.StatusOK, user)
 	}
 

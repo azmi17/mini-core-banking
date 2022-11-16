@@ -2,8 +2,8 @@ package handler
 
 import (
 	"apex-ems-integration-clean-arch/delivery/handler/httpio"
+	"apex-ems-integration-clean-arch/helper"
 	"net/http"
-	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,11 +14,10 @@ func AppInfo(ctx *gin.Context) {
 	httpio.Recv()
 
 	appInfo := map[string]interface{}{
-		"App Name":        os.Getenv("application.name"),
-		"App Description": os.Getenv("application.desc"),
-		"App Version":     os.Getenv("application.version"),
-		"App Author":      os.Getenv("application.author"),
-		"Port Listener":   os.Getenv("app.listener_port"),
+		"App Name":        helper.AppAuthor,
+		"App Description": helper.AppDescription,
+		"App Version":     helper.AppVersion,
+		"App Author":      helper.AppAuthor,
 	}
 
 	httpio.Response(http.StatusOK, appInfo)
