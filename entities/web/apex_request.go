@@ -22,6 +22,6 @@ type SaveLKMApex struct {
 }
 
 type LoginInput struct {
-	User_Name string `form:"user_name"`
-	Password  string `form:"password"`
+	User_Name string `form:"user_name" binding:"required"`
+	Password  string `form:"password" binding:"required"`
 }

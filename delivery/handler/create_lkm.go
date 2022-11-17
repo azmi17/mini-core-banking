@@ -6,6 +6,7 @@ import (
 	"apex-ems-integration-clean-arch/entities/err"
 	"apex-ems-integration-clean-arch/entities/statuscode"
 	"apex-ems-integration-clean-arch/entities/web"
+	"apex-ems-integration-clean-arch/helper"
 	"apex-ems-integration-clean-arch/usecase"
 	"net/http"
 
@@ -19,7 +20,14 @@ func CreateLKM(ctx *gin.Context) {
 
 	// Call Payload and binding form
 	payload := web.SaveLKMApex{}
-	httpio.Bind(&payload)
+	rerr := httpio.BindWithErr(&payload)
+	if rerr != nil {
+		errors := helper.FormatValidationError(rerr)
+		errorMesage := gin.H{"errors": errors}
+		response := helper.ApiResponse("Register institution failed", http.StatusUnprocessableEntity, "failed", errorMesage)
+		httpio.Response(http.StatusUnprocessableEntity, response)
+		return
+	}
 
 	usecase := usecase.NewLkmUsecase()
 	lkm, er := usecase.CreateLkm(payload)
@@ -32,7 +40,6 @@ func CreateLKM(ctx *gin.Context) {
 			httpio.ResponseString(http.StatusInternalServerError, "internal service error", nil)
 		}
 	} else {
-
 		httpio.Response(http.StatusOK, lkm)
 	}
 

@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 )
 
 type RequestIO interface {
@@ -21,6 +22,7 @@ type RequestIO interface {
 	ResponseWithAbort(statuscode int, responseBody interface{})
 	ResponseString(statusCode int, response string, responseBody interface{})
 	ResponseStringWithAbort(statusCode int, response string)
+	BindWithErr(obj interface{}) error
 }
 
 type formio struct {
@@ -52,6 +54,16 @@ func (f *formio) Bind(body interface{}) {
 	_ = f.context.ShouldBindHeader(&header)
 	_ = f.context.Bind(body)
 	go receiveForm("RECV", header, body, f.request.RemoteAddr, path)
+}
+
+func (f *formio) BindWithErr(obj interface{}) error {
+	header := params.Header{}
+	path := fmt.Sprintf("%s %s", f.request.Method, f.request.URL.Path)
+	// _ = f.context.Bind(obj)
+	_ = f.context.ShouldBindHeader(&header)
+	b := binding.Default(f.request.Method, header.ContentType)
+	go receiveForm("RECV", header, obj, f.request.RemoteAddr, path)
+	return f.context.ShouldBindWith(obj, b)
 }
 
 //These methods use MustBindWith under the hood. If there is a binding error, the request is aborted with c.AbortWithError(400, err).SetType(ErrorTypeBind).

@@ -29,7 +29,6 @@ func RegisterHandler(router *gin.Engine) {
 	apiv1.GET("/version", handler.AppInfo)
 	apiv1.GET("/vendors", handler.GetScGroup)
 	apiv1.GET("/institutions/:user_name", handler.GetLkmInfo)
-
 	apiv1.GET("/institutions/all/:limit/:offset", handler.GetLkmInfoList)
 
 	apiv1.POST("/institutions", handler.CreateLKM)
@@ -37,7 +36,6 @@ func RegisterHandler(router *gin.Engine) {
 	apiv1.DELETE("/flush", handler.HardDeleteLKM)
 	apiv1.DELETE("/institutions", handler.DeleteLKM)
 	apiv1.PUT("/user/reset-password", handler.ResetApexPassword)
-
-	apiv1.POST("/login", handler.LoginUser)
+	apiv1.POST("/user/login", handler.LoginUser)
 
 }
