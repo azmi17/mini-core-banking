@@ -28,14 +28,18 @@ func RegisterHandler(router *gin.Engine) {
 	// API Endpoint:
 	apiv1.GET("/version", handler.AppInfo)
 	apiv1.GET("/vendors", handler.GetScGroup)
+	apiv1.GET("/routing", handler.GetListRoutingRekInduk)
 	apiv1.GET("/institutions/:user_name", handler.GetLkmInfo)
 	apiv1.GET("/institutions/all/:limit/:offset", handler.GetLkmInfoList)
 
 	apiv1.POST("/institutions", handler.CreateLKM)
-	apiv1.PUT("/institutions", handler.UpdateLKM)
+	apiv1.POST("/user/login", handler.LoginUser)
+	apiv1.POST("/routing", handler.CreateRoutingRekInduk)
 	apiv1.DELETE("/flush", handler.HardDeleteLKM)
 	apiv1.DELETE("/institutions", handler.DeleteLKM)
+	apiv1.DELETE("/routing", handler.DeleteRoutingRekIndukByKodeLKM)
+	apiv1.PUT("/institutions", handler.UpdateLKM)
 	apiv1.PUT("/user/reset-password", handler.ResetApexPassword)
-	apiv1.POST("/user/login", handler.LoginUser)
+	apiv1.PUT("/routing", handler.UpdateRoutingRekInduk)
 
 }

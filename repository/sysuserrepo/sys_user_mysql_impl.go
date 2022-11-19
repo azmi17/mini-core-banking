@@ -3,6 +3,7 @@ package sysuserrepo
 import (
 	"apex-ems-integration-clean-arch/entities"
 	"apex-ems-integration-clean-arch/entities/err"
+	"apex-ems-integration-clean-arch/entities/web"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -122,7 +123,7 @@ func (s *SysUserMysqlImpl) DeleteSysDaftarUser(kodeLkm string) (er error) {
 func (s *SysUserMysqlImpl) ResetUserPassword(user entities.SysDaftarUser) (sysUser entities.SysDaftarUser, er error) {
 	stmt, er := s.apexDb.Prepare("UPDATE sys_daftar_user SET user_web_password = ? WHERE user_name = ?")
 	if er != nil {
-		return sysUser, errors.New(fmt.Sprint("error while prepare apex password: ", er.Error()))
+		return sysUser, errors.New(fmt.Sprint("error while prepare update apex password: ", er.Error()))
 	}
 
 	defer func() {
@@ -159,4 +160,92 @@ func (s *SysUserMysqlImpl) FindByUserName(userName string) (user entities.SysDaf
 		}
 	}
 	return
+}
+
+func (s *SysUserMysqlImpl) GetListSysApexRoutingRekInduk() (list []web.RoutingRekIndukData, er error) {
+	rows, er := s.apexDb.Query("SELECT norek, norek_induk FROM routing_rek_induk")
+	if er != nil {
+		return list, er
+	}
+
+	defer func() {
+		_ = rows.Close()
+	}()
+
+	for rows.Next() {
+		var scGroup web.RoutingRekIndukData
+		if er = rows.Scan(&scGroup.KodeLkm, &scGroup.NorekInduk); er != nil {
+			return list, er
+		}
+
+		list = append(list, scGroup)
+	}
+
+	if len(list) == 0 {
+		return list, err.NoRecord
+	} else {
+		return
+	}
+}
+
+func (s *SysUserMysqlImpl) CreateSysApexRoutingRekInduk(bankCode, norekInduk string) (routing web.RoutingRekIndukData, er error) {
+
+	stmt, er := s.apexDb.Prepare(`INSERT INTO routing_rek_induk(
+		norek,
+		norek_induk
+	) VALUES(?,?)`)
+	if er != nil {
+		return routing, errors.New(fmt.Sprint("error while prepare add routing rek induk: ", er.Error()))
+	}
+	defer func() {
+		_ = stmt.Close()
+	}()
+
+	if _, er := stmt.Exec(
+		bankCode,
+		norekInduk,
+	); er != nil {
+		return routing, errors.New(fmt.Sprint("error while add routing rek induk: ", er.Error()))
+	} else {
+		routing.KodeLkm = bankCode
+		routing.NorekInduk = norekInduk
+		return routing, nil
+	}
+}
+
+func (s *SysUserMysqlImpl) UpdateSysApexRoutingRekInduk(newBankCode, norekInduk, currentBankCode string) (routing web.RoutingRekIndukData, er error) {
+	stmt, er := s.apexDb.Prepare("UPDATE routing_rek_induk SET norek = ?, norek_induk = ? WHERE norek = ?")
+	if er != nil {
+		return routing, errors.New(fmt.Sprint("error while prepare update routing rek induk: ", er.Error()))
+	}
+
+	defer func() {
+		_ = stmt.Close()
+	}()
+
+	if _, er := stmt.Exec(newBankCode, norekInduk, currentBankCode); er != nil {
+		return routing, errors.New(fmt.Sprint("error while update routing rek induk: ", er.Error()))
+	}
+
+	routing.KodeLkm = newBankCode
+	routing.NorekInduk = norekInduk
+	return routing, nil
+}
+
+func (s *SysUserMysqlImpl) DeleteSysApexRoutingRekInduk(kodeLkm string) (er error) {
+
+	stmt, er := s.apexDb.Prepare("DELETE FROM routing_rek_induk WHERE norek = ?")
+	if er != nil {
+		return errors.New(fmt.Sprint("error while prepare delete routing rek induk: ", er.Error()))
+	}
+
+	defer func() {
+		_ = stmt.Close()
+	}()
+
+	if _, er := stmt.Exec(kodeLkm); er != nil {
+		return errors.New(fmt.Sprint("error while delete routing rek induk: ", er.Error()))
+	}
+
+	return nil
 }

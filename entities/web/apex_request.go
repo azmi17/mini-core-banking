@@ -25,3 +25,9 @@ type LoginInput struct {
 	User_Name string `form:"user_name" binding:"required"`
 	Password  string `form:"password" binding:"required"`
 }
+
+type SaveRoutingRekInduk struct {
+	KodeLkm       string `form:"kode_lkm" binding:"required"`
+	NorekInduk    string `form:"norek_induk" binding:"required"`
+	KodeLkmTarget string `form:"kode_lkm_target" binding:"required"`
+}

@@ -54,3 +54,14 @@ type LoginResponse struct {
 	Response_Msg  string     `json:"response_message"`
 	Data          *LoginData `json:"data,omitempty"`
 }
+
+type RoutingRekIndukData struct {
+	KodeLkm    string `json:"kode_lkm"`
+	NorekInduk string `json:"norek_induk"`
+}
+
+type SaveRoutingRekIndukResponse struct {
+	Response_Code string               `json:"response_code"`
+	Response_Msg  string               `json:"response_message"`
+	Data          *RoutingRekIndukData `json:"data,omitempty"`
+}

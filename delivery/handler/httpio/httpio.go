@@ -56,14 +56,14 @@ func (f *formio) Bind(body interface{}) {
 	go receiveForm("RECV", header, body, f.request.RemoteAddr, path)
 }
 
-func (f *formio) BindWithErr(obj interface{}) error {
+func (f *formio) BindWithErr(body interface{}) error {
 	header := params.Header{}
 	path := fmt.Sprintf("%s %s", f.request.Method, f.request.URL.Path)
-	// _ = f.context.Bind(obj)
+	// _ = f.context.Bind(body)
 	_ = f.context.ShouldBindHeader(&header)
 	b := binding.Default(f.request.Method, header.ContentType)
-	go receiveForm("RECV", header, obj, f.request.RemoteAddr, path)
-	return f.context.ShouldBindWith(obj, b)
+	go receiveForm("RECV", header, body, f.request.RemoteAddr, path)
+	return f.context.ShouldBindWith(body, b)
 }
 
 //These methods use MustBindWith under the hood. If there is a binding error, the request is aborted with c.AbortWithError(400, err).SetType(ErrorTypeBind).
