@@ -12,17 +12,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetLkmInfo(ctx *gin.Context) {
+func DeleteLKM(ctx *gin.Context) {
 
-	// Init HTTP Request..
 	httpio := httpio.NewRequestIO(ctx)
 
-	// Call Payload and binding form (Randy's Framework implementations)
 	payload := web.KodeLKMUri{}
 	httpio.BindUri(&payload)
 
-	usecase := usecase.NewTabunganUsecase()
-	getUser, er := usecase.GetTabDetailInfo(payload.UserName)
+	usecase := usecase.NewLkmUsecase()
+	er := usecase.DeleteLkm(payload.KodeLkm)
 	if er != nil {
 		if er == err.NoRecord {
 			httpio.ResponseString(statuscode.StatusNoRecord, "Record not found!", nil)
@@ -32,7 +30,30 @@ func GetLkmInfo(ctx *gin.Context) {
 			httpio.ResponseString(http.StatusInternalServerError, "internal service error", nil)
 		}
 	} else {
-		httpio.Response(http.StatusOK, getUser)
+		httpio.Response(http.StatusOK, nil)
+	}
+
+}
+
+func HardDeleteLKM(ctx *gin.Context) {
+
+	httpio := httpio.NewRequestIO(ctx)
+
+	payload := web.KodeLKMFilter{}
+	httpio.Bind(&payload)
+
+	usecase := usecase.NewLkmUsecase()
+	er := usecase.HardDeleteLkm(payload.KodeLkm)
+	if er != nil {
+		if er == err.NoRecord {
+			httpio.ResponseString(statuscode.StatusNoRecord, "Record not found!", nil)
+		} else {
+			entities.PrintError(er.Error())
+			entities.PrintLog(er.Error())
+			httpio.ResponseString(http.StatusInternalServerError, "internal service error", nil)
+		}
+	} else {
+		httpio.Response(http.StatusOK, nil)
 	}
 
 }

@@ -2,6 +2,7 @@ package nasabahrepo
 
 import (
 	"apex-ems-integration-clean-arch/entities"
+	"apex-ems-integration-clean-arch/entities/err"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -170,7 +171,7 @@ func (n *NasbahMysqlImpl) HardDeleteNasabah(kodeLkm string) (er error) {
 }
 
 func (n *NasbahMysqlImpl) DeleteNasabah(kodeLkm string) (er error) {
-	stmt, er := n.apexDb.Prepare("UPDATE nasabah SET nama_nasabah='XXX' WHERE nasabah_id = ?")
+	stmt, er := n.apexDb.Prepare("UPDATE nasabah SET nasabah_id = ? WHERE nasabah_id = ?")
 	if er != nil {
 		return errors.New(fmt.Sprint("error while prepare delete nasabah : ", er.Error()))
 	}
@@ -179,8 +180,27 @@ func (n *NasbahMysqlImpl) DeleteNasabah(kodeLkm string) (er error) {
 		_ = stmt.Close()
 	}()
 
-	if _, er := stmt.Exec(kodeLkm); er != nil {
+	if _, er := stmt.Exec("DEL-"+kodeLkm, kodeLkm); er != nil {
 		return errors.New(fmt.Sprint("error while delete nasabah : ", er.Error()))
 	}
 	return nil
+}
+
+func (n *NasbahMysqlImpl) FindNasabahLkm(nasabahId string) (nasabahLKM entities.Nasabah, er error) {
+	row := n.apexDb.QueryRow(`SELECT
+		nasabah_id, 
+		nama_nasabah
+	FROM nasabah WHERE nasabah_id = ? LIMIT 1`, nasabahId)
+	er = row.Scan(
+		&nasabahLKM.Nasabah_Id,
+		&nasabahLKM.Nama_Nasabah,
+	)
+	if er != nil {
+		if er == sql.ErrNoRows {
+			return nasabahLKM, err.NoRecord
+		} else {
+			return nasabahLKM, errors.New(fmt.Sprint("error while get nasabah LKM: ", er.Error()))
+		}
+	}
+	return
 }

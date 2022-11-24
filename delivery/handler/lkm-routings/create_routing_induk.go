@@ -11,35 +11,32 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UpdateRoutingRekInduk(ctx *gin.Context) {
+func CreateRoutingRekInduk(ctx *gin.Context) {
 
 	// Init HTTP Request..
 	httpio := httpio.NewRequestIO(ctx)
 
 	// Call Payload and binding form
-	payload := web.SaveRoutingRekInduk{}
+	payload := web.CreateRoutingRekInduk{}
 	rerr := httpio.BindWithErr(&payload)
 	if rerr != nil {
 		errors := helper.FormatValidationError(rerr)
 		errorMesage := gin.H{"errors": errors}
-		response := helper.ApiResponse("Update routing rek induk failed", http.StatusUnprocessableEntity, "failed", errorMesage)
+		response := helper.ApiResponse("Add routing rek induk failed", http.StatusUnprocessableEntity, "failed", errorMesage)
 		httpio.Response(http.StatusUnprocessableEntity, response)
 		return
 	}
 
-	usecase := usecase.NewTabunganUsecase()
-	routingData, er := usecase.UpdateSysApexRoutingRekInduk(payload)
+	usecase := usecase.NewRoutingIndukUsecase()
+	routingData, er := usecase.CreateSysApexRoutingRekInduk(payload)
 
-	resp := web.SaveRoutingRekIndukResponse{}
 	if er != nil {
 		entities.PrintError(er.Error())
 		httpio.ResponseString(http.StatusInternalServerError, "internal service error", nil)
 		return
 
 	} else {
-		resp.Response_Code = "0000"
-		resp.Response_Msg = "Update routing rek induk succeeded"
-		resp.Data = &routingData
+		httpio.Response(http.StatusOK, routingData)
 	}
-	httpio.Response(http.StatusOK, resp)
+
 }

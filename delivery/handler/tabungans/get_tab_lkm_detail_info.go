@@ -12,15 +12,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func DeleteRoutingRekIndukByKodeLKM(ctx *gin.Context) {
+func GetTabunganLkmInfo(ctx *gin.Context) {
 
+	// Init HTTP Request..
 	httpio := httpio.NewRequestIO(ctx)
 
-	payload := web.KodeLKMFilter{}
-	httpio.Bind(&payload)
+	// Call Payload and binding form (Randy's Framework implementations)
+	payload := web.KodeLKMUri{}
+	httpio.BindUri(&payload)
 
 	usecase := usecase.NewTabunganUsecase()
-	er := usecase.DeleteSysApexRoutingRekInduk(payload.KodeLkm)
+	getUser, er := usecase.GetTabDetailInfo(payload.KodeLkm)
 	if er != nil {
 		if er == err.NoRecord {
 			httpio.ResponseString(statuscode.StatusNoRecord, "Record not found!", nil)
@@ -30,7 +32,7 @@ func DeleteRoutingRekIndukByKodeLKM(ctx *gin.Context) {
 			httpio.ResponseString(http.StatusInternalServerError, "internal service error", nil)
 		}
 	} else {
-		httpio.Response(http.StatusOK, nil)
+		httpio.Response(http.StatusOK, getUser)
 	}
 
 }

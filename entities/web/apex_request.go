@@ -5,7 +5,7 @@ type KodeLKMFilter struct {
 }
 
 type KodeLKMUri struct {
-	UserName string `uri:"user_name"`
+	KodeLkm string `uri:"kode_lkm"`
 }
 
 type LimitOffsetLkmUri struct {
@@ -26,7 +26,12 @@ type LoginInput struct {
 	Password  string `form:"password" binding:"required"`
 }
 
-type SaveRoutingRekInduk struct {
+type CreateRoutingRekInduk struct {
+	KodeLkm    string `form:"kode_lkm" binding:"required"`
+	NorekInduk string `form:"norek_induk" binding:"required"`
+}
+
+type UpdateRoutingRekInduk struct {
 	KodeLkm       string `form:"kode_lkm" binding:"required"`
 	NorekInduk    string `form:"norek_induk" binding:"required"`
 	KodeLkmTarget string `form:"kode_lkm_target" binding:"required"`

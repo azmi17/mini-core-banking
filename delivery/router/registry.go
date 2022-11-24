@@ -15,7 +15,11 @@
 package router
 
 import (
-	"apex-ems-integration-clean-arch/delivery/handler"
+	appInformationsHandler "apex-ems-integration-clean-arch/delivery/handler/app-informations"
+	institutionsHandler "apex-ems-integration-clean-arch/delivery/handler/institutions"
+	institutionRoutingsHandler "apex-ems-integration-clean-arch/delivery/handler/lkm-routings"
+	tabungansHandler "apex-ems-integration-clean-arch/delivery/handler/tabungans"
+	usersHandler "apex-ems-integration-clean-arch/delivery/handler/users"
 
 	"github.com/gin-gonic/gin"
 )
@@ -26,20 +30,23 @@ func RegisterHandler(router *gin.Engine) {
 	apiv1 := router.Group("api/v1")
 
 	// API Endpoint:
-	apiv1.GET("/version", handler.AppInfo)
-	apiv1.GET("/vendors", handler.GetScGroup)
-	apiv1.GET("/routing", handler.GetListRoutingRekInduk)
-	apiv1.GET("/institutions/:user_name", handler.GetLkmInfo)
-	apiv1.GET("/institutions/all/:limit/:offset", handler.GetLkmInfoList)
+	apiv1.GET("/version", appInformationsHandler.AppInfo)
+	apiv1.GET("/vendors", tabungansHandler.GetTabScGroup)
 
-	apiv1.POST("/institutions", handler.CreateLKM)
-	apiv1.POST("/user/login", handler.LoginUser)
-	apiv1.POST("/routing", handler.CreateRoutingRekInduk)
-	apiv1.DELETE("/flush", handler.HardDeleteLKM)
-	apiv1.DELETE("/institutions", handler.DeleteLKM)
-	apiv1.DELETE("/routing", handler.DeleteRoutingRekIndukByKodeLKM)
-	apiv1.PUT("/institutions", handler.UpdateLKM)
-	apiv1.PUT("/user/reset-password", handler.ResetApexPassword)
-	apiv1.PUT("/routing", handler.UpdateRoutingRekInduk)
+	apiv1.GET("/institutions/:limit/:offset", tabungansHandler.GetTabungansLkmInfoList)
+	apiv1.GET("/institution/:kode_lkm", tabungansHandler.GetTabunganLkmInfo)
+	apiv1.POST("/institution", institutionsHandler.CreateLKM)
+	apiv1.PUT("/institution", institutionsHandler.UpdateLKM)
+	apiv1.DELETE("/institution/:kode_lkm", institutionsHandler.DeleteLKM)
 
+	apiv1.POST("/user/login", usersHandler.LoginUser)
+	apiv1.PUT("/user/reset-password", usersHandler.ResetApexPassword)
+
+	apiv1.GET("/routing/:kode_lkm", institutionRoutingsHandler.GetRoutingRekInduk)
+	apiv1.GET("/routings/:limit/:offset", institutionRoutingsHandler.GetListRoutingRekInduk)
+	apiv1.POST("/routing", institutionRoutingsHandler.CreateRoutingRekInduk)
+	apiv1.PUT("/routing", institutionRoutingsHandler.UpdateRoutingRekInduk)
+	apiv1.DELETE("/routing/:kode_lkm", institutionRoutingsHandler.DeleteRoutingRekIndukByKodeLKM)
+
+	apiv1.DELETE("/flush", institutionsHandler.HardDeleteLKM)
 }

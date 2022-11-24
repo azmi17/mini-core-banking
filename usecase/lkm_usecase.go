@@ -172,29 +172,7 @@ func (lkm *lkmUsecase) UpdateLkm(payload web.SaveLKMApex) (updateLkm web.LKMUpda
 		return updateLkm, er
 	}
 
-	//Converting data => 2 repo to update response
 	return helper.ApexUpdateLKMResponse(nasabah, sysDaftarUser), nil
-
-}
-
-func (lkm *lkmUsecase) HardDeleteLkm(kodeLkm string) (er error) {
-	nasabahRepo, _ := nasabahrepo.NewNasabahRepo()
-	tabunganRepo, _ := tabunganrepo.NewTabunganRepo()
-	sysUserRepo, _ := sysuserrepo.NewSysUserRepo()
-
-	if er = nasabahRepo.HardDeleteNasabah(kodeLkm); er != nil {
-		return er
-	}
-
-	if er = tabunganRepo.HardDeleteTabung(kodeLkm); er != nil {
-		return er
-	}
-
-	if er = sysUserRepo.HardDeleteSysDaftarUser(kodeLkm); er != nil {
-		return er
-	}
-
-	return nil
 
 }
 
@@ -212,6 +190,27 @@ func (lkm *lkmUsecase) DeleteLkm(kodeLkm string) (er error) {
 	}
 
 	if er = sysUserRepo.DeleteSysDaftarUser(kodeLkm); er != nil {
+		return er
+	}
+
+	return nil
+
+}
+
+func (lkm *lkmUsecase) HardDeleteLkm(kodeLkm string) (er error) {
+	nasabahRepo, _ := nasabahrepo.NewNasabahRepo()
+	tabunganRepo, _ := tabunganrepo.NewTabunganRepo()
+	sysUserRepo, _ := sysuserrepo.NewSysUserRepo()
+
+	if er = nasabahRepo.HardDeleteNasabah(kodeLkm); er != nil {
+		return er
+	}
+
+	if er = tabunganRepo.HardDeleteTabung(kodeLkm); er != nil {
+		return er
+	}
+
+	if er = sysUserRepo.HardDeleteSysDaftarUser(kodeLkm); er != nil {
 		return er
 	}
 

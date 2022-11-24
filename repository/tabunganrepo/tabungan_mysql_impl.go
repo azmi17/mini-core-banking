@@ -96,7 +96,7 @@ func (t *TabunganMysqlImpl) CreateTabung(newTabung entities.Tabung) (tabung enti
 		newTabung.Kode_Keterkaitan,
 		newTabung.Kode_Kantor_Kas,
 		newTabung.No_Rekening_Virtual); er != nil {
-		return tabung, errors.New(fmt.Sprint("error while add tabung : ", er.Error()))
+		return tabung, errors.New(fmt.Sprint("error while add tabung: ", er.Error()))
 	} else {
 		return newTabung, nil
 	}
@@ -107,7 +107,7 @@ func (t *TabunganMysqlImpl) HardDeleteTabung(kodeLkm string) (er error) {
 
 	stmt, er := t.apexDb.Prepare("DELETE FROM tabung WHERE no_rekening = ?")
 	if er != nil {
-		return errors.New(fmt.Sprint("error while prepare delete tabung : ", er.Error()))
+		return errors.New(fmt.Sprint("error while prepare delete tabung: ", er.Error()))
 	}
 
 	defer func() {
@@ -123,17 +123,17 @@ func (t *TabunganMysqlImpl) HardDeleteTabung(kodeLkm string) (er error) {
 
 func (t *TabunganMysqlImpl) DeleteTabung(kodeLkm string) (er error) {
 
-	stmt, er := t.apexDb.Prepare("UPDATE tabung SET status = 0 WHERE no_rekening = ?")
+	stmt, er := t.apexDb.Prepare(`UPDATE tabung SET status = 0, no_rekening = ? WHERE no_rekening = ?`)
 	if er != nil {
-		return errors.New(fmt.Sprint("error while prepare delete tabung : ", er.Error()))
+		return errors.New(fmt.Sprint("error while prepare delete tabung: ", er.Error()))
 	}
 
 	defer func() {
 		_ = stmt.Close()
 	}()
 
-	if _, er := stmt.Exec(kodeLkm); er != nil {
-		return errors.New(fmt.Sprint("error while delete tabung : ", er.Error()))
+	if _, er := stmt.Exec("DEL-"+kodeLkm, kodeLkm); er != nil {
+		return errors.New(fmt.Sprint("error while delete tabung: ", er.Error()))
 	}
 
 	return nil
@@ -268,4 +268,27 @@ func (t *TabunganMysqlImpl) GetTabInfoList(limitOffset web.LimitOffsetLkmUri) (l
 	} else {
 		return
 	}
+}
+
+func (t *TabunganMysqlImpl) FindTabunganLkm(tabunganLkm string) (tabung entities.Tabung, er error) {
+	row := t.apexDb.QueryRow(`SELECT
+		no_rekening, 
+		nasabah_id,
+		saldo_akhir,
+		status
+	FROM tabung WHERE no_rekening = ? LIMIT 1`, tabunganLkm)
+	er = row.Scan(
+		&tabung.No_Rekening,
+		&tabung.Nasabah_Id,
+		&tabung.Saldo_Akhir,
+		&tabung.Status,
+	)
+	if er != nil {
+		if er == sql.ErrNoRows {
+			return tabung, err.NoRecord
+		} else {
+			return tabung, errors.New(fmt.Sprint("error while get tabungan LKM: ", er.Error()))
+		}
+	}
+	return
 }

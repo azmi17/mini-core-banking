@@ -13,34 +13,38 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UpdateLKM(ctx *gin.Context) {
+func UpdateRoutingRekInduk(ctx *gin.Context) {
 
 	// Init HTTP Request..
 	httpio := httpio.NewRequestIO(ctx)
 
 	// Call Payload and binding form
-	payload := web.SaveLKMApex{}
+	payload := web.UpdateRoutingRekInduk{}
 	rerr := httpio.BindWithErr(&payload)
 	if rerr != nil {
 		errors := helper.FormatValidationError(rerr)
 		errorMesage := gin.H{"errors": errors}
-		response := helper.ApiResponse("Update institution failed", http.StatusUnprocessableEntity, "failed", errorMesage)
+		response := helper.ApiResponse("Update routing rek induk failed", http.StatusUnprocessableEntity, "failed", errorMesage)
 		httpio.Response(http.StatusUnprocessableEntity, response)
 		return
 	}
 
-	usecase := usecase.NewLkmUsecase()
-	updLkm, er := usecase.UpdateLkm(payload)
+	usecase := usecase.NewRoutingIndukUsecase()
+	routingData, er := usecase.UpdateSysApexRoutingRekInduk(payload)
+
 	if er != nil {
-		if er == err.DuplicateEntry {
-			httpio.ResponseString(statuscode.StatusDuplicate, "Institution data is available!", nil)
+		if er == err.NoRecord {
+			entities.PrintLog(er.Error())
+			httpio.ResponseString(statuscode.StatusNoRecord, "Record not found!", nil)
+			return
 		} else {
 			entities.PrintError(er.Error())
-			entities.PrintLog(er.Error())
 			httpio.ResponseString(http.StatusInternalServerError, "internal service error", nil)
+			return
 		}
+
 	} else {
-		httpio.Response(http.StatusOK, updLkm)
+		httpio.Response(http.StatusOK, routingData)
 	}
 
 }

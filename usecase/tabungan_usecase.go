@@ -3,7 +3,6 @@ package usecase
 import (
 	"apex-ems-integration-clean-arch/entities/err"
 	"apex-ems-integration-clean-arch/entities/web"
-	"apex-ems-integration-clean-arch/repository/sysuserrepo"
 	"apex-ems-integration-clean-arch/repository/tabunganrepo"
 )
 
@@ -11,10 +10,6 @@ type TabunganUsecase interface {
 	GetTabScGroup() ([]web.TabSCGroup, error)
 	GetTabDetailInfo(Id string) (web.GetDetailLKMInfo, error)
 	GetTabInfoList(limitOffset web.LimitOffsetLkmUri) ([]web.GetDetailLKMInfo, error)
-	GetListRoutingRekInduk() ([]web.RoutingRekIndukData, error)
-	CreateSysApexRoutingRekInduk(web.SaveRoutingRekInduk) (web.RoutingRekIndukData, error)
-	UpdateSysApexRoutingRekInduk(web.SaveRoutingRekInduk) (web.RoutingRekIndukData, error)
-	DeleteSysApexRoutingRekInduk(kodeLkm string) error
 }
 
 type tabunganUsecase struct{}
@@ -65,56 +60,4 @@ func (t *tabunganUsecase) GetTabInfoList(limitOffset web.LimitOffsetLkmUri) (lkm
 	}
 
 	return lkmTabList, nil
-}
-
-func (t *tabunganUsecase) GetListRoutingRekInduk() (routingList []web.RoutingRekIndukData, er error) {
-	sysApexRepo, _ := sysuserrepo.NewSysUserRepo()
-
-	routingList, er = sysApexRepo.GetListSysApexRoutingRekInduk()
-	if er != nil {
-		return routingList, er
-	}
-
-	if len(routingList) == 0 {
-		return routingList, err.NoRecord
-	}
-
-	return routingList, nil
-}
-
-func (t *tabunganUsecase) CreateSysApexRoutingRekInduk(payload web.SaveRoutingRekInduk) (data web.RoutingRekIndukData, er error) {
-	sysApexRepo, _ := sysuserrepo.NewSysUserRepo()
-
-	data.KodeLkm = payload.KodeLkm
-	data.NorekInduk = payload.NorekInduk
-
-	if data, er = sysApexRepo.CreateSysApexRoutingRekInduk(data.KodeLkm, data.NorekInduk); er != nil {
-		return data, er
-	}
-
-	return
-}
-
-func (t *tabunganUsecase) UpdateSysApexRoutingRekInduk(payload web.SaveRoutingRekInduk) (data web.RoutingRekIndukData, er error) {
-	sysApexRepo, _ := sysuserrepo.NewSysUserRepo()
-
-	data.KodeLkm = payload.KodeLkm
-	data.NorekInduk = payload.NorekInduk
-
-	if data, er = sysApexRepo.UpdateSysApexRoutingRekInduk(data.KodeLkm, data.NorekInduk, payload.KodeLkmTarget); er != nil {
-		return data, er
-	}
-
-	return
-}
-
-func (t *tabunganUsecase) DeleteSysApexRoutingRekInduk(kodeLkm string) (er error) {
-	sysApexRepo, _ := sysuserrepo.NewSysUserRepo()
-
-	if er = sysApexRepo.DeleteSysApexRoutingRekInduk(kodeLkm); er != nil {
-		return er
-	}
-
-	return nil
-
 }
