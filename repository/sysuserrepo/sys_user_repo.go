@@ -2,9 +2,12 @@ package sysuserrepo
 
 import (
 	"apex-ems-integration-clean-arch/entities"
+	"apex-ems-integration-clean-arch/entities/web"
 )
 
 type SysUserRepo interface {
+	GetSingleUserByUserName(userName string) (web.ManajemenUserDataResponse, error)
+	GetListOfUsers(limitOffset web.LimitOffsetLkmUri) ([]web.ManajemenUserDataResponse, error)
 	CreateSysDaftarUser(newSysUser entities.SysDaftarUser) (entities.SysDaftarUser, error)
 	UpdateSysDaftarUser(updNasabah entities.SysDaftarUser) (entities.SysDaftarUser, error)
 	HardDeleteSysDaftarUser(kodeLkm string) error

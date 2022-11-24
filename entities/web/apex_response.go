@@ -65,3 +65,37 @@ type SaveRoutingRekIndukResponse struct {
 	Response_Msg  string               `json:"response_message"`
 	Data          *RoutingRekIndukData `json:"data,omitempty"`
 }
+
+type CreateManajemenUserDataResponse struct {
+	User_ID      int    `json:"user_id"`
+	User_Name    string `json:"user_name"`
+	Nama_Lengkap string `json:"nama_lengkap"`
+	Password     string `json:"password"`
+	Jabatan      string `json:"jabatan"`
+	Unit_Kerja   string `json:"unit_kerja"`
+	Tgl_Expired  string `json:"tgl_expired"`
+	StatusAktif  int    `json:"status_aktif"`
+	User_Code    string `json:"user_code"`
+}
+
+type UpdateManajemenUserDataResponse struct {
+	User_ID      int    `json:"user_id"`
+	User_Name    string `json:"user_name"`
+	Nama_Lengkap string `json:"nama_lengkap"`
+	Jabatan      string `json:"jabatan"`
+	Unit_Kerja   string `json:"unit_kerja"`
+	Tgl_Expired  string `json:"tgl_expired"`
+	StatusAktif  int    `json:"status_aktif"`
+	User_Code    string `json:"user_code"`
+}
+
+type ManajemenUserDataResponse struct {
+	User_ID      int    `json:"user_id"`
+	User_Name    string `json:"user_name"`
+	Nama_Lengkap string `json:"nama_lengkap"`
+	Jabatan      string `json:"jabatan"`
+	Unit_Kerja   string `json:"unit_kerja"`
+	Tgl_Expired  string `json:"tgl_expired"`
+	StatusAktif  int    `json:"status_aktif"`
+	User_Code    string `json:"user_code"`
+}

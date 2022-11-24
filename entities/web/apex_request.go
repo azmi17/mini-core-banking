@@ -36,3 +36,18 @@ type UpdateRoutingRekInduk struct {
 	NorekInduk    string `form:"norek_induk" binding:"required"`
 	KodeLkmTarget string `form:"kode_lkm_target" binding:"required"`
 }
+
+type CreateManajemenUser struct {
+	UserName string `form:"user_name" binding:"required,min=4"`
+	NamaUser string `form:"nama_user" binding:"required"`
+	Jabatan  string `form:"jabatan" binding:"required"`
+	UserCode string `form:"user_code" binding:"required"`
+}
+
+type UpdateManajemenUser struct {
+	UserName    string `form:"user_name" binding:"required,min=4"`
+	NamaUser    string `form:"nama_user" binding:"required"`
+	Jabatan     string `form:"jabatan" binding:"required"`
+	StatusAktif int    `form:"status_aktif" binding:"required"`
+	UserCode    string `form:"user_code" binding:"required"`
+}

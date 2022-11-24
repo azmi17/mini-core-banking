@@ -73,7 +73,7 @@ func (lkm *lkmUsecase) CreateLkm(payload web.SaveLKMApex) (createLkm web.LKMCrea
 	nasabah.Flag_Masa_Berlaku = constants.FlagMasaBerlaku
 	nasabah.Status_Marital = constants.StatusMarital
 	nasabah.Status_Tempat_Tinggal = constants.StatusTempatTinggal
-	nasabah.Masa_Berlaku_Ktp = time.Now().AddDate(7, 0, 0)
+	nasabah.Masa_Berlaku_Ktp = time.Now().AddDate(15, 0, 0)
 	if nasabah, er = nasabahRepo.CreateNasabah(nasabah); er != nil {
 		return createLkm, er
 	}
@@ -130,7 +130,7 @@ func (lkm *lkmUsecase) CreateLkm(payload web.SaveLKMApex) (createLkm web.LKMCrea
 	sysDaftarUser.Unit_Kerja = constants.UnitKerja
 	sysDaftarUser.Jabatan = constants.Jabatan
 	sysDaftarUser.User_Code = constants.UserCode
-	sysDaftarUser.Tgl_Expired = time.Now().AddDate(7, 0, 0)
+	sysDaftarUser.Tgl_Expired = time.Now().AddDate(15, 0, 0)
 	sysDaftarUser.User_Web_Password_Hash, sysDaftarUser.User_Web_Password = helper.HashSha1Pass()
 	sysDaftarUser.Flag = constants.Flag
 	sysDaftarUser.Status_Aktif = constants.StatusAktif
@@ -181,7 +181,7 @@ func (lkm *lkmUsecase) DeleteLkm(kodeLkm string) (er error) {
 	tabunganRepo, _ := tabunganrepo.NewTabunganRepo()
 	sysUserRepo, _ := sysuserrepo.NewSysUserRepo()
 
-	if er = nasabahRepo.DeleteNasabah(kodeLkm); er != nil {
+	if er = nasabahRepo.HardDeleteNasabah(kodeLkm); er != nil {
 		return er
 	}
 
@@ -189,7 +189,7 @@ func (lkm *lkmUsecase) DeleteLkm(kodeLkm string) (er error) {
 		return er
 	}
 
-	if er = sysUserRepo.DeleteSysDaftarUser(kodeLkm); er != nil {
+	if er = sysUserRepo.HardDeleteSysDaftarUser(kodeLkm); er != nil {
 		return er
 	}
 
