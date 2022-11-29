@@ -45,7 +45,7 @@ func (s *SysUserMysqlImpl) GetSingleUserByUserName(userName string) (user web.Ma
 		if er == sql.ErrNoRows {
 			return user, err.NoRecord
 		} else {
-			return user, errors.New(fmt.Sprint("error while get user data: ", er.Error()))
+			return user, errors.New(fmt.Sprint("error while get user: ", er.Error()))
 		}
 	}
 	return
@@ -122,7 +122,7 @@ func (s *SysUserMysqlImpl) CreateSysDaftarUser(newSysUser entities.SysDaftarUser
 		pengeluaran
 	) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)`)
 	if er != nil {
-		return sysUser, errors.New(fmt.Sprint("error while prepare add sys user : ", er.Error()))
+		return sysUser, errors.New(fmt.Sprint("error while prepare add sys user: ", er.Error()))
 	}
 	defer func() {
 		_ = stmt.Close()
@@ -142,7 +142,7 @@ func (s *SysUserMysqlImpl) CreateSysDaftarUser(newSysUser entities.SysDaftarUser
 		newSysUser.Status_Aktif,
 		newSysUser.Penerimaan,
 		newSysUser.Pengeluaran); er != nil {
-		return sysUser, errors.New(fmt.Sprint("error while add tabung : ", er.Error()))
+		return sysUser, errors.New(fmt.Sprint("error while add sys user: ", er.Error()))
 	} else {
 
 		lastId, txErr := stmt.LastInsertId()
@@ -225,6 +225,12 @@ func (s *SysUserMysqlImpl) HardDeleteSysDaftarUser(kodeLkm string) (er error) {
 
 func (s *SysUserMysqlImpl) DeleteSysDaftarUser(kodeLkm string) (er error) {
 
+	thisRepo, _ := NewSysUserRepo()
+	_, er = thisRepo.GetSingleUserByUserName(kodeLkm)
+	if er != nil {
+		return err.NoRecord
+	}
+
 	stmt, er := s.apexDb.Prepare("UPDATE sys_daftar_user SET status_aktif = 0, user_name = ? WHERE user_name = ?")
 	if er != nil {
 		return errors.New(fmt.Sprint("error while prepare delete user : ", er.Error()))
@@ -242,6 +248,13 @@ func (s *SysUserMysqlImpl) DeleteSysDaftarUser(kodeLkm string) (er error) {
 }
 
 func (s *SysUserMysqlImpl) ResetUserPassword(user entities.SysDaftarUser) (sysUser entities.SysDaftarUser, er error) {
+
+	thisRepo, _ := NewSysUserRepo()
+	_, er = thisRepo.GetSingleUserByUserName(user.User_Name)
+	if er != nil {
+		return sysUser, err.NoRecord
+	}
+
 	stmt, er := s.apexDb.Prepare("UPDATE sys_daftar_user SET user_web_password = ? WHERE user_name = ?")
 	if er != nil {
 		return sysUser, errors.New(fmt.Sprint("error while prepare update apex password: ", er.Error()))

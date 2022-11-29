@@ -23,6 +23,7 @@ type RequestIO interface {
 	ResponseString(statusCode int, response string, responseBody interface{})
 	ResponseStringWithAbort(statusCode int, response string)
 	BindWithErr(obj interface{}) error
+	BindUriWithErr(obj interface{}) error
 }
 
 type formio struct {
@@ -74,6 +75,22 @@ func (f *formio) BindUri(body interface{}) {
 	_ = f.context.ShouldBindHeader(&header)
 	_ = f.context.ShouldBindUri(body) // why you ignore err?
 	go receiveForm("RECV", header, nil, f.request.RequestURI, path)
+}
+
+func (f *formio) BindUriWithErr(body interface{}) error {
+	header := params.Header{}
+	path := fmt.Sprintf("%s %s", f.request.Method, f.request.URL.Path)
+
+	_ = f.context.ShouldBindHeader(&header)
+	_ = f.context.ShouldBindUri(body)
+
+	m := make(map[string][]string)
+	for _, v := range f.context.Params {
+		m[v.Key] = []string{v.Value}
+	}
+
+	go receiveForm("RECV", header, nil, f.request.RequestURI, path)
+	return binding.Uri.BindUri(m, body)
 }
 
 //These methods use MustBindWith under the hood. If there is a binding error, the request is aborted with c.AbortWithError(400, err).SetType(ErrorTypeBind).

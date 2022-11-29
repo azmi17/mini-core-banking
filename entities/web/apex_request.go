@@ -51,3 +51,9 @@ type UpdateManajemenUser struct {
 	StatusAktif int    `form:"status_aktif" binding:"required"`
 	UserCode    string `form:"user_code" binding:"required"`
 }
+
+type GetListTabtransByDate struct {
+	TanggalAwal  string `form:"tanggal_awal" binding:"required"`
+	TanggalAkhir string `form:"tanggal_akhir" binding:"required"`
+	BankCode     string `form:"kode_lkm"`
+}

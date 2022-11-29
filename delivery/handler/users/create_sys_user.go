@@ -33,7 +33,7 @@ func CreateSysUser(ctx *gin.Context) {
 	user, er := usecase.CreateSysUser(payload)
 	if er != nil {
 		if er == err.DuplicateEntry {
-			httpio.ResponseString(statuscode.StatusDuplicate, "user data is available!", nil)
+			httpio.ResponseString(statuscode.StatusDuplicate, "user is available!", nil)
 		} else {
 			entities.PrintError(er.Error())
 			entities.PrintLog(er.Error())

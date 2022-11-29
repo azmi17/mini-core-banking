@@ -99,3 +99,31 @@ type ManajemenUserDataResponse struct {
 	StatusAktif  int    `json:"status_aktif"`
 	User_Code    string `json:"user_code"`
 }
+
+type GetListTabtransInfo struct {
+	TabtransID  int     `json:"tabtrans_id"`
+	TglTrans    string  `json:"tgl_trans"`
+	KodeLKM     string  `json:"kode_lkm"`
+	NamaLembaga string  `json:"nama_lembaga"`
+	Pokok       float64 `json:"pokok"`
+	Dk          string  `json:"dk"`
+	Lkm_Norek   string  `json:"lkm_no_rekening"`
+	Idpel       string  `json:"idpel"`
+	KodeTrans   string  `json:"kode_trans"`
+	Kuitansi    string  `json:"kuitansi"`
+	Keterangan  string  `json:"keterangan"`
+	BillerCode  string  `json:"biller_code"`
+	ProductCode string  `json:"product_code"`
+	UserID      int     `json:"user_id"`
+}
+
+type GetCountWithSumTabtransTrx struct {
+	TotalTrx   int     `json:"total_trx"`
+	TotalPokok float64 `json:"total_pokok"`
+}
+
+type GetListTabtransInfoWithCountSumResp struct {
+	TotalTrx   int                    `json:"total_trx"`
+	TotalPokok float64                `json:"total_pokok"`
+	Data       *[]GetListTabtransInfo `json:"data,omitempty"`
+}

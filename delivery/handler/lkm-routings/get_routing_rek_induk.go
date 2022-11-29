@@ -23,7 +23,7 @@ func GetRoutingRekInduk(ctx *gin.Context) {
 	data, er := usecase.GetRoutingRekInduk(payload.KodeLkm)
 	if er != nil {
 		if er == err.NoRecord {
-			httpio.ResponseString(statuscode.StatusNoRecord, "record not found.", nil)
+			httpio.ResponseString(statuscode.StatusNoRecord, "record not found", nil)
 		} else {
 			entities.PrintError(er.Error())
 			httpio.ResponseString(http.StatusInternalServerError, "internal service error", nil)

@@ -18,6 +18,7 @@ import (
 	appInformationsHandler "apex-ems-integration-clean-arch/delivery/handler/app-informations"
 	institutionsHandler "apex-ems-integration-clean-arch/delivery/handler/institutions"
 	institutionRoutingsHandler "apex-ems-integration-clean-arch/delivery/handler/lkm-routings"
+	tabtransHandler "apex-ems-integration-clean-arch/delivery/handler/tabtrans"
 	tabungansHandler "apex-ems-integration-clean-arch/delivery/handler/tabungans"
 	usersHandler "apex-ems-integration-clean-arch/delivery/handler/users"
 
@@ -37,7 +38,7 @@ func RegisterHandler(router *gin.Engine) {
 	apiv1.GET("/institution/:kode_lkm", tabungansHandler.GetTabunganLkmInfo)
 	apiv1.POST("/institution", institutionsHandler.CreateLKM)
 	apiv1.PUT("/institution", institutionsHandler.UpdateLKM)
-	apiv1.DELETE("/institution/:kode_lkm", institutionsHandler.DeleteLKM)
+	apiv1.DELETE("/institution/:kode_lkm", institutionsHandler.DeleteLKM) // => Jangan Embedd ke EMS (proses di lakukan di Aped)
 
 	apiv1.POST("/user", usersHandler.CreateSysUser)
 	apiv1.PUT("/user", usersHandler.UpdateSysUser)
@@ -52,6 +53,8 @@ func RegisterHandler(router *gin.Engine) {
 	apiv1.POST("/routing", institutionRoutingsHandler.CreateRoutingRekInduk)
 	apiv1.PUT("/routing", institutionRoutingsHandler.UpdateRoutingRekInduk)
 	apiv1.DELETE("/routing/:kode_lkm", institutionRoutingsHandler.DeleteRoutingRekIndukByKodeLKM)
+
+	apiv1.POST("/tabtrans/:limit/:offset", tabtransHandler.GetTabungansLkmInfoList)
 
 	apiv1.DELETE("/flush", institutionsHandler.HardDeleteLKM)
 }
