@@ -54,7 +54,10 @@ func RegisterHandler(router *gin.Engine) {
 	apiv1.PUT("/routing", institutionRoutingsHandler.UpdateRoutingRekInduk)
 	apiv1.DELETE("/routing/:kode_lkm", institutionRoutingsHandler.DeleteRoutingRekIndukByKodeLKM)
 
-	apiv1.POST("/tabtrans/:limit/:offset", tabtransHandler.GetTabungansLkmInfoList)
+	apiv1.POST("/tabtrans/:limit/:offset", tabtransHandler.GetListsTabtransTrx)
+	apiv1.POST("/tabtrans/by-stan", tabtransHandler.GetListsTabtransTrxBySTAN)
+	apiv1.PUT("/tabtrans", tabtransHandler.ChangeDateOnTabtransTrx)
+	apiv1.DELETE("/tabtrans/:tabtrans_id", tabtransHandler.DeleteTabtransTrx)
 
 	apiv1.DELETE("/flush", institutionsHandler.HardDeleteLKM)
 }

@@ -12,15 +12,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func DeleteRoutingRekIndukByKodeLKM(ctx *gin.Context) {
+func DeleteTabtransTrx(ctx *gin.Context) {
 
 	httpio := httpio.NewRequestIO(ctx)
 
-	payload := web.KodeLKMUri{}
+	payload := web.TabtransIDUri{}
 	httpio.BindUri(&payload)
 
-	usecase := usecase.NewRoutingIndukUsecase()
-	er := usecase.DeleteSysApexRoutingRekInduk(payload.KodeLkm)
+	usecase := usecase.NewTabtransUsecase()
+	er := usecase.DeleteTabtransTrx(payload.TabtransID)
 	if er != nil {
 		if er == err.NoRecord {
 			httpio.ResponseString(statuscode.StatusNoRecord, "Record not found", nil)

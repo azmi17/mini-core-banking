@@ -100,7 +100,7 @@ type ManajemenUserDataResponse struct {
 	User_Code    string `json:"user_code"`
 }
 
-type GetListTabtransInfo struct {
+type GetListTabtransTrx struct {
 	TabtransID  int     `json:"tabtrans_id"`
 	TglTrans    string  `json:"tgl_trans"`
 	KodeLKM     string  `json:"kode_lkm"`
@@ -123,7 +123,7 @@ type GetCountWithSumTabtransTrx struct {
 }
 
 type GetListTabtransInfoWithCountSumResp struct {
-	TotalTrx   int                    `json:"total_trx"`
-	TotalPokok float64                `json:"total_pokok"`
-	Data       *[]GetListTabtransInfo `json:"data,omitempty"`
+	TotalTrx   int                   `json:"total_trx"`
+	TotalPokok float64               `json:"total_pokok"`
+	Data       *[]GetListTabtransTrx `json:"data,omitempty"`
 }

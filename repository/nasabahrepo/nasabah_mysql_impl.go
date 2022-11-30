@@ -126,8 +126,10 @@ func (n *NasbahMysqlImpl) UpdateNasabah(updNasabah entities.Nasabah) (nasabah en
 		alamat = ?, 
 		alamat2 = ?, 
 		telpon = ?, 
-		hp = ?, hp1 = ?,  
-		hp2 = ?, userid = ?  
+		hp = ?, 
+		hp1 = ?,  
+		hp2 = ?, 
+		userid = ?  
 		WHERE nasabah_id = ?`)
 	if er != nil {
 		return nasabah, errors.New(fmt.Sprint("error while prepare update nasabah : ", er.Error()))

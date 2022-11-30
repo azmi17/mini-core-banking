@@ -1,11 +1,19 @@
 package web
 
+type StanFilter struct {
+	Stan string `form:"stan"`
+}
+
 type KodeLKMFilter struct {
 	KodeLkm string `form:"kode_lkm"`
 }
 
 type KodeLKMUri struct {
 	KodeLkm string `uri:"kode_lkm"`
+}
+
+type TabtransIDUri struct {
+	TabtransID int `uri:"tabtrans_id"`
 }
 
 type LimitOffsetLkmUri struct {
@@ -56,4 +64,9 @@ type GetListTabtransByDate struct {
 	TanggalAwal  string `form:"tanggal_awal" binding:"required"`
 	TanggalAkhir string `form:"tanggal_akhir" binding:"required"`
 	BankCode     string `form:"kode_lkm"`
+}
+
+type ChangeTglTransOnTabtrans struct {
+	TabtransID int    `form:"tabtrans_id" binding:"required"`
+	Tanggal    string `form:"tanggal" binding:"required"`
 }

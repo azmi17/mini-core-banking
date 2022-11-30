@@ -13,43 +13,31 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetTabungansLkmInfoList(ctx *gin.Context) {
+func ChangeDateOnTabtransTrx(ctx *gin.Context) {
 
 	httpio := httpio.NewRequestIO(ctx)
 
-	uriPayload := web.LimitOffsetLkmUri{}
-	httpio.BindUri(&uriPayload)
-
-	formPayload := web.GetListTabtransByDate{}
-	rerr := httpio.BindWithErr(&formPayload)
+	payload := web.ChangeTglTransOnTabtrans{}
+	rerr := httpio.BindWithErr(&payload)
 	if rerr != nil {
 		errors := helper.FormatValidationError(rerr)
 		errorMesage := gin.H{"errors": errors}
-		response := helper.ApiResponse("get tabtrans transaction failed", http.StatusUnprocessableEntity, "failed", errorMesage)
+		response := helper.ApiResponse("Change tgl_trans failed", http.StatusUnprocessableEntity, "failed", errorMesage)
 		httpio.Response(http.StatusUnprocessableEntity, response)
 		return
 	}
 
 	usecase := usecase.NewTabtransUsecase()
-	tabtransTxList, total, er := usecase.GetListTabtransInfo(formPayload, uriPayload)
-
-	resp := web.GetListTabtransInfoWithCountSumResp{}
+	data, er := usecase.ChangeDateOnTabtransTrx(payload.TabtransID, payload.Tanggal)
 	if er != nil {
 		if er == err.NoRecord {
 			httpio.ResponseString(statuscode.StatusNoRecord, "record not found", nil)
-			return
-		} else if er == err.BadRequest {
-			httpio.ResponseString(http.StatusBadRequest, "invalid parameters", nil)
-			return
 		} else {
 			entities.PrintError(er.Error())
 			httpio.ResponseString(http.StatusInternalServerError, "internal service error", nil)
-			return
 		}
 	} else {
-		resp.TotalTrx = total.TotalTrx
-		resp.TotalPokok = total.TotalPokok
-		resp.Data = &tabtransTxList
+		httpio.Response(http.StatusOK, data)
 	}
-	httpio.Response(http.StatusOK, resp)
+
 }
