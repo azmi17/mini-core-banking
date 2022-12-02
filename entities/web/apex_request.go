@@ -5,7 +5,7 @@ type StanFilter struct {
 }
 
 type KodeLKMFilter struct {
-	KodeLkm string `form:"kode_lkm"`
+	KodeLkm string `form:"kode_lkm" binding:"required,min=4"`
 }
 
 type KodeLKMUri struct {
@@ -68,5 +68,10 @@ type GetListTabtransByDate struct {
 
 type ChangeTglTransOnTabtrans struct {
 	TabtransID int    `form:"tabtrans_id" binding:"required"`
-	Tanggal    string `form:"tanggal" binding:"required"`
+	Tanggal    string `form:"tanggal" binding:"required,max=8"`
+}
+
+type RepostingTabungPayload struct {
+	KodeLKM    string
+	SaldoAkhir float64
 }

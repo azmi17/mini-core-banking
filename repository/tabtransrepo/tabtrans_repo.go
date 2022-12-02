@@ -13,5 +13,6 @@ type TabtransRepo interface {
 	GetListsTabtransTrxBySTAN(stan string) ([]web.GetListTabtransTrx, error)
 	DeleteTabtransTrx(tabtransID int) error
 	ChangeDateOnTabtransTrx(tabtransID int, tglTrans string) (web.GetListTabtransTrx, error)
+	CountSaldoAkhirOnNoRekening(kodeLKM string) (web.CalculateRepostingResult, error)
 	GetTotalTrxWithTotalPokok(TglTrans web.GetListTabtransByDate) (web.GetCountWithSumTabtransTrx, error)
 }

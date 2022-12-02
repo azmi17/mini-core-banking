@@ -296,6 +296,35 @@ func (t *TabtransMysqlImpl) ChangeDateOnTabtransTrx(tabtransID int, tglTrans str
 
 }
 
+func (t *TabtransMysqlImpl) CountSaldoAkhirOnNoRekening(kodeLKM string) (data web.CalculateRepostingResult, er error) {
+	var tabtrans web.RepostingData
+	row := t.apexDb.QueryRow(`SELECT 
+	  no_rekening,
+	  SUM(CASE WHEN my_kode_trans='100' THEN pokok ELSE 0 END) AS total_kredit,
+	  SUM(CASE WHEN my_kode_trans='200' THEN pokok ELSE 0 END) AS total_debet
+	FROM tabtrans
+	 WHERE
+	no_rekening = ? GROUP BY no_rekening
+	`, kodeLKM)
+	er = row.Scan(
+		&tabtrans.KodeLKM,
+		&tabtrans.TotalKredit,
+		&tabtrans.TotalDebet,
+	)
+	if er != nil {
+		if er == sql.ErrNoRows {
+			return data, err.NoRecord
+		} else {
+			return data, errors.New(fmt.Sprint("error while get reposting saldo akhir: ", er.Error()))
+		}
+
+	}
+	data.KodeLKM = tabtrans.KodeLKM
+	data.SaldoAkhir = tabtrans.TotalKredit - tabtrans.TotalDebet
+
+	return data, nil
+}
+
 func (t *TabtransMysqlImpl) GetTotalTrxWithTotalPokok(TglTrans web.GetListTabtransByDate) (total web.GetCountWithSumTabtransTrx, er error) {
 
 	rows, err := t.apexDb.Query(`SELECT 

@@ -127,3 +127,23 @@ type GetListTabtransInfoWithCountSumResp struct {
 	TotalPokok float64               `json:"total_pokok"`
 	Data       *[]GetListTabtransTrx `json:"data,omitempty"`
 }
+
+type RepostingData struct {
+	KodeLKM     string
+	TotalDebet  float64
+	TotalKredit float64
+}
+
+type CalculateRepostingResult struct {
+	KodeLKM    string
+	SaldoAkhir float64
+}
+
+type LKMlist struct {
+	KodeLKM string
+}
+
+type RepostingSaldoAkhirResp struct {
+	ResponseCode    string `json:"response_code"`
+	ResponseMessage string `json:"response_message"`
+}

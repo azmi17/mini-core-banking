@@ -40,6 +40,8 @@ func RegisterHandler(router *gin.Engine) {
 	apiv1.PUT("/institution", institutionsHandler.UpdateLKM)
 	apiv1.DELETE("/institution/:kode_lkm", institutionsHandler.DeleteLKM) // => Jangan Embedd ke EMS (proses di lakukan di Aped)
 
+	apiv1.POST("/tabung/reposting", tabungansHandler.RepostingSaldo)
+
 	apiv1.POST("/user", usersHandler.CreateSysUser)
 	apiv1.PUT("/user", usersHandler.UpdateSysUser)
 	apiv1.POST("/user/search", usersHandler.FindSingleUserByUserName)

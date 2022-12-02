@@ -13,4 +13,5 @@ type TabunganRepo interface {
 	GetTabInfoList(limitOffset web.LimitOffsetLkmUri) ([]web.GetDetailLKMInfo, error)
 	HardDeleteTabung(kodeLkm string) error
 	DeleteTabung(kodeLkm string) error
+	RepostingTabungan(data ...web.CalculateRepostingResult) error
 }

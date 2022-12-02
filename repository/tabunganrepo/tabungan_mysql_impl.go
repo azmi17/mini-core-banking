@@ -292,3 +292,21 @@ func (t *TabunganMysqlImpl) FindTabunganLkm(tabunganLkm string) (tabung entities
 	}
 	return
 }
+
+func (t *TabunganMysqlImpl) RepostingTabungan(data ...web.CalculateRepostingResult) (er error) {
+	stmt, er := t.apexDb.Prepare(`UPDATE tabung SET saldo_akhir = ? WHERE no_rekening = ?`)
+	if er != nil {
+		return errors.New(fmt.Sprint("error while prepare reposting saldo: ", er.Error()))
+	}
+
+	defer func() {
+		_ = stmt.Close()
+	}()
+
+	for _, lkm := range data {
+		if _, er = stmt.Exec(lkm.SaldoAkhir, lkm.KodeLKM); er != nil {
+			return errors.New(fmt.Sprint("error while reposting saldo: ", er.Error()))
+		}
+	}
+	return
+}
