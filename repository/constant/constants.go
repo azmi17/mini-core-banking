@@ -1,7 +1,7 @@
 package constant
 
 import (
-	"apex-ems-integration-clean-arch/myutils"
+	"new-apex-api/myutils"
 )
 
 // Convert Mysql Data Type

@@ -7,49 +7,33 @@ import (
 	"new-apex-api/entities/err"
 	"new-apex-api/entities/statuscode"
 	"new-apex-api/entities/web"
-	"new-apex-api/helper"
 	"new-apex-api/usecase"
 
 	"github.com/gin-gonic/gin"
 )
 
-func GetListsTabtransTrx(ctx *gin.Context) {
-
+func GetLaporanTransaksi(ctx *gin.Context) {
 	httpio := httpio.NewRequestIO(ctx)
 
 	uriPayload := web.LimitOffsetLkmUri{}
 	httpio.BindUri(&uriPayload)
 
-	formPayload := web.GetListTabtransByDate{}
-	rerr := httpio.BindWithErr(&formPayload)
-	if rerr != nil {
-		errors := helper.FormatValidationError(rerr)
-		errorMesage := gin.H{"errors": errors}
-		response := helper.ApiResponse("get tabtrans transaction failed", http.StatusUnprocessableEntity, "failed", errorMesage)
-		httpio.Response(http.StatusUnprocessableEntity, response)
-		return
-	}
+	payload := web.DaftarTransaksiRequest{}
+	httpio.Bind(&payload)
 
 	usecase := usecase.NewTabtransUsecase()
-	listTrx, total, er := usecase.GetListsTabtransTrx(formPayload, uriPayload)
-
-	resp := web.GetListTabtransInfoWithCountSumResp{}
+	data, er := usecase.GetLaporanTransaksi(payload, uriPayload)
 	if er != nil {
 		if er == err.NoRecord {
 			httpio.ResponseString(statuscode.StatusNoRecord, "record not found", nil)
-			return
 		} else if er == err.BadRequest {
 			httpio.ResponseString(http.StatusBadRequest, "invalid parameters", nil)
 			return
 		} else {
 			entities.PrintError(er.Error())
 			httpio.ResponseString(http.StatusInternalServerError, "internal service error", nil)
-			return
 		}
 	} else {
-		resp.TotalTrx = total.TotalTrx
-		resp.TotalPokok = total.TotalPokok
-		resp.Data = &listTrx
+		httpio.Response(http.StatusOK, data)
 	}
-	httpio.Response(http.StatusOK, resp)
 }

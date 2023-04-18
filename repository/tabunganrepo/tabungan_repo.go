@@ -1,8 +1,8 @@
 package tabunganrepo
 
 import (
-	"apex-ems-integration-clean-arch/entities"
-	"apex-ems-integration-clean-arch/entities/web"
+	"new-apex-api/entities"
+	"new-apex-api/entities/web"
 )
 
 type TabunganRepo interface {
@@ -13,5 +13,5 @@ type TabunganRepo interface {
 	GetTabInfoList(limitOffset web.LimitOffsetLkmUri) ([]web.GetDetailLKMInfo, error)
 	HardDeleteTabung(kodeLkm string) error
 	DeleteTabung(kodeLkm string) error
-	RepostingTabungan(data ...web.CalculateRepostingResult) error
+	GetRekeningLKMByStatusActive() ([]string, error)
 }

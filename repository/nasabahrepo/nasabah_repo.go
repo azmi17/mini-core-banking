@@ -1,6 +1,6 @@
 package nasabahrepo
 
-import "apex-ems-integration-clean-arch/entities"
+import "new-apex-api/entities"
 
 type NasabahRepo interface {
 	FindNasabahLkm(nasabahId string) (entities.Nasabah, error)

@@ -1,9 +1,9 @@
 package handler
 
 import (
-	"apex-ems-integration-clean-arch/delivery/handler/httpio"
-	"apex-ems-integration-clean-arch/helper"
 	"net/http"
+	"new-apex-api/delivery/handler/httpio"
+	"new-apex-api/helper"
 
 	"github.com/gin-gonic/gin"
 )

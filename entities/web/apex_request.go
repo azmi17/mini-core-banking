@@ -5,7 +5,11 @@ type StanFilter struct {
 }
 
 type KodeLKMFilter struct {
-	KodeLkm string `form:"kode_lkm" binding:"required,min=4"`
+	KodeLkm string `form:"kode_lkm" binding:"required"`
+}
+
+type MultipleKodeLKM struct {
+	ListOfKodeLKM []string `form:"kode_lkm[]" binding:"required"`
 }
 
 type KodeLKMUri struct {
@@ -71,7 +75,8 @@ type ChangeTglTransOnTabtrans struct {
 	Tanggal    string `form:"tanggal" binding:"required,max=8"`
 }
 
-type RepostingTabungPayload struct {
-	KodeLKM    string
-	SaldoAkhir float64
+type GetListsDepositTrxReq struct {
+	TanggalAkhir string `form:"tanggal_awal"`
+	TanggalAwal  string `form:"tanggal_akhir"`
+	// BankCode     string `form:"kode_lkm"`
 }

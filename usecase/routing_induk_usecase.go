@@ -1,9 +1,9 @@
 package usecase
 
 import (
-	"apex-ems-integration-clean-arch/entities/err"
-	"apex-ems-integration-clean-arch/entities/web"
-	"apex-ems-integration-clean-arch/repository/routingindukrepo"
+	"new-apex-api/entities/err"
+	"new-apex-api/entities/web"
+	"new-apex-api/repository/routingindukrepo"
 )
 
 type RoutingIndukUsecase interface {

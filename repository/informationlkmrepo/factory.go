@@ -1,4 +1,4 @@
-package nasabahrepo
+package informationlkmrepo
 
 import (
 	"database/sql"
@@ -7,11 +7,11 @@ import (
 	"new-apex-api/repository/databasefactory/drivers"
 )
 
-func NewNasabahRepo() (NasabahRepo, error) {
+func NewInformationLKMRepo() (InformationLKMRepo, error) {
 	apexConn := databasefactory.Apex.GetConnection()
 	currentDriver := databasefactory.Apex.GetDriverName()
 	if currentDriver == drivers.MYSQL {
-		return newNasbahMysqlImpl(apexConn.(*sql.DB)), nil
+		return newInformationLKMMysqlImpl(apexConn.(*sql.DB)), nil
 	} else {
 		return nil, errors.New("unimplemented database driver")
 	}

@@ -1,5 +1,10 @@
 package web
 
+type GlobalResponse struct {
+	ResponseCode    string `json:"response_code"`
+	ResponseMessage string `json:"response_message"`
+}
+
 type LKMCreateResponse struct {
 	KodeLkm        string `json:"kode_lkm"`
 	Nama_Lembaga   string `json:"nama_lembaga"`
@@ -134,7 +139,7 @@ type RepostingData struct {
 	TotalKredit float64
 }
 
-type CalculateRepostingResult struct {
+type CalculateSaldoResult struct {
 	KodeLKM    string
 	SaldoAkhir float64
 }
@@ -142,8 +147,20 @@ type CalculateRepostingResult struct {
 type LKMlist struct {
 	KodeLKM string
 }
-
-type RepostingSaldoAkhirResp struct {
-	ResponseCode    string `json:"response_code"`
-	ResponseMessage string `json:"response_message"`
+type GetListsDepositTrxRes struct {
+	TransID       int     `json:"trans_id"`
+	TglTrans      string  `json:"tgl_trans"`
+	KodeLKM       string  `json:"kode_lkm"`
+	NamaLembaga   string  `json:"nama_lembaga"`
+	Tunai         float64 `json:"tunai"`
+	Transfer      float64 `json:"transfer"`
+	Piutang       float64 `json:"piutang"`
+	ViaBrhancless float64 `json:"via_branchless"`
+	Total         float64 `json:"total"`
+	NoBukti       string  `json:"no_bukti"`
+	Keterangan    string  `json:"keterangan"`
+	KodeTrans     string  `json:"kode_trans"`
+	DK            string  `json:"d/k"`
+	UserID        int     `json:"user_id"`
+	// ADM           string  `json:"adm"`
 }

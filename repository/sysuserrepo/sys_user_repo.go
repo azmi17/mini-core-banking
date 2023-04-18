@@ -1,8 +1,8 @@
 package sysuserrepo
 
 import (
-	"apex-ems-integration-clean-arch/entities"
-	"apex-ems-integration-clean-arch/entities/web"
+	"new-apex-api/entities"
+	"new-apex-api/entities/web"
 )
 
 type SysUserRepo interface {

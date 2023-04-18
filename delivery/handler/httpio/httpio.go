@@ -1,11 +1,11 @@
 package httpio
 
 import (
-	"apex-ems-integration-clean-arch/entities"
-	"apex-ems-integration-clean-arch/entities/params"
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"new-apex-api/entities"
+	"new-apex-api/entities/params"
 	"reflect"
 	"strings"
 
@@ -39,7 +39,7 @@ func NewRequestIO(ctx *gin.Context) RequestIO {
 	}
 }
 
-//No Content Receiver | untuk get (tanpa ada query string)
+// No Content Receiver | untuk get (tanpa ada query string)
 func (f *formio) Recv() {
 	header := params.Header{}
 	path := fmt.Sprintf("%s %s", f.request.Method, f.request.URL.Path)
@@ -47,8 +47,8 @@ func (f *formio) Recv() {
 	go receiveForm("RECV", header, "", f.request.RemoteAddr, path)
 }
 
-//These methods use MustBindWith under the hood. If there is a binding error, the request is aborted with c.AbortWithError(400, err).SetType(ErrorTypeBind).
-//This sets the response status code to 400 and the Content-Type header is set to text/plain; charset=utf-8
+// These methods use MustBindWith under the hood. If there is a binding error, the request is aborted with c.AbortWithError(400, err).SetType(ErrorTypeBind).
+// This sets the response status code to 400 and the Content-Type header is set to text/plain; charset=utf-8
 func (f *formio) Bind(body interface{}) {
 	header := params.Header{}
 	path := fmt.Sprintf("%s %s", f.request.Method, f.request.URL.Path)
@@ -67,8 +67,8 @@ func (f *formio) BindWithErr(body interface{}) error {
 	return f.context.ShouldBindWith(body, b)
 }
 
-//These methods use MustBindWith under the hood. If there is a binding error, the request is aborted with c.AbortWithError(400, err).SetType(ErrorTypeBind).
-//This sets the response status code to 400 and the Content-Type header is set to text/plain; charset=utf-8
+// These methods use MustBindWith under the hood. If there is a binding error, the request is aborted with c.AbortWithError(400, err).SetType(ErrorTypeBind).
+// This sets the response status code to 400 and the Content-Type header is set to text/plain; charset=utf-8
 func (f *formio) BindUri(body interface{}) {
 	header := params.Header{}
 	path := fmt.Sprintf("%s %s", f.request.Method, f.request.URL.Path)

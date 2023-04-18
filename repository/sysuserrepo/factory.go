@@ -1,10 +1,10 @@
 package sysuserrepo
 
 import (
-	"apex-ems-integration-clean-arch/repository/databasefactory"
-	"apex-ems-integration-clean-arch/repository/databasefactory/drivers"
 	"database/sql"
 	"errors"
+	"new-apex-api/repository/databasefactory"
+	"new-apex-api/repository/databasefactory/drivers"
 )
 
 func NewSysUserRepo() (SysUserRepo, error) {

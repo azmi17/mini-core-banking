@@ -1,11 +1,11 @@
 package routingindukrepo
 
 import (
-	"apex-ems-integration-clean-arch/entities/err"
-	"apex-ems-integration-clean-arch/entities/web"
 	"database/sql"
 	"errors"
 	"fmt"
+	"new-apex-api/entities/err"
+	"new-apex-api/entities/web"
 )
 
 func newRoutingIndukMysqlImpl(apexConn *sql.DB) RoutingIndukRepo {

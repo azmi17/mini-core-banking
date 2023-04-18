@@ -12,25 +12,22 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func DeleteRoutingRekIndukByKodeLKM(ctx *gin.Context) {
-
+func GetListsDepositHisotry(ctx *gin.Context) {
 	httpio := httpio.NewRequestIO(ctx)
 
-	payload := web.KodeLKMUri{}
-	httpio.BindUri(&payload)
+	payload := web.GetListsDepositTrxReq{}
+	httpio.Bind(&payload)
 
-	usecase := usecase.NewRoutingIndukUsecase()
-	er := usecase.DeleteSysApexRoutingRekInduk(payload.KodeLkm)
+	usecase := usecase.NewTabtransUsecase()
+	tabtrans, er := usecase.GetListsTransaksiDeposit(payload)
 	if er != nil {
 		if er == err.NoRecord {
-			httpio.ResponseString(statuscode.StatusNoRecord, "Record not found", nil)
+			httpio.ResponseString(statuscode.StatusNoRecord, "record not found", nil)
 		} else {
 			entities.PrintError(er.Error())
-			entities.PrintLog(er.Error())
 			httpio.ResponseString(http.StatusInternalServerError, "internal service error", nil)
 		}
 	} else {
-		httpio.Response(http.StatusOK, nil)
+		httpio.Response(http.StatusOK, tabtrans)
 	}
-
 }

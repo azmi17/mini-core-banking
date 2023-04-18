@@ -15,12 +15,13 @@
 package router
 
 import (
-	appInformationsHandler "apex-ems-integration-clean-arch/delivery/handler/app-informations"
-	institutionsHandler "apex-ems-integration-clean-arch/delivery/handler/institutions"
-	institutionRoutingsHandler "apex-ems-integration-clean-arch/delivery/handler/lkm-routings"
-	tabtransHandler "apex-ems-integration-clean-arch/delivery/handler/tabtrans"
-	tabungansHandler "apex-ems-integration-clean-arch/delivery/handler/tabungans"
-	usersHandler "apex-ems-integration-clean-arch/delivery/handler/users"
+	appInformationsHandler "new-apex-api/delivery/handler/app-informations"
+	institutionsHandler "new-apex-api/delivery/handler/institutions"
+	institutionRoutingsHandler "new-apex-api/delivery/handler/lkm-routings"
+	repostingHandler "new-apex-api/delivery/handler/repostings"
+	tabtransHandler "new-apex-api/delivery/handler/tabtrans"
+	tabungansHandler "new-apex-api/delivery/handler/tabungans"
+	usersHandler "new-apex-api/delivery/handler/users"
 
 	"github.com/gin-gonic/gin"
 )
@@ -40,7 +41,8 @@ func RegisterHandler(router *gin.Engine) {
 	apiv1.PUT("/institution", institutionsHandler.UpdateLKM)
 	apiv1.DELETE("/institution/:kode_lkm", institutionsHandler.DeleteLKM) // => Jangan Embedd ke EMS (proses di lakukan di Aped)
 
-	apiv1.POST("/tabung/reposting", tabungansHandler.RepostingSaldo)
+	apiv1.POST("/repostings", repostingHandler.RepostingSaldoByBulk)
+	apiv1.POST("/repostings/all", repostingHandler.RepostingAllByApi)
 
 	apiv1.POST("/user", usersHandler.CreateSysUser)
 	apiv1.PUT("/user", usersHandler.UpdateSysUser)
@@ -60,6 +62,10 @@ func RegisterHandler(router *gin.Engine) {
 	apiv1.POST("/tabtrans/by-stan", tabtransHandler.GetListsTabtransTrxBySTAN)
 	apiv1.PUT("/tabtrans", tabtransHandler.ChangeDateOnTabtransTrx)
 	apiv1.DELETE("/tabtrans/:tabtrans_id", tabtransHandler.DeleteTabtransTrx)
+	apiv1.POST("/tabtrans/laporan/rekening_koran", tabtransHandler.GetRekeningKoranLKMDetail)
+	apiv1.POST("/tabtrans/laporan/nominatif_deposit/:limit/:offset", tabtransHandler.GetNominatifDeposit)
+	apiv1.POST("/tabtrans/laporan/daftar_transaksi/:limit/:offset", tabtransHandler.GetLaporanTransaksi)
+	apiv1.POST("/tabtrans/deposits", tabtransHandler.GetListsDepositHisotry)
 
 	apiv1.DELETE("/flush", institutionsHandler.HardDeleteLKM)
 }

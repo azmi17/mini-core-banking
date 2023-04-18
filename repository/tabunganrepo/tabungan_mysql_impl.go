@@ -1,13 +1,13 @@
 package tabunganrepo
 
 import (
-	"apex-ems-integration-clean-arch/entities"
-	"apex-ems-integration-clean-arch/entities/err"
-	"apex-ems-integration-clean-arch/entities/web"
-	"apex-ems-integration-clean-arch/repository/constant"
 	"database/sql"
 	"errors"
 	"fmt"
+	"new-apex-api/entities"
+	"new-apex-api/entities/err"
+	"new-apex-api/entities/web"
+	"new-apex-api/repository/constant"
 )
 
 func newTabunganMysqlImpl(apexConn *sql.DB) TabunganRepo {
@@ -293,20 +293,28 @@ func (t *TabunganMysqlImpl) FindTabunganLkm(tabunganLkm string) (tabung entities
 	return
 }
 
-func (t *TabunganMysqlImpl) RepostingTabungan(data ...web.CalculateRepostingResult) (er error) {
-	stmt, er := t.apexDb.Prepare(`UPDATE tabung SET saldo_akhir = ? WHERE no_rekening = ?`)
+func (t *TabunganMysqlImpl) GetRekeningLKMByStatusActive() (lists []string, er error) {
+	rows, er := t.apexDb.Query("SELECT no_rekening FROM tabung WHERE status = 1")
 	if er != nil {
-		return errors.New(fmt.Sprint("error while prepare reposting saldo: ", er.Error()))
+		return lists, er
 	}
 
 	defer func() {
-		_ = stmt.Close()
+		_ = rows.Close()
 	}()
 
-	for _, lkm := range data {
-		if _, er = stmt.Exec(lkm.SaldoAkhir, lkm.KodeLKM); er != nil {
-			return errors.New(fmt.Sprint("error while reposting saldo: ", er.Error()))
+	for rows.Next() {
+		var list web.LKMlist
+		if er = rows.Scan(&list.KodeLKM); er != nil {
+			return lists, er
 		}
+
+		lists = append(lists, list.KodeLKM)
 	}
-	return
+
+	if len(lists) == 0 {
+		return lists, err.NoRecord
+	} else {
+		return
+	}
 }

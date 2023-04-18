@@ -1,11 +1,11 @@
 package main
 
 import (
-	"apex-ems-integration-clean-arch/delivery"
-	"apex-ems-integration-clean-arch/delivery/router"
-	"apex-ems-integration-clean-arch/helper"
-	"apex-ems-integration-clean-arch/repository/databasefactory"
 	"math/rand"
+	"new-apex-api/delivery"
+	"new-apex-api/delivery/router"
+	"new-apex-api/helper"
+	"new-apex-api/repository/databasefactory"
 	"os"
 	"os/signal"
 	"runtime"
@@ -18,6 +18,7 @@ import (
 
 func main() {
 	go delivery.PrintoutObserver()
+	// go delivery.PrintRepoResult()
 	router.Start()
 }
 

@@ -1,12 +1,12 @@
 package sysuserrepo
 
 import (
-	"apex-ems-integration-clean-arch/entities"
-	"apex-ems-integration-clean-arch/entities/err"
-	"apex-ems-integration-clean-arch/entities/web"
 	"database/sql"
 	"errors"
 	"fmt"
+	"new-apex-api/entities"
+	"new-apex-api/entities/err"
+	"new-apex-api/entities/web"
 )
 
 func newSysUserMysqlImpl(apexConn *sql.DB) SysUserRepo {

@@ -1,11 +1,11 @@
 package nasabahrepo
 
 import (
-	"apex-ems-integration-clean-arch/entities"
-	"apex-ems-integration-clean-arch/entities/err"
 	"database/sql"
 	"errors"
 	"fmt"
+	"new-apex-api/entities"
+	"new-apex-api/entities/err"
 )
 
 func newNasbahMysqlImpl(apexConn *sql.DB) NasabahRepo {

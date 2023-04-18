@@ -1,13 +1,13 @@
 package usecase
 
 import (
-	"apex-ems-integration-clean-arch/entities"
-	"apex-ems-integration-clean-arch/entities/constants"
-	"apex-ems-integration-clean-arch/entities/web"
-	"apex-ems-integration-clean-arch/helper"
-	"apex-ems-integration-clean-arch/repository/nasabahrepo"
-	"apex-ems-integration-clean-arch/repository/sysuserrepo"
-	"apex-ems-integration-clean-arch/repository/tabunganrepo"
+	"new-apex-api/entities"
+	"new-apex-api/entities/constants"
+	"new-apex-api/entities/web"
+	"new-apex-api/helper"
+	"new-apex-api/repository/nasabahrepo"
+	"new-apex-api/repository/sysuserrepo"
+	"new-apex-api/repository/tabunganrepo"
 	"time"
 )
 

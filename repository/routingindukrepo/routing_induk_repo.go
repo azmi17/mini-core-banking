@@ -1,6 +1,6 @@
 package routingindukrepo
 
-import "apex-ems-integration-clean-arch/entities/web"
+import "new-apex-api/entities/web"
 
 type RoutingIndukRepo interface {
 	GetRoutingRekInduk(kodeLkm string) (web.RoutingRekIndukData, error)

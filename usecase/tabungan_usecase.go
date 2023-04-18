@@ -1,17 +1,15 @@
 package usecase
 
 import (
-	"apex-ems-integration-clean-arch/entities/err"
-	"apex-ems-integration-clean-arch/entities/web"
-	"apex-ems-integration-clean-arch/repository/tabtransrepo"
-	"apex-ems-integration-clean-arch/repository/tabunganrepo"
+	"new-apex-api/entities/err"
+	"new-apex-api/entities/web"
+	"new-apex-api/repository/tabunganrepo"
 )
 
 type TabunganUsecase interface {
 	GetTabScGroup() ([]web.TabSCGroup, error)
 	GetTabDetailInfo(Id string) (web.GetDetailLKMInfo, error)
 	GetTabInfoList(limitOffset web.LimitOffsetLkmUri) ([]web.GetDetailLKMInfo, error)
-	RepostingTabungan(kodeLkm string) error
 }
 
 type tabunganUsecase struct{}
@@ -63,21 +61,4 @@ func (t *tabunganUsecase) GetTabInfoList(limitOffset web.LimitOffsetLkmUri) (lkm
 	}
 
 	return lkmTabList, nil
-}
-
-func (t *tabunganUsecase) RepostingTabungan(kodeLKm string) (er error) {
-	tabtransRepo, _ := tabtransrepo.NewTabtransRepo()
-	tabunganRepo, _ := tabunganrepo.NewTabunganRepo()
-
-	lkm, er := tabtransRepo.CountSaldoAkhirOnNoRekening(kodeLKm)
-	if er != nil {
-		return er
-	}
-
-	er = tabunganRepo.RepostingTabungan(lkm)
-	if er != nil {
-		return er
-	}
-
-	return nil
 }
