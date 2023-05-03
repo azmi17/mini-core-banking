@@ -18,6 +18,7 @@ import (
 	appInformationsHandler "new-apex-api/delivery/handler/app-informations"
 	institutionsHandler "new-apex-api/delivery/handler/institutions"
 	institutionRoutingsHandler "new-apex-api/delivery/handler/lkm-routings"
+	referensiHandler "new-apex-api/delivery/handler/referensi-apex"
 	repostingHandler "new-apex-api/delivery/handler/repostings"
 	tabtransHandler "new-apex-api/delivery/handler/tabtrans"
 	tabungansHandler "new-apex-api/delivery/handler/tabungans"
@@ -33,13 +34,15 @@ func RegisterHandler(router *gin.Engine) {
 
 	// API Endpoint:
 	apiv1.GET("/version", appInformationsHandler.AppInfo)
-	apiv1.GET("/vendors", tabungansHandler.GetTabScGroup)
+	// apiv1.GET("/vendors", tabungansHandler.GetTabScGroup)
+
+	// a:= apiv1.Group("/", validator)
 
 	apiv1.GET("/institutions/:limit/:offset", tabungansHandler.GetTabungansLkmInfoList)
 	apiv1.GET("/institution/:kode_lkm", tabungansHandler.GetTabunganLkmInfo)
 	apiv1.POST("/institution", institutionsHandler.CreateLKM)
 	apiv1.PUT("/institution", institutionsHandler.UpdateLKM)
-	apiv1.DELETE("/institution/:kode_lkm", institutionsHandler.DeleteLKM) // => Jangan Embedd ke EMS (proses di lakukan di Aped)
+	apiv1.DELETE("/institution/:kode_lkm", institutionsHandler.DeleteLKM) // => Jangan Embedd ke EMS (proses di lakukan di Apex)
 
 	apiv1.POST("/repostings", repostingHandler.RepostingSaldoByBulk)
 	apiv1.POST("/repostings/all", repostingHandler.RepostingAllByApi)
@@ -66,6 +69,12 @@ func RegisterHandler(router *gin.Engine) {
 	apiv1.POST("/tabtrans/laporan/nominatif_deposit/:limit/:offset", tabtransHandler.GetNominatifDeposit)
 	apiv1.POST("/tabtrans/laporan/daftar_transaksi/:limit/:offset", tabtransHandler.GetLaporanTransaksi)
 	apiv1.POST("/tabtrans/deposits", tabtransHandler.GetListsDepositHisotry)
+
+	apiv1.GET("/referensi/vendors", referensiHandler.GetListsScGroup)
+	apiv1.GET("/referensi/banks", referensiHandler.GetListsBankGroup)
+	apiv1.GET("/referensi/jenis_deposit", referensiHandler.GetListsJenisTransaksiDeposit)
+	apiv1.GET("/referensi/jenis_tabungan", referensiHandler.GetListsJenisTransaksiTabungan)
+	apiv1.GET("/referensi/tabproducts", referensiHandler.GetlistsProdukTabungan)
 
 	apiv1.DELETE("/flush", institutionsHandler.HardDeleteLKM)
 }

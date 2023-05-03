@@ -8,6 +8,8 @@ import (
 	"new-apex-api/entities/err"
 	"new-apex-api/entities/web"
 	"new-apex-api/helper"
+	"os"
+	"strings"
 	"sync"
 )
 
@@ -322,7 +324,6 @@ func (t *TabtransMysqlImpl) RepostingSaldoOnRekeningLKM(listOfKodeLKM ...string)
 
 func (t *TabtransMysqlImpl) RepostingSaldoOnRekeningLKMByScheduler(PrintRepoResultChan chan entities.PrintRepo, listOfKodeLKM ...string) (er error) {
 	var wg sync.WaitGroup
-
 	for _, each := range listOfKodeLKM {
 
 		wg.Add(1)
@@ -700,6 +701,10 @@ func (t *TabtransMysqlImpl) GetLaporanTransaksi(payload web.DaftarTransaksiReque
 }
 
 func (t *TabtransMysqlImpl) GetListsTransaksiDeposit(payload web.GetListsDepositTrxReq) (list []web.GetListsDepositTrxRes, er error) {
+
+	item := strings.Split(os.Getenv("app.kode_trans_deposit_report"), ",")
+	kodeTrans := kodeTransFilter(item)
+
 	rows, er := t.apexDb.Query(`SELECT 
 	tabtrans_id, 
 	DATE_FORMAT(tgl_trans, "%d/%m/%Y") AS 'Tgl Trans', 
@@ -720,17 +725,7 @@ func (t *TabtransMysqlImpl) GetListsTransaksiDeposit(payload web.GetListsDeposit
 	   tabtrans.no_rekening=tabung.no_rekening 
 	   AND tabung.nasabah_id=nasabah.nasabah_id 
 	   AND 
-	(
-		kode_trans="100" 
-		OR kode_trans="102" 
-		OR kode_trans="111" 
-		OR kode_trans="115" 
-		OR kode_trans="150" 
-	   	OR kode_trans="200" 
-		OR kode_trans="202" 
-		OR kode_trans="211" 
-		OR kode_trans="215" 
-		OR kode_trans="250"
+	(`+kodeTrans+`
 	)
 	AND tgl_trans >= ? 
 	AND tgl_trans <= ? 
@@ -772,4 +767,20 @@ func (t *TabtransMysqlImpl) GetListsTransaksiDeposit(payload web.GetListsDeposit
 	} else {
 		return
 	}
+}
+
+func kodeTransFilter(item []string) string {
+	lastIndex := len(item) - 1
+	beginText := "kode_trans=\""
+	endText := " OR "
+
+	var kodeTrans string
+	for i, v := range item {
+		text := beginText + v + "\""
+		if i < lastIndex {
+			text += endText
+		}
+		kodeTrans += text
+	}
+	return kodeTrans
 }

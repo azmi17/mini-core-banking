@@ -1,7 +1,7 @@
 package router
 
 import (
-	"io/ioutil"
+	"io"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -12,13 +12,13 @@ func Start() error {
 	gin.SetMode(gin.ReleaseMode)
 
 	//Discard semua output yang dicatat oleh gin karena print out akan dicetak sesuai kebutuhan programmer
-	gin.DefaultWriter = ioutil.Discard
+	gin.DefaultWriter = io.Discard
 
 	router := gin.Default() //create router engine by default
 
 	router.Use(gin.Recovery())
 
-	// ! ADD ANOTHER HANDLER BELOW..
+	// ! ADD ANOTHER HANDLER BELOW..``
 	RegisterHandler(router)
 
 	listenerPort := os.Getenv("app.listener_port") // get port from .env

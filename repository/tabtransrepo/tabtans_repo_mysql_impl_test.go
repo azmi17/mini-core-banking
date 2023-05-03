@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"new-apex-api/entities/web"
 	"new-apex-api/helper"
+	"strings"
 	"testing"
 	"time"
 
@@ -98,4 +99,44 @@ func TestNominatifDeposit(t *testing.T) {
 		_ = glg.Log(err.Error())
 	}
 	fmt.Println("Results: ", len(data))
+}
+
+func TestSplitJoinStr(t *testing.T) {
+	item := strings.Split("100", ",") // daimbil dari konfigurasi
+
+	beginText := "kode_trx=\""
+	endText := " OR"
+
+	for i, v := range item {
+		value := v + "\""
+
+		if i < len(item)-1 {
+			fmt.Println(beginText + value + endText)
+		} else {
+			fmt.Println(beginText + value)
+		}
+	}
+}
+
+func TestSplitJoinStr2(t *testing.T) {
+	item := strings.Split("100,102,111,115,200,202,211,215,250", ",") // konfgiurasi
+
+	kodeTrx := kodeTrx(item)
+	fmt.Println(kodeTrx)
+}
+
+func kodeTrx(item []string) string {
+	lastIndex := len(item) - 1
+	beginText := "kode_trans=\""
+	endText := " OR "
+
+	var kodeTrans string
+	for i, v := range item {
+		text := beginText + v + "\""
+		if i < lastIndex {
+			text += endText
+		}
+		kodeTrans += text
+	}
+	return kodeTrans
 }
