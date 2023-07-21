@@ -5,13 +5,12 @@ import (
 	"new-apex-api/delivery/handler/httpio"
 	"new-apex-api/entities"
 	"new-apex-api/entities/err"
-	"new-apex-api/entities/web"
 	"new-apex-api/usecase"
 
 	"github.com/gin-gonic/gin"
 )
 
-func RepostingAllByApi(ctx *gin.Context) {
+func RepostingAllLKM(ctx *gin.Context) {
 
 	httpio := httpio.NewRequestIO(ctx)
 	httpio.Recv()
@@ -19,7 +18,7 @@ func RepostingAllByApi(ctx *gin.Context) {
 	usecase := usecase.NewRepostingUsecase()
 	er := usecase.RepostingSaldoByScheduler()
 
-	resp := web.GlobalResponse{}
+	resp := entities.GlobalResponse{}
 	if er != nil {
 		if er == err.NoRecord {
 			resp.ResponseCode = "1111"

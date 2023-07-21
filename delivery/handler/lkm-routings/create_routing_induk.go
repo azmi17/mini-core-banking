@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"new-apex-api/delivery/handler/httpio"
 	"new-apex-api/entities"
-	"new-apex-api/entities/web"
 	"new-apex-api/helper"
 	"new-apex-api/usecase"
 
@@ -17,7 +16,7 @@ func CreateRoutingRekInduk(ctx *gin.Context) {
 	httpio := httpio.NewRequestIO(ctx)
 
 	// Call Payload and binding form
-	payload := web.CreateRoutingRekInduk{}
+	payload := entities.CreateRoutingRekInduk{}
 	rerr := httpio.BindWithErr(&payload)
 	if rerr != nil {
 		errors := helper.FormatValidationError(rerr)

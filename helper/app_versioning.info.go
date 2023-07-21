@@ -2,8 +2,8 @@ package helper
 
 var (
 	AppName        = "Apex Tools"
-	AppDescription = "New Apex Tools Service"
-	AppVersion     = "1.0.0"
+	AppDescription = "API Endpoint Apex Tools Services"
+	AppVersion     = "2.0.0"
 	AppAuthor      = "Azmi Farhan"
-	LastBuild      = "On Proccess"
+	LastBuild      = "21/07/2023 10:02"
 )

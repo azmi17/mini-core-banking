@@ -35,4 +35,6 @@ type Tabung struct {
 	Kode_Keterkaitan          string
 	Kode_Kantor_Kas           string
 	No_Rekening_Virtual       string
+	IsSaldoChecked            int
+	FlagPayEchannel           string
 }

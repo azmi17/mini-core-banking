@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"new-apex-api/entities"
 	"new-apex-api/entities/err"
-	"new-apex-api/entities/web"
 	"new-apex-api/helper"
 	"os"
 	"strings"
@@ -40,26 +39,68 @@ func (t *TabtransMysqlImpl) GetNextIDWithUserID() (transId int, er error) {
 	return transId, nil
 }
 
-func (t *TabtransMysqlImpl) GetSingleTabtransTrx(tabtransID int) (data web.GetListTabtransTrx, er error) {
+func (t *TabtransMysqlImpl) GetNextNasabahID() (nasabahID string, er error) {
+	var n int
+	row := t.apexDb.QueryRow(`SELECT MAX(nasabah_id)+1 AS max_nasabah_id FROM nasabah`)
+	er = row.Scan(
+		&n,
+	)
+	if er != nil {
+		if er == sql.ErrNoRows {
+			return nasabahID, err.NoRecord
+		} else {
+			return nasabahID, errors.New(fmt.Sprint("error while get data: ", er.Error()))
+		}
+	}
+	nextNasabahID := fmt.Sprintf("%09d", n)
+	nasabahID = nextNasabahID
+
+	return nasabahID, nil
+}
+
+func (t *TabtransMysqlImpl) GetNextNoRekeningBiggerThanFour() (norek string, er error) {
+	var n int
+	row := t.apexDb.QueryRow(`SELECT MAX(no_rekening)+1 AS max_norek FROM tabung WHERE LENGTH(no_rekening)>4`)
+	er = row.Scan(
+		&n,
+	)
+	if er != nil {
+		if er == sql.ErrNoRows {
+			return norek, err.NoRecord
+		} else {
+			return norek, errors.New(fmt.Sprint("error while get data: ", er.Error()))
+		}
+	}
+	nextNorek := fmt.Sprintf("%010d", n)
+	norek = nextNorek
+	return norek, nil
+}
+
+func (t *TabtransMysqlImpl) GetInformationLKMTransaction(tabtransID int) (data entities.GetListTabtransTrx, er error) {
 	row := t.apexDb.QueryRow(`SELECT 
-		tabtrans_id,
-		DATE_FORMAT(tgl_trans, "%d/%m/%Y") AS tgl_trans,
-		no_rekening,
-		pokok,
-		CASE my_kode_trans WHEN '200' THEN 'D' ELSE 'K' END AS dk,
-		COALESCE(pay_lkm_norek,'') AS lkm_norek,
-		COALESCE(pay_idpel,'') AS idpel,
-		kode_trans,
-		kuitansi,
-		keterangan,
-		COALESCE(pay_biller_code,'') AS biller_code,
-		COALESCE(pay_product_code, '') AS product_code,
-		userid
-	FROM tabtrans WHERE tabtrans_id = ?`, tabtransID)
+		t.tabtrans_id,
+		DATE_FORMAT(t.tgl_trans, "%d/%m/%Y") AS tgl_trans,
+		t.no_rekening,
+		n.nama_nasabah,
+		t.pokok,
+		CASE t.my_kode_trans WHEN '200' THEN 'D' ELSE 'K' END AS dk,
+		COALESCE(t.pay_lkm_norek,'') AS lkm_norek,
+		COALESCE(t.pay_idpel,'') AS idpel,
+		t.kode_trans,
+		t.kuitansi,
+		t.keterangan,
+		COALESCE(t.pay_biller_code,'') AS biller_code,
+		COALESCE(t.pay_product_code, '') AS product_code,
+		t.userid
+	FROM tabtrans AS t 
+	INNER JOIN tabung AS tab ON (t.no_rekening=tab.no_rekening) 
+	INNER JOIN nasabah AS n ON (tab.nasabah_id=n.nasabah_id) 
+	WHERE t.tabtrans_id = ?`, tabtransID)
 	er = row.Scan(
 		&data.TabtransID,
 		&data.TglTrans,
 		&data.KodeLKM,
+		&data.NamaLembaga,
 		&data.Pokok,
 		&data.Dk,
 		&data.Lkm_Norek,
@@ -81,7 +122,7 @@ func (t *TabtransMysqlImpl) GetSingleTabtransTrx(tabtransID int) (data web.GetLi
 	return
 }
 
-func (t *TabtransMysqlImpl) GetListsTabtransTrx(payload web.GetListTabtransByDate, limitOffset web.LimitOffsetLkmUri) (list []web.GetListTabtransTrx, total web.GetCountWithSumTabtransTrx, er error) {
+func (t *TabtransMysqlImpl) GetListsApexTransaction(payload entities.GetListTabtrans, limitOffset entities.LimitOffsetLkmUri) (list []entities.GetListTabtransTrx, er error) {
 	var rows *sql.Rows
 
 	/*
@@ -110,7 +151,7 @@ func (t *TabtransMysqlImpl) GetListsTabtransTrx(payload web.GetListTabtransByDat
 		LEFT JOIN tabung AS tb ON(t.no_rekening=tb.no_rekening) 
 		LEFT JOIN nasabah AS n ON (tb.nasabah_id=n.nasabah_id) WHERE `
 
-	if payload.BankCode == "" {
+	if payload.Filter == "" {
 		if limitOffset.Limit > 0 {
 			sqlCond = "t.tgl_trans >= ? AND t.tgl_trans <= ? LIMIT ? OFFSET ?"
 			args = append(args, payload.TanggalAwal, payload.TanggalAkhir, limitOffset.Limit, limitOffset.Offset)
@@ -121,26 +162,34 @@ func (t *TabtransMysqlImpl) GetListsTabtransTrx(payload web.GetListTabtransByDat
 		rows, er = t.apexDb.Query(sqlStmt+sqlCond+``, args...)
 	} else {
 		if limitOffset.Limit > 0 {
-			sqlCond = "t.tgl_trans >= ? AND t.tgl_trans <= ? AND t.no_rekening = ? LIMIT ? OFFSET ?"
-			args = append(args, payload.TanggalAwal, payload.TanggalAkhir, payload.BankCode, limitOffset.Limit, limitOffset.Offset)
+			sqlCond = `
+			t.tgl_trans >= ? 
+			AND t.tgl_trans <= ? 
+			AND (t.no_rekening LIKE "%` + payload.Filter + `%" OR t.kuitansi LIKE "%` + payload.Filter + `%") 
+			LIMIT ? OFFSET ?`
+			args = append(args, payload.TanggalAwal, payload.TanggalAkhir, limitOffset.Limit, limitOffset.Offset)
 		} else {
-			sqlCond = "t.tgl_trans >= ? AND t.tgl_trans <= ? AND t.no_rekening = ? LIMIT ? OFFSET ?"
-			args = append(args, payload.TanggalAwal, payload.TanggalAkhir, payload.BankCode, -1, limitOffset.Offset)
+			sqlCond = `
+			t.tgl_trans >= ? 
+			AND t.tgl_trans <= ? 
+			AND (t.no_rekening LIKE "%` + payload.Filter + `%" OR t.kuitansi LIKE "%` + payload.Filter + `%") 
+			LIMIT ? OFFSET ?`
+			args = append(args, payload.TanggalAwal, payload.TanggalAkhir, -1, limitOffset.Offset)
 		}
 		rows, er = t.apexDb.Query(sqlStmt+sqlCond+``, args...)
 	}
 
 	if er != nil {
-		return list, total, er
+		return list, er
 	}
 
 	defer func() {
 		_ = rows.Close()
 	}()
 
-	sum := 0.0
+	// sum := 0.0
 	for rows.Next() {
-		var tabtransListTx web.GetListTabtransTrx
+		var tabtransListTx entities.GetListTabtransTrx
 		if er = rows.Scan(
 			&tabtransListTx.TabtransID,
 			&tabtransListTx.TglTrans,
@@ -157,23 +206,23 @@ func (t *TabtransMysqlImpl) GetListsTabtransTrx(payload web.GetListTabtransByDat
 			&tabtransListTx.ProductCode,
 			&tabtransListTx.UserID,
 		); er != nil {
-			return list, total, er
+			return list, er
 		}
 		list = append(list, tabtransListTx)
-		sum += tabtransListTx.Pokok
+		// sum += tabtransListTx.Pokok
 	}
 
 	if len(list) == 0 {
-		return list, total, err.NoRecord
+		return list, err.NoRecord
 	}
 
-	total.TotalTrx = len(list)
-	total.TotalPokok = sum
+	// total.TotalTrx = len(list)
+	// total.TotalPokok = sum
 
-	return list, total, nil
+	return list, nil
 }
 
-func (t *TabtransMysqlImpl) GetListsTabtransTrxBySTAN(stan string) (trxList []web.GetListTabtransTrx, er error) {
+func (t *TabtransMysqlImpl) GetListsApexTransactionBySTAN(stan string) (trxList []entities.GetListTabtransTrx, er error) {
 	rows, er := t.apexDb.Query(`SELECT
 		tabtrans_id,
 		DATE_FORMAT(tgl_trans, "%d/%m/%Y") AS tgl_trans,
@@ -198,7 +247,7 @@ func (t *TabtransMysqlImpl) GetListsTabtransTrxBySTAN(stan string) (trxList []we
 	}()
 
 	for rows.Next() {
-		var tabtrans web.GetListTabtransTrx
+		var tabtrans entities.GetListTabtransTrx
 		if er = rows.Scan(
 			&tabtrans.TabtransID,
 			&tabtrans.TglTrans,
@@ -227,13 +276,13 @@ func (t *TabtransMysqlImpl) GetListsTabtransTrxBySTAN(stan string) (trxList []we
 	}
 }
 
-func (t *TabtransMysqlImpl) DeleteTabtransTrx(tabtransID int) (er error) {
+func (t *TabtransMysqlImpl) HardDeleteApexTransaction(data ...int) (er error) {
 
-	thisRepo, _ := NewTabtransRepo()
-	_, er = thisRepo.GetSingleTabtransTrx(tabtransID)
-	if er != nil {
-		return err.NoRecord
-	}
+	// thisRepo, _ := NewTabtransRepo()
+	// _, er = thisRepo.GetSingleTabtransTrx(tabtransID)
+	// if er != nil {
+	// 	return err.NoRecord
+	// }
 
 	stmt, er := t.apexDb.Prepare(`DELETE FROM tabtrans WHERE tabtrans_id = ?`)
 	if er != nil {
@@ -243,17 +292,39 @@ func (t *TabtransMysqlImpl) DeleteTabtransTrx(tabtransID int) (er error) {
 		_ = stmt.Close()
 	}()
 
-	if _, er := stmt.Exec(tabtransID); er != nil {
-		return errors.New(fmt.Sprint("error while delete tabtrans transaction: ", er.Error()))
+	for _, v := range data {
+		if _, er := stmt.Exec(v); er != nil {
+			return errors.New(fmt.Sprint("error while delete tabtrans transaction: ", er.Error()))
+		}
 	}
 
 	return nil
 }
 
-func (t *TabtransMysqlImpl) ChangeDateOnTabtransTrx(tabtransID int, tglTrans string) (data web.GetListTabtransTrx, er error) {
+func (t *TabtransMysqlImpl) SoftDeleteApexTransaction(data ...string) (er error) {
+
+	stmt, er := t.apexDb.Prepare("UPDATE tabtrans SET no_rekening = ? WHERE no_rekening = ?")
+	if er != nil {
+		return errors.New(fmt.Sprint("error while prepare update no_rekening tabtrans : ", er.Error()))
+	}
+
+	defer func() {
+		_ = stmt.Close()
+	}()
+
+	for _, v := range data {
+		if _, er := stmt.Exec("DEL-"+v, v); er != nil {
+			return errors.New(fmt.Sprint("error while update no_rekening tabtrans : ", er.Error()))
+		}
+	}
+
+	return nil
+}
+
+func (t *TabtransMysqlImpl) ChangeDateOnApexTransaction(tabtransID int, tglTrans string) (data entities.GetListTabtransTrx, er error) {
 
 	thisRepo, _ := NewTabtransRepo()
-	tx, er := thisRepo.GetSingleTabtransTrx(tabtransID)
+	tx, er := thisRepo.GetInformationLKMTransaction(tabtransID)
 	if er != nil {
 		return data, err.NoRecord
 	}
@@ -282,8 +353,29 @@ func (t *TabtransMysqlImpl) ChangeDateOnTabtransTrx(tabtransID int, tglTrans str
 
 }
 
-func (t *TabtransMysqlImpl) CalculateSaldoOnRekeningLKM(kodeLKM string) (data web.CalculateSaldoResult, er error) {
-	var tabtrans web.RepostingData
+func (t *TabtransMysqlImpl) MultipleChangeDateOnApexTransaction(data entities.MultipleChangeDateTransaction) (er error) {
+
+	stmt, er := t.apexDb.Prepare(`UPDATE tabtrans SET tgl_trans = ? WHERE tabtrans_id = ?`)
+	if er != nil {
+		return errors.New(fmt.Sprint("error while prepare update tgl_trans: ", er.Error()))
+	}
+
+	defer func() {
+		_ = stmt.Close()
+	}()
+
+	for _, v := range data.ListOfTabtransID {
+		if _, er := stmt.Exec(data.Tanggal, v); er != nil {
+			return errors.New(fmt.Sprint("error while update tgl_trans: ", er.Error()))
+		}
+	}
+
+	return nil
+
+}
+
+func (t *TabtransMysqlImpl) CalculateSaldoOnRekeningLKM(kodeLKM string) (data entities.CalculateSaldoResult, er error) {
+	var tabtrans entities.RepostingData
 	rows, err := t.apexDb.Query(`SELECT 
 	  tab.no_rekening,
 	  SUM(CASE WHEN trans.my_kode_trans='100' THEN trans.pokok ELSE 0 END) AS total_kredit,
@@ -383,7 +475,7 @@ func (t *TabtransMysqlImpl) doRepostingSaldoProcs(data string) (er error) {
 }
 
 func (t *TabtransMysqlImpl) GetSaldo(kodeLKM, tglAwal string) (total float64, er error) {
-	var tabtrans web.SaldoAwal
+	var tabtrans entities.SaldoAwal
 
 	row := t.apexDb.QueryRow(`SELECT 
 	no_rekening,
@@ -412,7 +504,7 @@ func (t *TabtransMysqlImpl) GetSaldo(kodeLKM, tglAwal string) (total float64, er
 
 }
 
-func (t *TabtransMysqlImpl) GetRekeningKoranLKMDetail(kodeLKM, periodeAwal, periodeAkhir string) (data []web.RekeningKoran, er error) {
+func (t *TabtransMysqlImpl) GetRekeningKoranLKMDetail(kodeLKM, periodeAwal, periodeAkhir string) (data []entities.RekeningKoran, er error) {
 	rows, er := t.apexDb.Query(`SELECT 
 	DATE_FORMAT(tgl_trans, "%d/%m/%Y") AS tgl_trans,
 	keterangan,
@@ -435,7 +527,7 @@ func (t *TabtransMysqlImpl) GetRekeningKoranLKMDetail(kodeLKM, periodeAwal, peri
 	}()
 
 	for rows.Next() {
-		var tabtrans web.RekeningKoran
+		var tabtrans entities.RekeningKoran
 		if er = rows.Scan(
 			&tabtrans.TglTrans,
 			&tabtrans.Keterangan,
@@ -461,7 +553,7 @@ func (t *TabtransMysqlImpl) GetRekeningKoranLKMDetail(kodeLKM, periodeAwal, peri
 	}
 }
 
-func (t *TabtransMysqlImpl) GetNominatifDeposit(periode, beginLastMonthDt, EndLastmonthDt string, endLastMonthTg int, limitOffset web.LimitOffsetLkmUri) (laporan []web.NominatifDepositResponse, er error) {
+func (t *TabtransMysqlImpl) GetNominatifDeposit(periode, beginLastMonthDt, EndLastmonthDt string, endLastMonthTg int, limitOffset entities.LimitOffsetLkmUri) (laporan []entities.NominatifDepositResponse, er error) {
 
 	/*
 		Dibawah adalah slice of interface untuk kebutuhan custom query,
@@ -498,9 +590,9 @@ func (t *TabtransMysqlImpl) GetNominatifDeposit(periode, beginLastMonthDt, EndLa
 		_ = rows.Close()
 	}()
 
-	var nominatif web.NominatifDepositResponse
+	var nominatif entities.NominatifDepositResponse
 	for rows.Next() {
-		var tabtrans web.RawQueryNominatifDeposit
+		var tabtrans entities.RawQueryNominatifDeposit
 		if er = rows.Scan(
 			&tabtrans.NoRekening,
 			&tabtrans.NamaLembaga,
@@ -530,9 +622,9 @@ func (t *TabtransMysqlImpl) GetNominatifDeposit(periode, beginLastMonthDt, EndLa
 	}
 }
 
-func (t *TabtransMysqlImpl) GetLaporanTransaksi(payload web.DaftarTransaksiRequest, limitOffset web.LimitOffsetLkmUri) (laporan []web.DaftarTransaksiResponse, er error) {
+func (t *TabtransMysqlImpl) GetLaporanTransaksi(payload entities.DaftarTransaksiRequest, limitOffset entities.LimitOffsetLkmUri) (laporan []entities.DaftarTransaksiResponse, er error) {
 
-	var tabtrans web.DaftarTransaksiResponse
+	var tabtrans entities.DaftarTransaksiResponse
 
 	if payload.JenisTransaksi == "ALL" {
 		args := []interface{}{}
@@ -700,7 +792,7 @@ func (t *TabtransMysqlImpl) GetLaporanTransaksi(payload web.DaftarTransaksiReque
 	}
 }
 
-func (t *TabtransMysqlImpl) GetListsTransaksiDeposit(payload web.GetListsDepositTrxReq) (list []web.GetListsDepositTrxRes, er error) {
+func (t *TabtransMysqlImpl) GetListsTransaksiDeposit(payload entities.GetListsDepositTrxReq) (list []entities.GetListsDepositTrxRes, er error) {
 
 	item := strings.Split(os.Getenv("app.kode_trans_deposit_report"), ",")
 	kodeTrans := kodeTransFilter(item)
@@ -739,7 +831,7 @@ func (t *TabtransMysqlImpl) GetListsTransaksiDeposit(payload web.GetListsDeposit
 	}()
 
 	for rows.Next() {
-		var laporanDeposit web.GetListsDepositTrxRes
+		var laporanDeposit entities.GetListsDepositTrxRes
 		if er = rows.Scan(
 			&laporanDeposit.TransID,
 			&laporanDeposit.TglTrans,
@@ -783,4 +875,123 @@ func kodeTransFilter(item []string) string {
 		kodeTrans += text
 	}
 	return kodeTrans
+}
+
+func (t *TabtransMysqlImpl) TransaksiDeposit(data ...entities.Deposit) (er error) {
+
+	apexTransRepo, _ := NewTabtransRepo()
+
+	stmt, er := t.apexDb.Prepare(`INSERT INTO tabtrans(
+		tabtrans_id,
+		tgl_trans,
+		no_rekening,
+		my_kode_trans,
+		pokok,
+		keterangan,
+		verifikasi,
+		userid,
+		modul_id_source,
+		trans_id_source,
+		kode_trans,
+		tob,
+		posted_to_gl,
+		kode_perk_ob,
+		kode_kantor,
+		sandi_trans,
+		kuitansi,
+		counter_sign,
+		no_rekening_aba 
+	) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`)
+	if er != nil {
+		return errors.New(fmt.Sprint("error while prepare add deposit transaction: ", er.Error()))
+	}
+	defer func() {
+		_ = stmt.Close()
+	}()
+
+	for _, item := range data {
+
+		// Get Trans ID
+		tabtransId, err := apexTransRepo.GetNextIDWithUserID()
+		if er != nil {
+			return err
+		}
+
+		if _, er := stmt.Exec(
+			tabtransId,
+			item.Tgl_trans,
+			item.NoRekening,
+			item.MyKodeTrans,
+			item.Pokok,
+			item.Keterangan,
+			item.Verifikasi,
+			item.UserID,
+			item.ModulIDSource,
+			item.TransIDSource,
+			item.KodeTrans,
+			item.Tob,
+			item.PostedToGl,
+			item.KodePerkOB,
+			item.KodeKantor,
+			item.SandiTrans,
+			item.Kuitansi,
+			item.CounterSign,
+			item.NoRekeningABA); er != nil {
+			return errors.New(fmt.Sprint("error while add tabtrans transaction: ", er.Error()))
+		}
+	}
+	return nil
+}
+
+func (t *TabtransMysqlImpl) GetTransaksiDeposit(kuitansi string) (data entities.Deposit, er error) {
+	row := t.apexDb.QueryRow(`SELECT 
+		tabtrans_id,
+		tgl_trans,
+		no_rekening,
+		my_kode_trans,
+		pokok,
+		keterangan,
+		verifikasi,
+		userid,
+		modul_id_source,
+		trans_id_source,
+		kode_trans,
+		tob,
+		posted_to_gl,
+		kode_perk_ob,
+		kode_kantor,
+		sandi_trans,
+		kuitansi,
+		counter_sign,
+		no_rekening_aba 
+	FROM tabtrans WHERE kuitansi = ?`, kuitansi)
+	er = row.Scan(
+		&data.TabtransID,
+		&data.Tgl_trans,
+		&data.NoRekening,
+		&data.MyKodeTrans,
+		&data.Pokok,
+		&data.Keterangan,
+		&data.Verifikasi,
+		&data.UserID,
+		&data.ModulIDSource,
+		&data.TransIDSource,
+		&data.KodeTrans,
+		&data.Tob,
+		&data.PostedToGl,
+		&data.KodePerkOB,
+		&data.KodeKantor,
+		&data.SandiTrans,
+		&data.Kuitansi,
+		&data.CounterSign,
+		&data.NoRekeningABA,
+	)
+	if er != nil {
+		if er == sql.ErrNoRows {
+			return data, err.NoRecord
+		} else {
+			return data, errors.New(fmt.Sprint("error while get deposit trx data: ", er.Error()))
+		}
+	}
+	return
 }

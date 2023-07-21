@@ -15,66 +15,102 @@
 package router
 
 import (
+	alterApexHandler "new-apex-api/delivery/handler/alter-apex"
+	vaApexHandler "new-apex-api/delivery/handler/apex-virtualaccount"
 	appInformationsHandler "new-apex-api/delivery/handler/app-informations"
+	approvalHandler "new-apex-api/delivery/handler/approvals"
+	authHandler "new-apex-api/delivery/handler/auth"
+	echHandler "new-apex-api/delivery/handler/ech-transhistories"
 	institutionsHandler "new-apex-api/delivery/handler/institutions"
 	institutionRoutingsHandler "new-apex-api/delivery/handler/lkm-routings"
 	referensiHandler "new-apex-api/delivery/handler/referensi-apex"
 	repostingHandler "new-apex-api/delivery/handler/repostings"
 	tabtransHandler "new-apex-api/delivery/handler/tabtrans"
-	tabungansHandler "new-apex-api/delivery/handler/tabungans"
 	usersHandler "new-apex-api/delivery/handler/users"
 
 	"github.com/gin-gonic/gin"
 )
 
 func RegisterHandler(router *gin.Engine) {
+	apiv1 := router.Group("api/v2")
+	{
+		// DEVELOPMENT ENDPOINT
+		apiv1.GET("/version", appInformationsHandler.AppInfo)
+		apiv1.DELETE("/flush", institutionsHandler.HardDeleteLKM)
 
-	// API Versioning:
-	apiv1 := router.Group("api/v1")
+		// INSTITUTIONS ENDPOINT
+		apiv1.POST("/institutions/:limit/:offset", institutionsHandler.GetLkmInfoLists)
+		apiv1.POST("/institution", institutionsHandler.CreateLKM)
 
-	// API Endpoint:
-	apiv1.GET("/version", appInformationsHandler.AppInfo)
-	// apiv1.GET("/vendors", tabungansHandler.GetTabScGroup)
+		// REPOSTING ENDPOINT
+		apiv1.POST("/repostings", repostingHandler.RepostingSaldoByBulk)
+		apiv1.POST("/repostings/all", repostingHandler.RepostingAllLKM)
 
-	// a:= apiv1.Group("/", validator)
+		// USERS ENDPOINT
+		apiv1.POST("/users/:limit/:offset", usersHandler.GetListOfUsers)
+		apiv1.POST("/user", usersHandler.CreateSysUser)
+		apiv1.POST("/user/search", usersHandler.FindSingleUserByUserName)
+		apiv1.POST("/user/login", usersHandler.LoginUser)
+		apiv1.PUT("/user", usersHandler.UpdateSysUser)
+		apiv1.PUT("/user/reset-password", usersHandler.ResetApexPassword)
 
-	apiv1.GET("/institutions/:limit/:offset", tabungansHandler.GetTabungansLkmInfoList)
-	apiv1.GET("/institution/:kode_lkm", tabungansHandler.GetTabunganLkmInfo)
-	apiv1.POST("/institution", institutionsHandler.CreateLKM)
-	apiv1.PUT("/institution", institutionsHandler.UpdateLKM)
-	apiv1.DELETE("/institution/:kode_lkm", institutionsHandler.DeleteLKM) // => Jangan Embedd ke EMS (proses di lakukan di Apex)
+		// ROUTING-LKMS ENDPOINT
+		apiv1.POST("/routings/:limit/:offset", institutionRoutingsHandler.GetListRoutingRekInduk)
+		apiv1.POST("/routing", institutionRoutingsHandler.CreateRoutingRekInduk)
+		apiv1.PUT("/routing", institutionRoutingsHandler.UpdateRoutingRekInduk)
+		apiv1.DELETE("/routing", institutionRoutingsHandler.DeleteRoutingRekIndukByKodeLKM)
 
-	apiv1.POST("/repostings", repostingHandler.RepostingSaldoByBulk)
-	apiv1.POST("/repostings/all", repostingHandler.RepostingAllByApi)
+		// TABTRANS ENDPOINT
+		apiv1.POST("/tabtrans/:limit/:offset", tabtransHandler.GetListsTabtransTransaction)
 
-	apiv1.POST("/user", usersHandler.CreateSysUser)
-	apiv1.PUT("/user", usersHandler.UpdateSysUser)
-	apiv1.POST("/user/search", usersHandler.FindSingleUserByUserName)
-	apiv1.GET("/user/:kode_lkm", usersHandler.GetSingleUserByUserName)
-	apiv1.GET("/users/:limit/:offset", usersHandler.GetListOfUsers)
-	apiv1.POST("/user/login", usersHandler.LoginUser)
-	apiv1.PUT("/user/reset-password", usersHandler.ResetApexPassword)
+		// LAPORAN TABTRANS ENDPOINT
+		apiv1.POST("/laporan/rekening_koran", tabtransHandler.GetRekeningKoranLKMDetail)
+		apiv1.POST("/laporan/nominatif_deposit/:limit/:offset", tabtransHandler.GetNominatifDeposit)
+		apiv1.POST("/laporan/daftar_transaksi/:limit/:offset", tabtransHandler.GetLaporanTransaksi)
+		apiv1.POST("/laporan/deposits", tabtransHandler.GetListsDepositHisotry)
 
-	apiv1.GET("/routing/:kode_lkm", institutionRoutingsHandler.GetRoutingRekInduk)
-	apiv1.GET("/routings/:limit/:offset", institutionRoutingsHandler.GetListRoutingRekInduk)
-	apiv1.POST("/routing", institutionRoutingsHandler.CreateRoutingRekInduk)
-	apiv1.PUT("/routing", institutionRoutingsHandler.UpdateRoutingRekInduk)
-	apiv1.DELETE("/routing/:kode_lkm", institutionRoutingsHandler.DeleteRoutingRekIndukByKodeLKM)
+		// TRANSAKSI DEPOSIT ENDPOINT
+		apiv1.POST("/deposit", tabtransHandler.TransaksiDeposit)
 
-	apiv1.POST("/tabtrans/:limit/:offset", tabtransHandler.GetListsTabtransTrx)
-	apiv1.POST("/tabtrans/by-stan", tabtransHandler.GetListsTabtransTrxBySTAN)
-	apiv1.PUT("/tabtrans", tabtransHandler.ChangeDateOnTabtransTrx)
-	apiv1.DELETE("/tabtrans/:tabtrans_id", tabtransHandler.DeleteTabtransTrx)
-	apiv1.POST("/tabtrans/laporan/rekening_koran", tabtransHandler.GetRekeningKoranLKMDetail)
-	apiv1.POST("/tabtrans/laporan/nominatif_deposit/:limit/:offset", tabtransHandler.GetNominatifDeposit)
-	apiv1.POST("/tabtrans/laporan/daftar_transaksi/:limit/:offset", tabtransHandler.GetLaporanTransaksi)
-	apiv1.POST("/tabtrans/deposits", tabtransHandler.GetListsDepositHisotry)
+		// REFERENCES APEX DATA ENDPOINT
+		apiv1.GET("/referensi/vendors", referensiHandler.GetListsScGroup)
+		apiv1.GET("/referensi/banks", referensiHandler.GetListsBankGroup)
+		apiv1.GET("/referensi/jenis_deposit", referensiHandler.GetListsJenisTransaksiDeposit)
+		apiv1.GET("/referensi/jenis_tabungan", referensiHandler.GetListsJenisTransaksiTabungan)
+		apiv1.GET("/referensi/tabproducts", referensiHandler.GetlistsProdukTabungan)
+		apiv1.GET("/referensi/otorisators", referensiHandler.GetListsOtorisator)
+		apiv1.GET("/referensi/jenis_pembayaran_sla", referensiHandler.GetListsJenisPembayaranVaSLA)
+		apiv1.GET("/referensi/tabungan_integrasi", referensiHandler.GetListsTabunganIntegrasi)
 
-	apiv1.GET("/referensi/vendors", referensiHandler.GetListsScGroup)
-	apiv1.GET("/referensi/banks", referensiHandler.GetListsBankGroup)
-	apiv1.GET("/referensi/jenis_deposit", referensiHandler.GetListsJenisTransaksiDeposit)
-	apiv1.GET("/referensi/jenis_tabungan", referensiHandler.GetListsJenisTransaksiTabungan)
-	apiv1.GET("/referensi/tabproducts", referensiHandler.GetlistsProdukTabungan)
+		// ECHANNEL ENDPOINT
+		apiv1.POST("/echannel/trans_histories/:limit/:offset", echHandler.GetEchannelTransHistories)
 
-	apiv1.DELETE("/flush", institutionsHandler.HardDeleteLKM)
+		// APPROVAL ENDPOINT
+		apiv1.POST("/approval/token", approvalHandler.RequestNewTokenCode)
+		apiv1.GET("/approvals/:limit/:offset", approvalHandler.GetApprovalLists)
+
+		// SLA VIRTUAL ACCOUNT ENDPOINT
+		apiv1.POST("/sla/virtual_account", vaApexHandler.CreateApexSLAVirtualAccount)
+		apiv1.GET("/sla/virtual_accounts/:limit/:offset", vaApexHandler.GetApexSLAVirtualAccount)
+		apiv1.PUT("/sla/virtual_account", vaApexHandler.UpdateApexSLAVirtualAccount)
+		apiv1.POST("/sla/virtual_accounts/transaksi/:limit/:offset", vaApexHandler.GetListsSLATransactionVirtualAccount)
+
+		// MIGRATE & TOOLS
+		apiv1.GET("/migrate/nasabahid", alterApexHandler.AlterNasabahIDOnTabungAndNasabah)
+	}
+
+	// AUTHORIZE (PROTECT BY MIDDLEWARE)
+	authorized := router.Group("api/v2", authHandler.AuthRequired)
+	{
+		authorized.POST("/deposit/reversal", tabtransHandler.PembatalanTransaksiDeposit)
+		authorized.PUT("/institution", institutionsHandler.UpdateLKM)
+		// authorized.PUT("/tabtrans/change_date", tabtransHandler.ChangeDateOnTabtransTrx)
+		authorized.PUT("/tabtrans/change_date", tabtransHandler.MultipleChangeDateApexTransactions)
+		authorized.DELETE("/tabtrans", tabtransHandler.PermanentlyDeleteApexTransaction)
+		authorized.DELETE("/institution", institutionsHandler.DeleteLKM)
+		authorized.DELETE("/sla/virtual_account", vaApexHandler.DeleteVAAccounts)
+		authorized.DELETE("/user", usersHandler.PermanentlyDeleteUser)
+
+	}
+
 }

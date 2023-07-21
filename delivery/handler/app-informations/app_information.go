@@ -14,10 +14,10 @@ func AppInfo(ctx *gin.Context) {
 	httpio.Recv()
 
 	appInfo := map[string]interface{}{
-		"App Name":        helper.AppAuthor,
-		"App Description": helper.AppDescription,
-		"App Version":     helper.AppVersion,
-		"App Author":      helper.AppAuthor,
+		"App Name":         helper.AppName,
+		"App Description":  helper.AppDescription,
+		"App Version":      helper.AppVersion,
+		"App Latest Build": helper.LastBuild,
 	}
 
 	httpio.Response(http.StatusOK, appInfo)

@@ -6,7 +6,6 @@ import (
 	"new-apex-api/entities"
 	"new-apex-api/entities/err"
 	"new-apex-api/entities/statuscode"
-	"new-apex-api/entities/web"
 	"new-apex-api/usecase"
 
 	"github.com/gin-gonic/gin"
@@ -15,7 +14,7 @@ import (
 func GetListsTabtransTrxBySTAN(ctx *gin.Context) {
 	httpio := httpio.NewRequestIO(ctx)
 
-	payload := web.StanFilter{}
+	payload := entities.StanFilter{}
 	httpio.Bind(&payload)
 
 	usecase := usecase.NewTabtransUsecase()

@@ -13,6 +13,7 @@ type SysDaftarUser struct {
 	Jabatan                string
 	User_Code              string
 	Tgl_Expired            time.Time
+	TglExpiredStr          string
 	Flag                   int
 	Status_Aktif           int
 	User_Web_Password      string

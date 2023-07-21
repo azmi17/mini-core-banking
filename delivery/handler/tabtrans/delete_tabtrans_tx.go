@@ -6,21 +6,29 @@ import (
 	"new-apex-api/entities"
 	"new-apex-api/entities/err"
 	"new-apex-api/entities/statuscode"
-	"new-apex-api/entities/web"
+	"new-apex-api/helper"
 	"new-apex-api/usecase"
 
 	"github.com/gin-gonic/gin"
 )
 
-func DeleteTabtransTrx(ctx *gin.Context) {
+func PermanentlyDeleteApexTransaction(ctx *gin.Context) {
 
 	httpio := httpio.NewRequestIO(ctx)
 
-	payload := web.TabtransIDUri{}
-	httpio.BindUri(&payload)
+	payload := entities.MultipleTabtransID{}
+	rerr := httpio.BindWithErr(&payload)
+	if rerr != nil {
+		errors := helper.FormatValidationError(rerr)
+		errorMesage := gin.H{"errors": errors}
+		response := helper.ApiResponse("delete tabtrans transaction failed", http.StatusUnprocessableEntity, "failed", errorMesage)
+		httpio.Response(http.StatusUnprocessableEntity, response)
+		return
+	}
+	httpio.Bind(&payload)
 
 	usecase := usecase.NewTabtransUsecase()
-	er := usecase.DeleteTabtransTrx(payload.TabtransID)
+	er := usecase.HardDeleteApexTransaction(payload.ListOfTabtransID)
 	if er != nil {
 		if er == err.NoRecord {
 			httpio.ResponseString(statuscode.StatusNoRecord, "Record not found", nil)

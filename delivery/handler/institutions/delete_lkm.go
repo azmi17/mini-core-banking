@@ -6,7 +6,7 @@ import (
 	"new-apex-api/entities"
 	"new-apex-api/entities/err"
 	"new-apex-api/entities/statuscode"
-	"new-apex-api/entities/web"
+	"new-apex-api/helper"
 	"new-apex-api/usecase"
 
 	"github.com/gin-gonic/gin"
@@ -16,11 +16,19 @@ func DeleteLKM(ctx *gin.Context) {
 
 	httpio := httpio.NewRequestIO(ctx)
 
-	payload := web.KodeLKMUri{}
-	httpio.BindUri(&payload)
+	payload := entities.MultipleKodeLKM{}
+	rerr := httpio.BindWithErr(&payload)
+	if rerr != nil {
+		errors := helper.FormatValidationError(rerr)
+		errorMesage := gin.H{"errors": errors}
+		response := helper.ApiResponse("delete institutions account failed", http.StatusUnprocessableEntity, "failed", errorMesage)
+		httpio.Response(http.StatusUnprocessableEntity, response)
+		return
+	}
+	httpio.Bind(&payload)
 
 	usecase := usecase.NewLkmUsecase()
-	er := usecase.DeleteLkm(payload.KodeLkm)
+	er := usecase.DeleteLkm(payload.ListOfKodeLKM)
 	if er != nil {
 		if er == err.NoRecord {
 			httpio.ResponseString(statuscode.StatusNoRecord, "Record not found!", nil)
@@ -39,11 +47,19 @@ func HardDeleteLKM(ctx *gin.Context) {
 
 	httpio := httpio.NewRequestIO(ctx)
 
-	payload := web.KodeLKMFilter{}
+	payload := entities.MultipleKodeLKM{}
+	rerr := httpio.BindWithErr(&payload)
+	if rerr != nil {
+		errors := helper.FormatValidationError(rerr)
+		errorMesage := gin.H{"errors": errors}
+		response := helper.ApiResponse("delete institutions account failed", http.StatusUnprocessableEntity, "failed", errorMesage)
+		httpio.Response(http.StatusUnprocessableEntity, response)
+		return
+	}
 	httpio.Bind(&payload)
 
 	usecase := usecase.NewLkmUsecase()
-	er := usecase.HardDeleteLkm(payload.KodeLkm)
+	er := usecase.HardDeleteLkm(payload.ListOfKodeLKM)
 	if er != nil {
 		if er == err.NoRecord {
 			httpio.ResponseString(statuscode.StatusNoRecord, "Record not found!", nil)

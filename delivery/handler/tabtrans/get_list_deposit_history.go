@@ -6,7 +6,7 @@ import (
 	"new-apex-api/entities"
 	"new-apex-api/entities/err"
 	"new-apex-api/entities/statuscode"
-	"new-apex-api/entities/web"
+	"new-apex-api/helper"
 	"new-apex-api/usecase"
 
 	"github.com/gin-gonic/gin"
@@ -15,7 +15,15 @@ import (
 func GetListsDepositHisotry(ctx *gin.Context) {
 	httpio := httpio.NewRequestIO(ctx)
 
-	payload := web.GetListsDepositTrxReq{}
+	payload := entities.GetListsDepositTrxReq{}
+	rerr := httpio.BindWithErr(&payload)
+	if rerr != nil {
+		errors := helper.FormatValidationError(rerr)
+		errorMesage := gin.H{"errors": errors}
+		response := helper.ApiResponse("get deposit lists transaction failed", http.StatusUnprocessableEntity, "failed", errorMesage)
+		httpio.Response(http.StatusUnprocessableEntity, response)
+		return
+	}
 	httpio.Bind(&payload)
 
 	usecase := usecase.NewTabtransUsecase()

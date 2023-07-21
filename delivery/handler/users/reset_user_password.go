@@ -6,7 +6,7 @@ import (
 	"new-apex-api/entities"
 	"new-apex-api/entities/err"
 	"new-apex-api/entities/statuscode"
-	"new-apex-api/entities/web"
+	"new-apex-api/helper"
 	"new-apex-api/usecase"
 
 	"github.com/gin-gonic/gin"
@@ -18,7 +18,15 @@ func ResetApexPassword(ctx *gin.Context) {
 	httpio := httpio.NewRequestIO(ctx)
 
 	// Call Payload and binding form
-	payload := web.KodeLKMFilter{}
+	payload := entities.KodeLKMFilter{}
+	rerr := httpio.BindWithErr(&payload)
+	if rerr != nil {
+		errors := helper.FormatValidationError(rerr)
+		errorMesage := gin.H{"errors": errors}
+		response := helper.ApiResponse("reset user password failed", http.StatusUnprocessableEntity, "failed", errorMesage)
+		httpio.Response(http.StatusUnprocessableEntity, response)
+		return
+	}
 	httpio.Bind(&payload)
 
 	usecase := usecase.NewSysUserUsecase()

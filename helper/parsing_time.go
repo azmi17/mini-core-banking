@@ -13,7 +13,7 @@ const (
 	DDMMMYYY   = ""
 )
 
-func ParseTimeStrToDate(dateStr string) (yesterday string, er error) {
+func ParseTimeStrToDateOnYesterday(dateStr string) (yesterday string, er error) {
 	date, er := time.Parse(YYYYMMDD, dateStr)
 	if er != nil {
 		entities.PrintError(er)
@@ -26,6 +26,7 @@ func ParseTimeStrToDate(dateStr string) (yesterday string, er error) {
 	return yesterday, nil
 }
 
+// Rev
 func FormatTimeStrDDMMYYY(input string) (dateStr string, er error) {
 	date, er := time.Parse(YYYYMMDD, input)
 	if er != nil {
@@ -38,6 +39,20 @@ func FormatTimeStrDDMMYYY(input string) (dateStr string, er error) {
 	return dateStr, nil
 }
 
+func StringFormatDMYToYMDWithoutSeparators(input string) (ymd string, er error) {
+	dmy := strings.Replace(input, "/", "", 2)
+
+	day := dmy[0:2]
+	month := dmy[2:4]
+	year := dmy[4:8]
+
+	ymd = year + month + day
+
+	return ymd, nil
+
+}
+
+// Rev
 func AddSeparatorsOnDateStr(input string) (result string, er error) {
 
 	// extract payload
@@ -52,4 +67,10 @@ func AddSeparatorsOnDateStr(input string) (result string, er error) {
 	DtWithSeparators := strings.Join(dt, "-")
 
 	return DtWithSeparators, nil
+}
+
+func GetCurrentDate(timeFormatStr string) string {
+	now := time.Now()
+	var getCurrentDate = string(now.Format(timeFormatStr))
+	return getCurrentDate
 }

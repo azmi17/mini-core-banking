@@ -4,19 +4,20 @@ import (
 	"new-apex-api/entities"
 	"new-apex-api/entities/constants"
 	"new-apex-api/entities/err"
-	"new-apex-api/entities/web"
 	"new-apex-api/helper"
 	"new-apex-api/repository/sysuserrepo"
 	"time"
 )
 
 type SysUserUsecase interface {
-	CreateSysUser(input web.CreateManajemenUser) (user web.CreateManajemenUserDataResponse, er error)
-	UpdateSysUser(input web.UpdateManajemenUser) (user web.UpdateManajemenUserDataResponse, er error)
-	GetSingleUserByUserName(userName string) (web.ManajemenUserDataResponse, error)
-	GetListOfUsers(limitOffset web.LimitOffsetLkmUri) ([]web.ManajemenUserDataResponse, error)
-	Login(input web.LoginInput) (user web.LoginData, er error)
-	ResetSysUserPassword(KodeLkm web.KodeLKMFilter) (web.ResetApexPwdResponse, error)
+	CreateSysUser(input entities.CreateManajemenUser) (user entities.CreateManajemenUserDataResponse, er error)
+	UpdateSysUser(input entities.UpdateManajemenUser) (user entities.UpdateManajemenUserDataResponse, er error)
+	GetSingleUserByUserName(userName string) (entities.ManajemenUserDataResponse, error)
+	GetListOfUsers(payload entities.GlobalFilter, limitOffset entities.LimitOffsetLkmUri) ([]entities.ManajemenUserDataResponse, error)
+	Login(input entities.LoginInput) (user entities.LoginData, er error)
+	ResetSysUserPassword(KodeLkm entities.KodeLKMFilter) (entities.ResetApexPwdResponse, error)
+	HardDeleteUser(kodeLkm []string) error
+	GetlistsOtorisator() ([]entities.Otorisators, error)
 }
 
 type sysUserUsecase struct{} // (e *employeeUsecase) => untuk menentukan hak kepemilikan
@@ -25,7 +26,7 @@ func NewSysUserUsecase() SysUserUsecase {
 	return &sysUserUsecase{}
 }
 
-func (s *sysUserUsecase) CreateSysUser(input web.CreateManajemenUser) (user web.CreateManajemenUserDataResponse, er error) {
+func (s *sysUserUsecase) CreateSysUser(input entities.CreateManajemenUser) (user entities.CreateManajemenUserDataResponse, er error) {
 	sysUserRepo, _ := sysuserrepo.NewSysUserRepo()
 
 	sysDaftarUser := entities.SysDaftarUser{}
@@ -63,7 +64,7 @@ func (s *sysUserUsecase) CreateSysUser(input web.CreateManajemenUser) (user web.
 	return user, nil
 }
 
-func (s *sysUserUsecase) UpdateSysUser(payload web.UpdateManajemenUser) (user web.UpdateManajemenUserDataResponse, er error) {
+func (s *sysUserUsecase) UpdateSysUser(payload entities.UpdateManajemenUser) (user entities.UpdateManajemenUserDataResponse, er error) {
 	sysUserRepo, _ := sysuserrepo.NewSysUserRepo()
 
 	sysDaftarUser := entities.SysDaftarUser{
@@ -94,7 +95,7 @@ func (s *sysUserUsecase) UpdateSysUser(payload web.UpdateManajemenUser) (user we
 	return user, nil
 }
 
-func (s *sysUserUsecase) GetSingleUserByUserName(userName string) (routingInfo web.ManajemenUserDataResponse, er error) {
+func (s *sysUserUsecase) GetSingleUserByUserName(userName string) (routingInfo entities.ManajemenUserDataResponse, er error) {
 	sysUserRepo, _ := sysuserrepo.NewSysUserRepo()
 
 	if routingInfo, er = sysUserRepo.GetSingleUserByUserName(userName); er != nil {
@@ -104,13 +105,13 @@ func (s *sysUserUsecase) GetSingleUserByUserName(userName string) (routingInfo w
 	return routingInfo, nil
 }
 
-func (s *sysUserUsecase) GetListOfUsers(limitOffset web.LimitOffsetLkmUri) (routingList []web.ManajemenUserDataResponse, er error) {
+func (s *sysUserUsecase) GetListOfUsers(payload entities.GlobalFilter, limitOffset entities.LimitOffsetLkmUri) (routingList []entities.ManajemenUserDataResponse, er error) {
 	if limitOffset.Limit <= 0 || limitOffset.Offset < 0 {
 		return routingList, err.BadRequest
 	}
 
 	sysUserRepo, _ := sysuserrepo.NewSysUserRepo()
-	routingList, er = sysUserRepo.GetListOfUsers(limitOffset)
+	routingList, er = sysUserRepo.GetListOfUsers(payload, limitOffset)
 	if er != nil {
 		return routingList, er
 	}
@@ -122,7 +123,7 @@ func (s *sysUserUsecase) GetListOfUsers(limitOffset web.LimitOffsetLkmUri) (rout
 	return routingList, nil
 }
 
-func (s *sysUserUsecase) Login(input web.LoginInput) (user web.LoginData, er error) {
+func (s *sysUserUsecase) Login(input entities.LoginInput) (user entities.LoginData, er error) {
 	userName := input.User_Name
 	password := input.Password
 
@@ -141,7 +142,7 @@ func (s *sysUserUsecase) Login(input web.LoginInput) (user web.LoginData, er err
 
 }
 
-func (s *sysUserUsecase) ResetSysUserPassword(KodeLkm web.KodeLKMFilter) (resp web.ResetApexPwdResponse, er error) {
+func (s *sysUserUsecase) ResetSysUserPassword(KodeLkm entities.KodeLKMFilter) (resp entities.ResetApexPwdResponse, er error) {
 	sysUserRepo, _ := sysuserrepo.NewSysUserRepo()
 
 	sysDaftarUser := entities.SysDaftarUser{}
@@ -152,9 +153,35 @@ func (s *sysUserUsecase) ResetSysUserPassword(KodeLkm web.KodeLKMFilter) (resp w
 		return resp, er
 	}
 
-	updResp := web.ResetApexPwdResponse{}
+	updResp := entities.ResetApexPwdResponse{}
 	updResp.KodeLkm = sysDaftarUser.User_Name
 	updResp.Password_Smec = sysDaftarUser.User_Web_Password_Hash
 
 	return updResp, nil
+}
+
+func (s *sysUserUsecase) HardDeleteUser(kodeLkm []string) (er error) {
+	sysUserRepo, _ := sysuserrepo.NewSysUserRepo()
+
+	if er = sysUserRepo.HardDeleteSysDaftarUser(kodeLkm...); er != nil {
+		return er
+	}
+
+	return nil
+
+}
+
+func (s *sysUserUsecase) GetlistsOtorisator() (lists []entities.Otorisators, er error) {
+	sysUserRepo, _ := sysuserrepo.NewSysUserRepo()
+
+	lists, er = sysUserRepo.GetListsOtorisator()
+	if er != nil {
+		return lists, er
+	}
+
+	if len(lists) == 0 {
+		return lists, err.NoRecord
+	}
+
+	return lists, nil
 }

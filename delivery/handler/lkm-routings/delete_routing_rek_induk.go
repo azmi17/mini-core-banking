@@ -6,7 +6,6 @@ import (
 	"new-apex-api/entities"
 	"new-apex-api/entities/err"
 	"new-apex-api/entities/statuscode"
-	"new-apex-api/entities/web"
 	"new-apex-api/usecase"
 
 	"github.com/gin-gonic/gin"
@@ -16,11 +15,11 @@ func DeleteRoutingRekIndukByKodeLKM(ctx *gin.Context) {
 
 	httpio := httpio.NewRequestIO(ctx)
 
-	payload := web.KodeLKMUri{}
-	httpio.BindUri(&payload)
+	payload := entities.MultipleKodeLKM{}
+	httpio.Bind(&payload)
 
 	usecase := usecase.NewRoutingIndukUsecase()
-	er := usecase.DeleteSysApexRoutingRekInduk(payload.KodeLkm)
+	er := usecase.DeleteSysApexRoutingRekInduk(payload.ListOfKodeLKM)
 	if er != nil {
 		if er == err.NoRecord {
 			httpio.ResponseString(statuscode.StatusNoRecord, "Record not found", nil)

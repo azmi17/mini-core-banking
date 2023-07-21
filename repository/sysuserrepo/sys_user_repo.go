@@ -2,16 +2,18 @@ package sysuserrepo
 
 import (
 	"new-apex-api/entities"
-	"new-apex-api/entities/web"
 )
 
 type SysUserRepo interface {
-	GetSingleUserByUserName(userName string) (web.ManajemenUserDataResponse, error)
-	GetListOfUsers(limitOffset web.LimitOffsetLkmUri) ([]web.ManajemenUserDataResponse, error)
+	GetSingleUserByUserName(userName string) (entities.ManajemenUserDataResponse, error)
+	FindByUserName(userName string) (entities.SysDaftarUser, error) // login check
+	GetUserID(userID int) (entities.SysDaftarUser, error)
+	GetListOfUsers(payload entities.GlobalFilter, limitOffset entities.LimitOffsetLkmUri) ([]entities.ManajemenUserDataResponse, error)
 	CreateSysDaftarUser(newSysUser entities.SysDaftarUser) (entities.SysDaftarUser, error)
 	UpdateSysDaftarUser(updNasabah entities.SysDaftarUser) (entities.SysDaftarUser, error)
-	HardDeleteSysDaftarUser(kodeLkm string) error
-	DeleteSysDaftarUser(kodeLkm string) error
+	HardDeleteSysDaftarUser(kodeLkm ...string) error
+	SoftDeleteSysDaftarUser(kodeLkm ...string) error
 	ResetUserPassword(user entities.SysDaftarUser) (entities.SysDaftarUser, error)
-	FindByUserName(userName string) (entities.SysDaftarUser, error)
+	UpdateLKMName(updNasabah entities.SysDaftarUser) error
+	GetListsOtorisator() ([]entities.Otorisators, error)
 }

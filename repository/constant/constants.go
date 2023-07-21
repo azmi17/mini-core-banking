@@ -6,14 +6,20 @@ import (
 
 // Convert Mysql Data Type
 var (
-	SQLVendor  myutils.FieldString
-	SQLAlamat  myutils.FieldString
-	SQLKontak  myutils.FieldString
-	SQLPlafond myutils.FieldFloat
+	SQLVendor         myutils.FieldString
+	SQLTglExpired     myutils.FieldString
+	SQLJabatan        myutils.FieldString
+	SQLUnitKerja      myutils.FieldString
+	SQLUSerName       myutils.FieldString
+	SQLNamaLengkap    myutils.FieldString
+	SQLAlamat         myutils.FieldString
+	SQLKontak         myutils.FieldString
+	SQLPlafond        myutils.FieldFloat
+	SQLSetoranMinimum myutils.FieldFloat
 )
 
 // func ConvertSQLDataType() {
-// 	r := web.GetDetailLKMInfo{}
+// 	r := entities.GetDetailLKMInfo{}
 // 	r.Vendor = SQLVendor.String
 // 	r.Alamat = SQLAlamat.String
 // 	r.Kontak = SQLKontak.String

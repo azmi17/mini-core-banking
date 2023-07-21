@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"new-apex-api/entities"
 	"new-apex-api/entities/err"
-	"new-apex-api/entities/web"
 )
 
 func newRoutingIndukMysqlImpl(apexConn *sql.DB) RoutingIndukRepo {
@@ -18,7 +18,7 @@ type RoutingIndukMysqlImpl struct {
 	apexDb *sql.DB
 }
 
-func (r *RoutingIndukMysqlImpl) GetRoutingRekInduk(kodeLkm string) (routing web.RoutingRekIndukData, er error) {
+func (r *RoutingIndukMysqlImpl) GetRoutingRekInduk(kodeLkm string) (routing entities.RoutingRekIndukData, er error) {
 	row := r.apexDb.QueryRow(`SELECT 
 		norek,
 		norek_induk
@@ -38,18 +38,42 @@ func (r *RoutingIndukMysqlImpl) GetRoutingRekInduk(kodeLkm string) (routing web.
 	return
 }
 
-func (r *RoutingIndukMysqlImpl) GetListSysApexRoutingRekInduk(limitOffset web.LimitOffsetLkmUri) (list []web.RoutingRekIndukData, er error) {
-	args := []interface{}{}
-	limit := ""
-	if limitOffset.Limit > 0 {
-		limit = "LIMIT ? OFFSET ?"
-		args = append(args, limitOffset.Limit, limitOffset.Offset)
-	} else {
-		limit = "LIMIT ? OFFSET ?"
-		args = append(args, -1, limitOffset.Offset)
-	}
+func (r *RoutingIndukMysqlImpl) GetListSysApexRoutingRekInduk(payload entities.GlobalFilter, limitOffset entities.LimitOffsetLkmUri) (list []entities.RoutingRekIndukData, er error) {
+	var rows *sql.Rows
 
-	rows, er := r.apexDb.Query(`SELECT norek, norek_induk FROM routing_rek_induk `+limit+``, args...)
+	args := []interface{}{}
+	sqlCond := ""
+	sqlStmt := `SELECT 
+		norek, 
+		norek_induk 
+	FROM 
+	routing_rek_induk `
+
+	if payload.Filter == "" {
+		if limitOffset.Limit > 0 {
+			sqlCond = "LIMIT ? OFFSET ?"
+			args = append(args, limitOffset.Limit, limitOffset.Offset)
+		} else {
+			sqlCond = "LIMIT ? OFFSET ?"
+			args = append(args, -1, limitOffset.Offset)
+		}
+		rows, er = r.apexDb.Query(sqlStmt+sqlCond+``, args...)
+	} else {
+		if limitOffset.Limit > 0 {
+			sqlCond = `
+			WHERE
+			(norek LIKE "%` + payload.Filter + `%" OR norek_induk LIKE "%` + payload.Filter + `%") 
+			LIMIT ? OFFSET ?`
+			args = append(args, limitOffset.Limit, limitOffset.Offset)
+		} else {
+			sqlCond = `
+			WHERE
+			(norek LIKE "%` + payload.Filter + `%" OR norek_induk LIKE "%` + payload.Filter + `%") 
+			LIMIT ? OFFSET ?`
+			args = append(args, -1, limitOffset.Offset)
+		}
+		rows, er = r.apexDb.Query(sqlStmt+sqlCond+``, args...)
+	}
 	if er != nil {
 		return list, er
 	}
@@ -59,7 +83,7 @@ func (r *RoutingIndukMysqlImpl) GetListSysApexRoutingRekInduk(limitOffset web.Li
 	}()
 
 	for rows.Next() {
-		var routings web.RoutingRekIndukData
+		var routings entities.RoutingRekIndukData
 		if er = rows.Scan(&routings.KodeLkm, &routings.NorekInduk); er != nil {
 			return list, er
 		}
@@ -74,7 +98,7 @@ func (r *RoutingIndukMysqlImpl) GetListSysApexRoutingRekInduk(limitOffset web.Li
 	}
 }
 
-func (r *RoutingIndukMysqlImpl) CreateSysApexRoutingRekInduk(bankCode, norekInduk string) (routing web.RoutingRekIndukData, er error) {
+func (r *RoutingIndukMysqlImpl) CreateSysApexRoutingRekInduk(bankCode, norekInduk string) (routing entities.RoutingRekIndukData, er error) {
 
 	stmt, er := r.apexDb.Prepare(`INSERT INTO routing_rek_induk(
 		norek,
@@ -99,7 +123,7 @@ func (r *RoutingIndukMysqlImpl) CreateSysApexRoutingRekInduk(bankCode, norekIndu
 	}
 }
 
-func (r *RoutingIndukMysqlImpl) UpdateSysApexRoutingRekInduk(newBankCode, norekInduk, currentBankCode string) (routing web.RoutingRekIndukData, er error) {
+func (r *RoutingIndukMysqlImpl) UpdateSysApexRoutingRekInduk(newBankCode, norekInduk, currentBankCode string) (routing entities.RoutingRekIndukData, er error) {
 
 	thisRepo, _ := NewRoutingIndukRepo()
 	_, er = thisRepo.GetRoutingRekInduk(currentBankCode)
@@ -125,13 +149,13 @@ func (r *RoutingIndukMysqlImpl) UpdateSysApexRoutingRekInduk(newBankCode, norekI
 	return routing, nil
 }
 
-func (r *RoutingIndukMysqlImpl) DeleteSysApexRoutingRekInduk(kodeLkm string) (er error) {
+func (r *RoutingIndukMysqlImpl) DeleteSysApexRoutingRekInduk(kodeLkm ...string) (er error) {
 
-	thisRepo, _ := NewRoutingIndukRepo()
-	_, er = thisRepo.GetRoutingRekInduk(kodeLkm)
-	if er != nil {
-		return err.NoRecord
-	}
+	// thisRepo, _ := NewRoutingIndukRepo()
+	// _, er = thisRepo.GetRoutingRekInduk(kodeLkm)
+	// if er != nil {
+	// 	return err.NoRecord
+	// }
 
 	stmt, er := r.apexDb.Prepare("DELETE FROM routing_rek_induk WHERE norek = ?")
 	if er != nil {
@@ -142,8 +166,10 @@ func (r *RoutingIndukMysqlImpl) DeleteSysApexRoutingRekInduk(kodeLkm string) (er
 		_ = stmt.Close()
 	}()
 
-	if _, er := stmt.Exec(kodeLkm); er != nil {
-		return errors.New(fmt.Sprint("error while delete routing rek induk: ", er.Error()))
+	for _, v := range kodeLkm {
+		if _, er := stmt.Exec(v); er != nil {
+			return errors.New(fmt.Sprint("error while delete routing rek induk: ", er.Error()))
+		}
 	}
 
 	return nil

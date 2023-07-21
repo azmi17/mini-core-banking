@@ -5,7 +5,6 @@ import (
 	"new-apex-api/delivery/handler/httpio"
 	"new-apex-api/entities"
 	"new-apex-api/entities/err"
-	"new-apex-api/entities/web"
 	"new-apex-api/helper"
 	"new-apex-api/usecase"
 
@@ -16,7 +15,7 @@ func RepostingSaldoByBulk(ctx *gin.Context) {
 
 	httpio := httpio.NewRequestIO(ctx)
 
-	payload := web.MultipleKodeLKM{}
+	payload := entities.MultipleKodeLKM{}
 	rerr := httpio.BindWithErr(&payload)
 	if rerr != nil {
 		errors := helper.FormatValidationError(rerr)
@@ -29,7 +28,7 @@ func RepostingSaldoByBulk(ctx *gin.Context) {
 	usecase := usecase.NewRepostingUsecase()
 	er := usecase.RepostingSaldoByBulk(payload.ListOfKodeLKM)
 
-	resp := web.GlobalResponse{}
+	resp := entities.GlobalResponse{}
 	if er != nil {
 		if er == err.NoRecord {
 			resp.ResponseCode = "1111"

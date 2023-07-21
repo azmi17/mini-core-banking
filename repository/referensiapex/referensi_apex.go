@@ -1,13 +1,13 @@
 package referensiapex
 
-import (
-	"new-apex-api/entities/web"
-)
+import "new-apex-api/entities"
 
 type ReferensiApexRepo interface {
-	GetListsScGroup() ([]web.ScGroup, error)
-	GetListsJenisTransaksiTabungan() ([]web.JenisTransaksi, error)
-	GetListsJenisTransaksiDeposit() ([]web.JenisTransaksi, error)
-	GetListsBankGroup() ([]web.BankGroup, error)
-	GetlistsProdukTabungan() ([]web.ProdukTabungan, error)
+	GetListsScGroup() ([]entities.ScGroup, error)
+	GetListsJenisTransaksiTabungan() ([]entities.JenisTransaksi, error)
+	GetListsJenisTransaksiDeposit() ([]entities.JenisTransaksi, error)
+	GetListsBankGroup() ([]entities.BankGroup, error)
+	GetlistsProdukTabungan() ([]entities.ProdukTabungan, error)
+	GetListsJenisPembayaranSLA() ([]entities.JenisPembayaranSLA, error)
+	GetListsTabunganIntegrasi() ([]entities.TabunganIntegrasi, error)
 }

@@ -3,7 +3,7 @@ package tabtransrepo
 import (
 	"database/sql"
 	"fmt"
-	"new-apex-api/entities/web"
+	"new-apex-api/entities"
 	"new-apex-api/helper"
 	"strings"
 	"testing"
@@ -13,7 +13,7 @@ import (
 )
 
 func GetConnectionApx() *sql.DB {
-	dataSource := "root:azmic0ps@tcp(localhost:3317)/apex_backup?parseTime=true"
+	dataSource := "root:azmic0ps@tcp(localhost:3317)/apex20230409?parseTime=true"
 	db, err := sql.Open("mysql", dataSource)
 	if err != nil {
 		panic(err)
@@ -89,7 +89,7 @@ func TestNominatifDeposit(t *testing.T) {
 	db := GetConnectionApx()
 	tabtransRepo := newTabtransMysqlImpl(db)
 
-	limitoffset := web.LimitOffsetLkmUri{
+	limitoffset := entities.LimitOffsetLkmUri{
 		Limit:  4,
 		Offset: 0,
 	}
@@ -139,4 +139,21 @@ func kodeTrx(item []string) string {
 		kodeTrans += text
 	}
 	return kodeTrans
+}
+
+func TestGetNextNasabahID(t *testing.T) {
+	db := GetConnectionApx()
+	repo := newTabtransMysqlImpl(db)
+
+	nextNasabahID, er := repo.GetNextNasabahID()
+	if er != nil {
+		_ = glg.Log(er.Error())
+	}
+	fmt.Println("Nasabah ID: ", nextNasabahID)
+
+	nextNorek, er := repo.GetNextNoRekeningBiggerThanFour()
+	if er != nil {
+		_ = glg.Log(er.Error())
+	}
+	fmt.Println("Norek: ", nextNorek)
 }

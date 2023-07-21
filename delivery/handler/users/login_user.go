@@ -5,7 +5,6 @@ import (
 	"new-apex-api/delivery/handler/httpio"
 	"new-apex-api/entities"
 	"new-apex-api/entities/err"
-	"new-apex-api/entities/web"
 	"new-apex-api/helper"
 	"new-apex-api/usecase"
 
@@ -18,12 +17,12 @@ func LoginUser(ctx *gin.Context) {
 	httpio := httpio.NewRequestIO(ctx)
 
 	// Call Payload and binding form
-	payload := web.LoginInput{}
+	payload := entities.LoginInput{}
 	rerr := httpio.BindWithErr(&payload)
 	if rerr != nil {
 		errors := helper.FormatValidationError(rerr)
 		errorMesage := gin.H{"errors": errors}
-		response := helper.ApiResponse("Register Institution failed", http.StatusUnprocessableEntity, "failed", errorMesage)
+		response := helper.ApiResponse("login user failed", http.StatusUnprocessableEntity, "failed", errorMesage)
 		httpio.Response(http.StatusUnprocessableEntity, response)
 		return
 	}
@@ -31,7 +30,7 @@ func LoginUser(ctx *gin.Context) {
 	usecase := usecase.NewSysUserUsecase()
 	user, er := usecase.Login(payload)
 
-	resp := web.LoginResponse{}
+	resp := entities.LoginResponse{}
 	if er != nil {
 		if er == err.NoRecord || er == err.PasswordDontMatch {
 			resp.Response_Code = "1111"

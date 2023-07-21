@@ -37,19 +37,9 @@ func init() {
 func LoadConfiguration(isReload bool) {
 	var er error
 	if isReload {
-		_ = glg.Log("=================Service Info===================")
-		_ = glg.Log("Application Name:", helper.AppName)
-		_ = glg.Log("Application Version:", helper.AppVersion)
-		_ = glg.Log("Last Build:", helper.LastBuild)
-		_ = glg.Log("================================================")
 		_ = glg.Log("Reloading configuration file...")
 		er = godotenv.Overload(".env")
 	} else {
-		_ = glg.Log("=================Service Info===================")
-		_ = glg.Log("Application Name:", helper.AppName)
-		_ = glg.Log("Application Version:", helper.AppVersion)
-		_ = glg.Log("Last Build:", helper.LastBuild)
-		_ = glg.Log("================================================")
 		_ = glg.Log("Loading configuration file...")
 		er = godotenv.Load(".env")
 	}
@@ -82,6 +72,12 @@ func LoadConfiguration(isReload bool) {
 		SetMode(glg.BOTH).
 		AddLevelWriter(glg.ERR, logEr).
 		AddLevelWriter(glg.WARN, logEr)
+
+	_ = glg.Log("=================Service Info===================")
+	_ = glg.Log("Application Name:", helper.AppName)
+	_ = glg.Log("Application Version:", helper.AppVersion)
+	_ = glg.Log("Last Build:", helper.LastBuild)
+	_ = glg.Log("================================================")
 }
 
 func PrepareDatabase() {
@@ -89,6 +85,7 @@ func PrepareDatabase() {
 
 	// # INIT DB Apex
 	databasefactory.Apex, er = databasefactory.GetDatabase()
+	databasefactory.Apex.SetEnvironmentVariablePrefix("apex.")
 	if er != nil {
 		glg.Fatal(er.Error())
 	}
@@ -106,7 +103,7 @@ func PrepareDatabase() {
 
 	// # INIT DB Sys Apex
 	databasefactory.SysApex, er = databasefactory.GetDatabase()
-	databasefactory.SysApex.SetEnvironmentVariablePrefix("sys.")
+	databasefactory.SysApex.SetEnvironmentVariablePrefix("apexsys.")
 	if er != nil {
 		glg.Fatal(er.Error())
 	}
@@ -121,6 +118,25 @@ func PrepareDatabase() {
 		_ = glg.Error("Cannot ping apex_sys: ", er.Error())
 		os.Exit(1)
 	}
+
+	// # INIT DB Echannelv3
+	databasefactory.Echannel, er = databasefactory.GetDatabase()
+	databasefactory.Echannel.SetEnvironmentVariablePrefix("echannel.")
+	if er != nil {
+		glg.Fatal(er.Error())
+	}
+
+	_ = glg.Log("Connecting to echannelv3..")
+	if er = databasefactory.Echannel.Connect(); er != nil {
+		_ = glg.Error("Connection to echannelv3 failed: ", er.Error())
+		os.Exit(1)
+	}
+
+	if er = databasefactory.Echannel.Ping(); er != nil {
+		_ = glg.Error("Cannot ping echannelv3: ", er.Error())
+		os.Exit(1)
+	}
+
 	_ = glg.Log("Database Connected")
 	_ = glg.Log("Service started")
 }

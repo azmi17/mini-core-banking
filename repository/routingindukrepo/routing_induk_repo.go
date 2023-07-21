@@ -1,11 +1,13 @@
 package routingindukrepo
 
-import "new-apex-api/entities/web"
+import (
+	"new-apex-api/entities"
+)
 
 type RoutingIndukRepo interface {
-	GetRoutingRekInduk(kodeLkm string) (web.RoutingRekIndukData, error)
-	GetListSysApexRoutingRekInduk(limitOffset web.LimitOffsetLkmUri) ([]web.RoutingRekIndukData, error)
-	CreateSysApexRoutingRekInduk(bankCode, norekInduk string) (web.RoutingRekIndukData, error)
-	UpdateSysApexRoutingRekInduk(newBankCode, norekInduk, currentBankCode string) (web.RoutingRekIndukData, error)
-	DeleteSysApexRoutingRekInduk(kodeLkm string) error
+	GetRoutingRekInduk(kodeLkm string) (entities.RoutingRekIndukData, error)
+	GetListSysApexRoutingRekInduk(payload entities.GlobalFilter, limitOffset entities.LimitOffsetLkmUri) ([]entities.RoutingRekIndukData, error)
+	CreateSysApexRoutingRekInduk(bankCode, norekInduk string) (entities.RoutingRekIndukData, error)
+	UpdateSysApexRoutingRekInduk(newBankCode, norekInduk, currentBankCode string) (entities.RoutingRekIndukData, error)
+	DeleteSysApexRoutingRekInduk(kodeLkm ...string) error
 }

@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"new-apex-api/entities"
 	"new-apex-api/entities/err"
-	"new-apex-api/entities/web"
 )
 
 func newInformationLKMMysqlImpl(apexConn *sql.DB) InformationLKMRepo {
@@ -19,7 +18,7 @@ type informationLKMMysqlImpl struct {
 	apexDb *sql.DB
 }
 
-func (i *informationLKMMysqlImpl) RekeningKoranLKMDetailHeader(kodeLKM string) (header web.RekeningKoranHeader, er error) {
+func (i *informationLKMMysqlImpl) RekeningKoranLKMDetailHeader(kodeLKM string) (header entities.RekeningKoranHeader, er error) {
 	row := i.apexDb.QueryRow(`SELECT
 		t.no_rekening,
 		n.nama_nasabah,
@@ -54,6 +53,7 @@ func (i *informationLKMMysqlImpl) LKMInformation(kodeLKM string) (lkmInfo entiti
 		t.no_rekening,
 		t.nasabah_id,
 		n.nama_nasabah,
+		n.alamat,
 		DATE_FORMAT(n.tgl_register, "%d/%m/%Y") AS Tgl_Register,
 		t.minimum,
 		t.setoran_minimum,

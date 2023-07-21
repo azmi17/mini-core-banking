@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"new-apex-api/entities"
 	"new-apex-api/entities/err"
+	"new-apex-api/repository/tabunganrepo"
 )
 
 func newNasbahMysqlImpl(apexConn *sql.DB) NasabahRepo {
@@ -156,7 +157,7 @@ func (n *NasbahMysqlImpl) UpdateNasabah(updNasabah entities.Nasabah) (nasabah en
 	return updNasabah, nil
 }
 
-func (n *NasbahMysqlImpl) HardDeleteNasabah(kodeLkm string) (er error) {
+func (n *NasbahMysqlImpl) HardDeleteNasabah(kodeLkm ...string) (er error) {
 	stmt, er := n.apexDb.Prepare("DELETE FROM nasabah WHERE nasabah_id = ?")
 	if er != nil {
 		return errors.New(fmt.Sprint("error while prepare delete nasabah : ", er.Error()))
@@ -166,13 +167,16 @@ func (n *NasbahMysqlImpl) HardDeleteNasabah(kodeLkm string) (er error) {
 		_ = stmt.Close()
 	}()
 
-	if _, er := stmt.Exec(kodeLkm); er != nil {
-		return errors.New(fmt.Sprint("error while delete nasabah : ", er.Error()))
+	for _, v := range kodeLkm {
+		if _, er := stmt.Exec(v); er != nil {
+			return errors.New(fmt.Sprint("error while delete nasabah : ", er.Error()))
+		}
 	}
+
 	return nil
 }
 
-func (n *NasbahMysqlImpl) DeleteNasabah(kodeLkm string) (er error) {
+func (n *NasbahMysqlImpl) SoftDeleteNasabah(kodeLkm ...string) (er error) {
 	stmt, er := n.apexDb.Prepare("UPDATE nasabah SET nasabah_id = ? WHERE nasabah_id = ?")
 	if er != nil {
 		return errors.New(fmt.Sprint("error while prepare delete nasabah : ", er.Error()))
@@ -182,9 +186,18 @@ func (n *NasbahMysqlImpl) DeleteNasabah(kodeLkm string) (er error) {
 		_ = stmt.Close()
 	}()
 
-	if _, er := stmt.Exec("DEL-"+kodeLkm, kodeLkm); er != nil {
-		return errors.New(fmt.Sprint("error while delete nasabah : ", er.Error()))
+	for _, v := range kodeLkm {
+		tabunganRepo, _ := tabunganrepo.NewTabunganRepo()
+		tabungan, er := tabunganRepo.FindTabunganLkm(v)
+		if er != nil {
+			return er
+		}
+
+		if _, er := stmt.Exec("DEL-"+tabungan.Nasabah_Id, tabungan.Nasabah_Id); er != nil {
+			return errors.New(fmt.Sprint("error while delete nasabah : ", er.Error()))
+		}
 	}
+
 	return nil
 }
 

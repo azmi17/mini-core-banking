@@ -125,14 +125,15 @@ const (
 	StatusTempatTinggal = "Milik Sendiri"
 
 	// Static value untuk tabung
-	KodeBIPemilik = "874"
-	KdGroup1      = "001"
-	KdGroup2      = "01"
-	KdIntegrasi   = "01"
-	KdProduk      = "01"
-	KdBILokasi    = "1"
-	KdKeterkaitan = "2"
-	KdKantorKas   = "01"
+	KodeBIPemilik         = "874"
+	KdGroup1              = "001"
+	KdGroup2              = "01"
+	KdIntegrasi           = "01"
+	KdProduk              = "01"
+	KdBILokasi            = "1"
+	KdKeterkaitan         = "2"
+	KdKantorKas           = "01"
+	FlagPayEchannelActive = "Y"
 
 	// Static value untuk sys_daftar_user
 	UserPwd   = "TKkRamfizZc"
@@ -140,4 +141,17 @@ const (
 	Jabatan   = "Echannel"
 	Flag      = 1
 	UserCode  = "1"
+
+	// Static value untuk tabtrans
+	Kredit        = "100"
+	Debit         = "200"
+	TransIDSource = 0
+	CounterSign   = 0
+	PostedToGl    = 1
+
+	// Static value untuk approval
+	NeedAprove = 0
+	Approved   = 1
+	Rejected   = 2
+	Used       = 3
 )

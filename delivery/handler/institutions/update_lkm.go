@@ -6,7 +6,6 @@ import (
 	"new-apex-api/entities"
 	"new-apex-api/entities/err"
 	"new-apex-api/entities/statuscode"
-	"new-apex-api/entities/web"
 	"new-apex-api/helper"
 	"new-apex-api/usecase"
 
@@ -18,7 +17,7 @@ func UpdateLKM(ctx *gin.Context) {
 	// Init HTTP Request..
 	httpio := httpio.NewRequestIO(ctx)
 
-	payload := web.SaveLKMApex{}
+	payload := entities.UpdateLKM{}
 	rerr := httpio.BindWithErr(&payload)
 	if rerr != nil {
 		errors := helper.FormatValidationError(rerr)
@@ -27,6 +26,7 @@ func UpdateLKM(ctx *gin.Context) {
 		httpio.Response(http.StatusUnprocessableEntity, response)
 		return
 	}
+	// httpio.Bind(&payload)
 
 	usecase := usecase.NewLkmUsecase()
 	updLkm, er := usecase.UpdateLkm(payload)
